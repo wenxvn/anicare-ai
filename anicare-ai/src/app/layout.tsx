@@ -1,0 +1,18 @@
+import type { Metadata } from 'next';
+import './globals.css';
+import { AppShell } from '@/components/nav/app-shell';
+
+export const metadata: Metadata = {
+  title: '安养智巡 - 康养机构安全风险预警系统',
+  description: '面向养老院、康养中心、护理机构的 AI 安全风险识别与智能决策平台',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="zh-CN">
+      <body className="min-h-screen bg-surface-900 antialiased">
+        <AppShell>{children}</AppShell>
+      </body>
+    </html>
+  );
+}

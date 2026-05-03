@@ -1,0 +1,13 @@
+name: CARIC
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.11.9
+  - pip
+  - pip:
+    - fastapi>=0.100.0
+    - uvicorn>=0.23.0
+    - httpx>=0.24.0
+    - python-dotenv>=1.0.0
+    - pydantic>=2.0.0
