@@ -4,10 +4,10 @@
 
 @layer base {
   :root {
-    --color-warm-50: 245 241 235;
-    --color-warm-100: 231 223 213;
-    --color-surface-800: 28 30 36;
-    --color-surface-900: 18 19 23;
+    --color-warm-50: 26 22 21;
+    --color-warm-100: 92 82 74;
+    --color-surface-800: 255 255 255;
+    --color-surface-900: 248 245 240;
   }
 
   body {
@@ -69,6 +69,12 @@
     color: rgb(var(--color-warm-100) / 0.8);
   }
   .border-white\/5 {
-    border-color: rgb(255 255 255 / 0.05);
+    border-color: rgb(26 22 21 / 0.08);
+  }
+  .card-glow {
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.04), 0 0 0 1px rgb(0 0 0 / 0.03);
+  }
+  .card-glow:hover {
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.06), 0 0 0 1px rgb(0 0 0 / 0.04);
   }
 }

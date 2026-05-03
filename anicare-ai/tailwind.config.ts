@@ -6,19 +6,31 @@ const config: Config = {
     extend: {
       colors: {
         surface: {
-          900: '#0f1115',
-          800: '#16181d',
-          700: '#1d1f26'
+          900: '#f8f5f0',
+          800: '#ffffff',
+          700: '#f3efe8'
         },
         warm: {
-          50: '#fff8f1',
-          100: '#ffecd6',
-          500: '#e07d3c'
+          50: '#1a1615',
+          100: '#5c524a',
+          500: '#0d9488'
         },
         accent: {
-          green: '#9fb08c',
-          amber: '#d6a243',
-          red: '#d95d39'
+          green: '#16a34a',
+          amber: '#d97706',
+          red: '#dc2626'
+        },
+        orange: {
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#14b8a6',
+          300: '#0d9488',
+          400: '#14b8a6',
+          500: '#0d9488',
+          600: '#0f766e',
+          700: '#115e59',
+          800: '#134e4a',
+          900: '#042f2e'
         }
       },
       borderRadius: {

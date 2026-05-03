@@ -5,27 +5,26 @@ import { motion } from 'framer-motion';
 
 interface StatCardProps {
   label: string;
-  value: ReactNode;
+  value: string | number;
+  icon: ReactNode;
   helper?: string;
-  icon?: ReactNode;
 }
 
-export function StatCard({ label, value, helper, icon }: StatCardProps) {
+export function StatCard({ label, value, icon, helper }: StatCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35 }}
-      className="card-glow rounded-3xl border border-orange-500/20 bg-surface-800/80 p-5 backdrop-blur"
+      className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5 backdrop-blur"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-warm-100/60">{label}</p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight text-warm-50">{value}</p>
+          <p className="text-sm text-[#5c524a]">{label}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight text-[#1a1615]">{value}</p>
         </div>
-        <div className="rounded-2xl bg-warm-500/10 p-2 text-orange-300">{icon}</div>
+        <div className="rounded-2xl bg-teal-500/10 p-2 text-teal-600">{icon}</div>
       </div>
-      {helper && <p className="mt-3 text-xs text-warm-100/50">{helper}</p>}
+      {helper && <p className="mt-3 text-xs text-[#5c524a]/50">{helper}</p>}
     </motion.div>
   );
 }

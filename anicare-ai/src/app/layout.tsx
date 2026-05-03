@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import './globals.css';
 import { AppShell } from '@/components/nav/app-shell';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: '安养智巡 - 康养机构安全风险预警系统',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
-      <body className="min-h-screen bg-surface-900 antialiased">
+      <body className="min-h-screen bg-[#f8f5f0] antialiased">
         <AppShell>{children}</AppShell>
       </body>
     </html>

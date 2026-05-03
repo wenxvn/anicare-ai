@@ -1,13 +1,21 @@
+'use client';
+
+import clsx from 'clsx';
+
 const riskStyles: Record<string, string> = {
-  '紧急': 'bg-red-500/15 text-red-300 border-red-500/20',
-  '高风险': 'bg-orange-500/15 text-orange-300 border-orange-500/20',
-  '中风险': 'bg-amber-500/15 text-amber-300 border-amber-500/20',
-  '低风险': 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20',
+  '紧急': 'bg-red-50 text-red-600 border-red-200',
+  '高风险': 'bg-orange-50 text-orange-600 border-orange-200',
+  '中风险': 'bg-amber-50 text-amber-600 border-amber-200',
+  '低风险': 'bg-emerald-50 text-emerald-600 border-emerald-200',
 };
 
-export function RiskBadge({ risk }: { risk: string }) {
+interface RiskBadgeProps {
+  risk: string;
+}
+
+export function RiskBadge({ risk }: RiskBadgeProps) {
   return (
-    <span className={"inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium " + (riskStyles[risk] ?? 'border-white/10 text-warm-100/70')}>
+    <span className={clsx('rounded-full border px-2.5 py-1 text-xs font-medium', riskStyles[risk] ?? 'border-[#1a1615]/10 text-[#5c524a]')}>
       {risk}
     </span>
   );
