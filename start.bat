@@ -3,8 +3,8 @@ setlocal
 
 set PROJECT_DIR=%~dp0anicare-ai
 set ENV_NAME=CARIC
+set PORT=3000
 
-:: Check if Node.js is available
 where node >nul 2>nul
 if %ERRORLEVEL% neq 0 (
   echo [ERROR] Node.js not found. Please install Node.js 18+ from https://nodejs.org/
@@ -12,30 +12,41 @@ if %ERRORLEVEL% neq 0 (
   exit /b 1
 )
 
-:: Try activate conda environment if available
 for /f "delims=" %%i in ('where conda 2^>nul') do set CONDA_CMD=conda
 if defined CONDA_CMD (
   call %CONDA_CMD% activate %ENV_NAME% 2>nul
 )
 
-:: Install dependencies if node_modules not exists
 if not exist "%PROJECT_DIR%\node_modules" (
   echo [INFO] Installing frontend dependencies...
   pushd "%PROJECT_DIR%"
   call npm install --legacy-peer-deps
   if %ERRORLEVEL% neq 0 (
-    echo [ERROR] npm install failed. Please check your network and try again.
+    echo [ERROR] npm install failed.
     pause
     exit /b 1
   )
   popd
 )
 
-:: Start Next.js dev server
-echo [INFO] Starting AniCare AI dev server at http://localhost:3000 ...
-pushd "%PROJECT_DIR%"
-start "" http://localhost:3000
-call npm run dev
-popd
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":%PORT% " ^| findstr "LISTENING"') do (
+  echo [INFO] Port %PORT% is in use by PID %%a, killing...
+  taskkill /F /PID %%a >nul 2>nul
+)
 
+echo [INFO] Starting AniCare AI dev server on port %PORT% ...
+pushd "%PROJECT_DIR%"
+start "AniCare Dev" cmd /c "npx next dev -p %PORT%"
+
+echo [INFO] Waiting for server to be ready...
+powershell -Command "while (-not (Test-NetConnection -ComputerName localhost -Port %PORT% -WarningAction SilentlyContinue).TcpTestSucceeded) { Start-Sleep -Milliseconds 500 }"
+
+echo [INFO] Server is ready! Opening browser...
+start "" http://localhost:%PORT%
+
+echo.
+echo [INFO] Press any key to close this launcher (server keeps running in its window).
+pause >nul
+
+popd
 endlocal

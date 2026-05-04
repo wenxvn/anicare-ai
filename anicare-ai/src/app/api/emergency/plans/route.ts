@@ -1,19 +1,19 @@
-import { NextResponse } from 'next/server';
-import { mockEmergencyPlans } from '@/lib/mock-data';
+import type { StepRecordInput } from '@/types';
+import { EmergencyService } from '@/services/emergency.service';
+import { apiSuccess, apiError, parseBody } from '@/lib/api-response';
 
 export async function GET() {
-  return NextResponse.json(mockEmergencyPlans);
+  const plans = EmergencyService.getPlans();
+  return apiSuccess(plans);
 }
 
 export async function POST(req: Request) {
-  const { planId, stepId } = await req.json();
-  const plan = mockEmergencyPlans.find((p) => p.id === planId);
-  if (!plan) {
-    return NextResponse.json({ error: '应急方案不存在' }, { status: 404 });
+  try {
+    const input = await parseBody<StepRecordInput>(req);
+    const result = EmergencyService.executeStep(input);
+    if (!result.success) return apiError(result.message, 400);
+    return apiSuccess(result, result.message);
+  } catch (err) {
+    return apiError(err instanceof Error ? err.message : '应急操作失败');
   }
-  const step = plan.steps.find((s) => s.id === stepId);
-  if (!step) {
-    return NextResponse.json({ error: '步骤不存在' }, { status: 404 });
-  }
-  return NextResponse.json({ success: true, message: `步骤 "${step.title}" 已标记完成` });
 }

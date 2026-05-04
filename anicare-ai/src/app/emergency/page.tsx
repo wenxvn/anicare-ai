@@ -6,64 +6,11 @@ import { Icon } from '@iconify/react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { RiskBadge } from '@/components/ui/risk-badge';
 import { fetchJson } from '@/lib/api-client';
-import type { EmergencyPlan, EmergencyStep } from '@/types';
-
-const fallbackPlans: EmergencyPlan[] = [
-  {
-    id: 'plan-fall', eventType: '老人摔倒', icon: 'mdi:human-fall-down', riskLevel: '紧急', estimatedMinutes: 8,
-    steps: [
-      { id: 'step-fall-1', order: 1, title: '确认老人意识状态', note: '轻声呼唤老人姓名，观察是否有回应，切勿大声叫喊或摇晃身体。', knowledgeRef: '跌倒应急处理流程 · 第1条', completed: false },
-      { id: 'step-fall-2', order: 2, title: '观察是否出血或明显骨折', note: '检查头部、四肢、髋部是否有外伤或异常角度，如有出血先用干净布料按压止血。', knowledgeRef: '跌倒应急处理流程 · 第3条', completed: false },
-      { id: 'step-fall-3', order: 3, title: '不要盲目移动老人', note: '除非现场有二次危险（如火灾），否则保持老人原地不动，等待医护到场。', knowledgeRef: '跌倒应急处理流程 · 第3条', completed: false },
-      { id: 'step-fall-4', order: 4, title: '通知医护人员到场', note: '对讲机呼叫值班医护，说明老人状态、跌倒位置和疑似原因。', knowledgeRef: '老年人突发疾病观察要点 · 第4条', completed: false },
-      { id: 'step-fall-5', order: 5, title: '记录事件并生成护理报告', note: '记录跌倒时间、地点、姿态、周围环境、老人当前状态，系统将自动生成护理报告。', knowledgeRef: '跌倒应急处理流程 · 第5条', completed: false },
-    ],
-  },
-  {
-    id: 'plan-leave', eventType: '离床未归', icon: 'mdi:bed-alert', riskLevel: '高风险', estimatedMinutes: 6,
-    steps: [
-      { id: 'step-leave-1', order: 1, title: '确认老人离床时间', note: '查看系统记录的离床时间点，判断是否超过 10 分钟安全阈值。', knowledgeRef: '夜间离床风险处置规范 · 第1条', completed: false },
-      { id: 'step-leave-2', order: 2, title: '优先检查卫生间和走廊', note: '夜间离床最常见目的地是卫生间，先到卫生间和相邻走廊查看。', knowledgeRef: '夜间离床风险处置规范 · 第2条', completed: false },
-      { id: 'step-leave-3', order: 3, title: '轻声询问是否需要帮助', note: '找到老人后不要惊吓，轻声询问是否需要搀扶或陪同返回。', knowledgeRef: '夜间离床风险处置规范 · 第3条', completed: false },
-      { id: 'step-leave-4', order: 4, title: '如发现跌倒立即启动跌倒流程', note: '如果老人倒在地面，不要搬动，立即切换到跌倒应急流程。', knowledgeRef: '夜间离床风险处置规范 · 第4条', completed: false },
-      { id: 'step-leave-5', order: 5, title: '陪同老人返回床位并确认安全', note: '确认老人回到床上，调整被褥和室温，必要时增设夜灯。', knowledgeRef: '夜间离床风险处置规范 · 第5条', completed: false },
-    ],
-  },
-  {
-    id: 'plan-smoke', eventType: '烟火异常', icon: 'mdi:fire-alert', riskLevel: '高风险', estimatedMinutes: 10,
-    steps: [
-      { id: 'step-smoke-1', order: 1, title: '确认烟雾来源位置', note: '查看系统定位的烟雾发生区域，判断是茶水间、厨房还是设备间。', knowledgeRef: '火灾隐患初步处理流程 · 第2条', completed: false },
-      { id: 'step-smoke-2', order: 2, title: '判断是否为设备故障', note: '检查附近电器设备是否在运行，是否有焦糊气味或异常发热。', knowledgeRef: '火灾隐患初步处理流程 · 第2条', completed: false },
-      { id: 'step-smoke-3', order: 3, title: '如确认明火立即启动消防疏散', note: '拨打 119，按消防预案引导老人撤离，优先协助行动不便者。', knowledgeRef: '火灾隐患初步处理流程 · 第3条', completed: false },
-      { id: 'step-smoke-4', order: 4, title: '如为设备异常关闭电源并通风', note: '关闭故障设备电源，打开门窗通风，通知维修人员到场。', knowledgeRef: '火灾隐患初步处理流程 · 第4条', completed: false },
-      { id: 'step-smoke-5', order: 5, title: '填写专项报告并上报安全主管', note: '所有烟火事件无论大小，都必须填写专项报告并在当天上报安全主管。', knowledgeRef: '火灾隐患初步处理流程 · 第5条', completed: false },
-    ],
-  },
-  {
-    id: 'plan-still', eventType: '长时间静止', icon: 'mdi:sleep', riskLevel: '高风险', estimatedMinutes: 5,
-    steps: [
-      { id: 'step-still-1', order: 1, title: '查看静止持续时间', note: '确认系统记录的静止开始时间，超过 30 分钟需要重点关注。', knowledgeRef: '老年人突发疾病观察要点 · 第1条', completed: false },
-      { id: 'step-still-2', order: 2, title: '现场观察老人呼吸和面色', note: '注意观察胸腔是否有起伏，面色是否正常，有无出汗或嘴唇发紫。', knowledgeRef: '老年人突发疾病观察要点 · 第1条', completed: false },
-      { id: 'step-still-3', order: 3, title: '轻声呼唤并观察反应', note: '轻拍床边或肩膀，呼唤老人姓名，观察意识是否清醒。', knowledgeRef: '老年人突发疾病观察要点 · 第2条', completed: false },
-      { id: 'step-still-4', order: 4, title: '如无反应立即通知医护', note: '如老人无意识反应或疑似心梗脑卒中，立即拨打 120 并通知值班医护。', knowledgeRef: '老年人突发疾病观察要点 · 第3条', completed: false },
-      { id: 'step-still-5', order: 5, title: '协助老人调整体位', note: '确认安全后协助翻身或调整体位，检查被褥和室温。', knowledgeRef: '久卧未动与压疮风险评估', completed: false },
-    ],
-  },
-  {
-    id: 'plan-illness', eventType: '疑似突发疾病', icon: 'mdi:heart-pulse', riskLevel: '紧急', estimatedMinutes: 12,
-    steps: [
-      { id: 'step-ill-1', order: 1, title: '快速评估老人意识状态', note: '观察老人是否清醒，能否正常应答，有无言语不清或意识模糊。', knowledgeRef: '老年人突发疾病观察要点 · 第1条', completed: false },
-      { id: 'step-ill-2', order: 2, title: '判断疑似疾病类型', note: '单侧肢体无力、口角歪斜疑似脑卒中；胸痛、出汗、呼吸困难疑似心梗。', knowledgeRef: '老年人突发疾病观察要点 · 第2条', completed: false },
-      { id: 'step-ill-3', order: 3, title: '立即拨打 120 并通知值班医护', note: '所有疑似突发疾病事件需在 3 分钟内通知值班医护。', knowledgeRef: '老年人突发疾病观察要点 · 第4条', completed: false },
-      { id: 'step-ill-4', order: 4, title: '保持呼吸道通畅', note: '将老人调整为侧卧位或半卧位，松开衣领，避免围观保持空气流通。', knowledgeRef: '老年人突发疾病观察要点 · 第5条', completed: false },
-      { id: 'step-ill-5', order: 5, title: '记录关键时间点和症状变化', note: '记录发病时间、初始症状、症状变化过程，供急救人员参考。', knowledgeRef: '老年人突发疾病观察要点 · 第4条', completed: false },
-      { id: 'step-ill-6', order: 6, title: '准备交接和家属通知', note: '整理老人病历、用药记录，准备与急救人员交接，同步通知家属。', knowledgeRef: '护理员巡房记录标准 · 第3条', completed: false },
-    ],
-  },
-];
+import type { EmergencyPlan, EmergencyStep, EmergencyStepStatus } from '@/types';
+import { RISK_LEVEL_LABEL } from '@/types';
 
 export default function EmergencyPage() {
-  const [plans, setPlans] = useState<EmergencyPlan[]>(fallbackPlans);
+  const [plans, setPlans] = useState<EmergencyPlan[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<EmergencyPlan | null>(null);
   const [steps, setSteps] = useState<EmergencyStep[]>([]);
   const [showReport, setShowReport] = useState(false);
@@ -74,21 +21,39 @@ export default function EmergencyPage() {
 
   const handleSelectPlan = (plan: EmergencyPlan) => {
     setSelectedPlan(plan);
-    setSteps(plan.steps.map((s) => ({ ...s, completed: false, remark: undefined })));
+    setSteps(plan.steps.map((s) => ({ ...s, status: 'pending' as EmergencyStepStatus })));
     setShowReport(false);
   };
 
-  const toggleStep = (stepId: string) => {
-    setSteps((prev) => prev.map((s) => s.id === stepId ? { ...s, completed: !s.completed } : s));
+  const updateStep = (stepId: string, newStatus: EmergencyStepStatus) => {
+    setSteps((prev) => prev.map((s) => {
+      if (s.id !== stepId) return s;
+      return {
+        ...s,
+        status: newStatus,
+        ...(newStatus === 'doing' ? { startedAt: new Date().toISOString() } : {}),
+        ...(newStatus === 'done' || newStatus === 'skipped' ? { completedAt: new Date().toISOString() } : {}),
+      };
+    }));
   };
 
   const addRemark = (stepId: string, remark: string) => {
     setSteps((prev) => prev.map((s) => s.id === stepId ? { ...s, remark } : s));
   };
 
-  const completedCount = steps.filter((s) => s.completed).length;
+  const completedCount = steps.filter((s) => s.status === 'done' || s.status === 'skipped').length;
   const allDone = steps.length > 0 && completedCount === steps.length;
-  const nextStep = steps.find((s) => !s.completed);
+  const nextStep = steps.find((s) => s.status === 'pending');
+  const currentDoing = steps.find((s) => s.status === 'doing');
+
+  const getStepStatusIcon = (status: EmergencyStepStatus) => {
+    switch (status) {
+      case 'done': return { icon: 'mdi:check', color: 'border-emerald-500 bg-emerald-50 text-emerald-600' };
+      case 'doing': return { icon: 'mdi:play', color: 'border-teal-500 bg-teal-50 text-teal-600' };
+      case 'skipped': return { icon: 'mdi:skip-next', color: 'border-gray-400 bg-gray-50 text-gray-500' };
+      default: return { icon: '', color: 'border-[#1a1615]/10 text-[#5c524a]/50' };
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -140,50 +105,85 @@ export default function EmergencyPage() {
 
             <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
               <div className="space-y-4">
-                {steps.map((step, index) => (
-                  <motion.div
-                    key={step.id}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.08 }}
-                    className={`card-glow rounded-3xl border bg-white p-5 transition-colors ${step.completed ? 'border-emerald-200' : 'border-[#1a1615]/8'}`}
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3">
-                        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm font-semibold ${step.completed ? 'border-emerald-500 bg-emerald-50 text-emerald-600' : 'border-[#1a1615]/10 text-[#5c524a]/50'}`}>
-                          {step.completed ? <Icon icon="mdi:check" /> : step.order}
-                        </span>
-                        <div>
-                          <p className={`text-base font-semibold ${step.completed ? 'text-emerald-600' : 'text-[#1a1615]'}`}>{step.title}</p>
-                          <p className="mt-2 text-sm leading-relaxed text-[#5c524a]">{step.note}</p>
-                          <div className="mt-3 flex items-center gap-2">
-                            <Icon icon="mdi:book-open-variant" className="text-sm text-teal-600" />
-                            <span className="text-xs text-teal-600">依据：{step.knowledgeRef}</span>
-                          </div>
-                          {step.remark && (
-                            <div className="mt-2 rounded-2xl bg-[#f8f5f0] px-3 py-2 text-xs text-[#5c524a]">
-                              <Icon icon="mdi:note-text-outline" className="mr-1 inline text-sm" />
-                              备注：{step.remark}
+                {steps.map((step, index) => {
+                  const statusInfo = getStepStatusIcon(step.status);
+                  return (
+                    <motion.div
+                      key={step.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.08 }}
+                      className={`card-glow rounded-3xl border bg-white p-5 transition-colors ${
+                        step.status === 'done' ? 'border-emerald-200' :
+                        step.status === 'doing' ? 'border-teal-300' :
+                        step.status === 'skipped' ? 'border-gray-200 opacity-60' :
+                        'border-[#1a1615]/8'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-3">
+                          <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-sm font-semibold ${statusInfo.color}`}>
+                            {step.status !== 'pending' ? <Icon icon={statusInfo.icon} className="text-sm" /> : step.order}
+                          </span>
+                          <div>
+                            <p className={`text-base font-semibold ${
+                              step.status === 'done' ? 'text-emerald-600' :
+                              step.status === 'doing' ? 'text-teal-600' :
+                              step.status === 'skipped' ? 'text-gray-400 line-through' :
+                              'text-[#1a1615]'
+                            }`}>{step.title}</p>
+                            <p className="mt-2 text-sm leading-relaxed text-[#5c524a]">{step.note}</p>
+                            <div className="mt-3 flex items-center gap-2">
+                              <Icon icon="mdi:book-open-variant" className="text-sm text-teal-600" />
+                              <span className="text-xs text-teal-600">依据：{step.knowledgeRef}</span>
                             </div>
-                          )}
+                            {step.remark && (
+                              <div className="mt-2 rounded-2xl bg-[#f8f5f0] px-3 py-2 text-xs text-[#5c524a]">
+                                <Icon icon="mdi:note-text-outline" className="mr-1 inline text-sm" />
+                                备注：{step.remark}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="mt-4 flex items-center gap-2">
-                      <button onClick={() => toggleStep(step.id)} className={`inline-flex items-center gap-1.5 rounded-2xl px-4 py-2 text-xs font-semibold transition-colors ${step.completed ? 'border border-emerald-200 bg-emerald-50 text-emerald-600' : 'bg-teal-600 text-white hover:bg-teal-500'}`}>
-                        <Icon icon={step.completed ? 'mdi:check-circle' : 'mdi:check'} className="text-sm" />
-                        {step.completed ? '已完成' : '标记完成'}
-                      </button>
-                      <button onClick={() => {
-                        const remark = prompt('请输入备注：');
-                        if (remark) addRemark(step.id, remark);
-                      }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-                        <Icon icon="mdi:pencil-outline" className="text-sm" />
-                        添加备注
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
+                      <div className="mt-4 flex items-center gap-2">
+                        {step.status === 'pending' && (
+                          <button onClick={() => updateStep(step.id, 'doing')} className="inline-flex items-center gap-1.5 rounded-2xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-500">
+                            <Icon icon="mdi:play" className="text-sm" />
+                            开始执行
+                          </button>
+                        )}
+                        {step.status === 'doing' && (
+                          <button onClick={() => updateStep(step.id, 'done')} className="inline-flex items-center gap-1.5 rounded-2xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-emerald-500">
+                            <Icon icon="mdi:check-circle" className="text-sm" />
+                            标记完成
+                          </button>
+                        )}
+                        {(step.status === 'done' || step.status === 'skipped') && (
+                          <span className={`inline-flex items-center gap-1.5 rounded-2xl px-4 py-2 text-xs font-semibold ${
+                            step.status === 'done' ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-500'
+                          }`}>
+                            <Icon icon={step.status === 'done' ? 'mdi:check-circle' : 'mdi:skip-next'} className="text-sm" />
+                            {step.status === 'done' ? '已完成' : '已跳过'}
+                          </span>
+                        )}
+                        {step.status !== 'done' && step.status !== 'skipped' && (
+                          <button onClick={() => updateStep(step.id, 'skipped')} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-gray-400">
+                            <Icon icon="mdi:skip-next" className="text-sm" />
+                            跳过
+                          </button>
+                        )}
+                        <button onClick={() => {
+                          const remark = prompt('请输入备注：');
+                          if (remark) addRemark(step.id, remark);
+                        }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+                          <Icon icon="mdi:pencil-outline" className="text-sm" />
+                          添加备注
+                        </button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </div>
 
               <div className="space-y-5">
@@ -210,7 +210,18 @@ export default function EmergencyPage() {
                   </div>
                 </div>
 
-                {nextStep && (
+                {currentDoing && (
+                  <div className="card-glow rounded-3xl border border-teal-300 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
+                    <div className="flex items-center gap-2 text-teal-700">
+                      <Icon icon="mdi:play-circle" className="text-xl" />
+                      <p className="text-sm font-semibold">当前正在执行</p>
+                    </div>
+                    <p className="mt-3 text-sm font-semibold text-[#1a1615]">第 {currentDoing.order} 步：{currentDoing.title}</p>
+                    <p className="mt-1 text-sm text-[#5c524a]">{currentDoing.note}</p>
+                  </div>
+                )}
+
+                {!currentDoing && nextStep && (
                   <div className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
                     <div className="flex items-center gap-2 text-teal-700">
                       <Icon icon="mdi:lightbulb-on-outline" className="text-xl" />
@@ -233,10 +244,6 @@ export default function EmergencyPage() {
                         <Icon icon="mdi:file-document-outline" className="text-sm" />
                         生成处理记录
                       </button>
-                      <button className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-                        <Icon icon="mdi:download" className="text-sm" />
-                        导出处理报告
-                      </button>
                     </div>
                   </motion.div>
                 )}
@@ -258,7 +265,7 @@ export default function EmergencyPage() {
                       <div className="mt-2 space-y-2">
                         {steps.map((s) => (
                           <div key={s.id} className="flex items-start gap-2 text-xs">
-                            <Icon icon="mdi:check-circle" className="mt-0.5 text-sm text-emerald-500" />
+                            <Icon icon={s.status === 'done' ? 'mdi:check-circle' : 'mdi:skip-next'} className={`mt-0.5 text-sm ${s.status === 'done' ? 'text-emerald-500' : 'text-gray-400'}`} />
                             <span className="text-[#5c524a]">第 {s.order} 步：{s.title}{s.remark ? `（备注：${s.remark}）` : ''}</span>
                           </div>
                         ))}

@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { mockKnowledge } from "@/lib/mock-data";
+import { mockKnowledge } from '@/lib/mock-data';
+import { apiSuccess } from '@/lib/api-response';
 
 export async function GET() {
-  return NextResponse.json(mockKnowledge);
+  return apiSuccess(mockKnowledge);
 }

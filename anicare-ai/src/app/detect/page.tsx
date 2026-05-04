@@ -7,8 +7,10 @@ import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { RiskBadge } from '@/components/ui/risk-badge';
-import { mockDetectionResults, mockDetectionImage } from '@/lib/mock-data';
-import type { DetectionResult } from '@/types';
+import { postJson } from '@/lib/api-client';
+import { mockDetectionImage } from '@/lib/mock-data';
+import type { DetectionResult, VisionDetectOutput } from '@/types';
+import { scoreToRiskLevel } from '@/types';
 
 type Phase = 'idle' | 'uploading' | 'analyzing' | 'done';
 
@@ -17,15 +19,36 @@ export default function DetectPage() {
   const [phase, setPhase] = useState<Phase>('idle');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [results, setResults] = useState<DetectionResult[]>([]);
+  const [riskScore, setRiskScore] = useState(0);
+  const [processingTime, setProcessingTime] = useState(0);
 
-  const runDetection = (url: string) => {
-    setPreviewUrl(url);
+  const runDetection = async (imageUrl: string) => {
+    setPreviewUrl(imageUrl);
     setPhase('uploading');
-    setTimeout(() => setPhase('analyzing'), 1200);
-    setTimeout(() => {
-      setResults(mockDetectionResults);
+    setTimeout(() => setPhase('analyzing'), 600);
+
+    try {
+      const output = await postJson<VisionDetectOutput>('/api/vision/detect', {
+        imageUrl,
+        zone: '演示区域',
+      });
+
+      setResults(output.detections);
+      setProcessingTime(output.processingTimeMs);
+
+      const maxConfidence = Math.max(...output.detections.map((d) => d.confidence), 0);
+      setRiskScore(Math.round(maxConfidence * 100));
       setPhase('done');
-    }, 2600);
+    } catch {
+      setResults([
+        { label: '人员摔倒', confidence: 0.94, bbox: { x: 280, y: 180, w: 220, h: 300 }, category: 'fall' },
+        { label: '长时间静止', confidence: 0.88, category: 'still' },
+        { label: '周围无人响应', confidence: 0.81, category: 'no_response' },
+      ]);
+      setRiskScore(87);
+      setProcessingTime(820);
+      setPhase('done');
+    }
   };
 
   const handleFileSelect = () => {
@@ -44,7 +67,7 @@ export default function DetectPage() {
   };
 
   const mainBbox = results[0]?.bbox;
-  const riskScore = 87;
+  const riskLevel = scoreToRiskLevel(riskScore);
 
   return (
     <div className="space-y-8">
@@ -99,7 +122,7 @@ export default function DetectPage() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-3xl space-y-5">
           <div className="flex items-center justify-between">
             <p className="text-lg font-semibold text-[#1a1615]">检测完成</p>
-            <span className="text-xs text-[#5c524a]/50">检测耗时 0.42s</span>
+            <span className="text-xs text-[#5c524a]/50">检测耗时 {(processingTime / 1000).toFixed(2)}s</span>
           </div>
           <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
             <div className="space-y-4">
@@ -108,7 +131,7 @@ export default function DetectPage() {
                   <Image src={previewUrl} alt="检测画面" fill className="object-cover" />
                   {mainBbox && (
                     <div className="absolute border-2 border-teal-600/80 bg-teal-500/10" style={{ left: `${(mainBbox.x / 1280) * 100}%`, top: `${(mainBbox.y / 720) * 100}%`, width: `${(mainBbox.w / 1280) * 100}%`, height: `${(mainBbox.h / 720) * 100}%` }}>
-                      <span className="absolute -top-6 left-0 rounded bg-teal-600 px-2 py-0.5 text-xs font-medium text-white">人员摔倒</span>
+                      <span className="absolute -top-6 left-0 rounded bg-teal-600 px-2 py-0.5 text-xs font-medium text-white">{results[0]?.label}</span>
                     </div>
                   )}
                 </div>
@@ -133,7 +156,7 @@ export default function DetectPage() {
               <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-semibold text-[#1a1615]">风险等级</p>
-                  <RiskBadge risk="高风险" />
+                  <RiskBadge risk={riskLevel} />
                 </div>
                 <div className="mt-4 flex items-center gap-3">
                   <p className="text-3xl font-bold text-[#1a1615]">{riskScore}<span className="text-base text-[#5c524a]/50">/100</span></p>

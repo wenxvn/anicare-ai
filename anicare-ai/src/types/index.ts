@@ -1,21 +1,131 @@
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+
+export const RISK_LEVEL_LABEL: Record<RiskLevel, string> = {
+  low: '低风险',
+  medium: '中风险',
+  high: '高风险',
+  critical: '紧急',
+};
+
+export const RISK_LEVEL_SCORE: Record<RiskLevel, [number, number]> = {
+  low: [0, 40],
+  medium: [40, 65],
+  high: [65, 85],
+  critical: [85, 100],
+};
+
+export function scoreToRiskLevel(score: number): RiskLevel {
+  if (score >= 85) return 'critical';
+  if (score >= 65) return 'high';
+  if (score >= 40) return 'medium';
+  return 'low';
+}
+
+export function riskLevelToChinese(level: RiskLevel): string {
+  return RISK_LEVEL_LABEL[level];
+}
+
+export interface BoundingBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 export interface DetectionResult {
   label: string;
   confidence: number;
-  bbox?: { x: number; y: number; w: number; h: number };
+  bbox?: BoundingBox;
+  category?: string;
 }
 
-export interface DecisionPayload {
-  riskScore: number;
-  cause: string;
-  suggestion: string;
-  basis?: string[];
+export interface VisionDetectInput {
+  imageUrl?: string;
+  imageBase64?: string;
+  videoUrl?: string;
+  cameraId?: string;
+  zone?: string;
+}
+
+export interface VisionDetectOutput {
+  detections: DetectionResult[];
+  processingTimeMs: number;
+  modelVersion: string;
+  rawModelOutput?: unknown;
+}
+
+export interface DecisionInput {
+  detections: DetectionResult[];
+  eventContext?: {
+    zone?: string;
+    camera?: string;
+    residentId?: string;
+    timestamp?: string;
+  };
+  behaviorAnalysis?: BehaviorAnalysis;
   knowledgeRefs?: string[];
+}
+
+export interface DecisionOutput {
+  riskScore: number;
+  riskLevel: RiskLevel;
+  priority: number;
+  suggestions: string[];
+  reasoning: string[];
+  cause: string;
+  knowledgeRefs: string[];
+  modelVersion: string;
+  rawModelOutput?: unknown;
+}
+
+export interface BehaviorAnalysis {
+  deviationScore: number;
+  behaviorLabels: string[];
+  riskTrend: 'rising' | 'stable' | 'declining';
+  summary: string;
+  details: {
+    label: string;
+    value: string;
+  }[];
+}
+
+export interface BehaviorAnalyzeInput {
+  residentId?: string;
+  currentDetections?: DetectionResult[];
+  zone?: string;
+  timeOfDay?: string;
+  recentActivityHours?: number;
+  nightLeaveCount?: number;
+  weeklyAnomalies?: number;
+}
+
+export interface DispatchItem {
+  id: string;
+  eventId: string;
+  type: string;
+  risk: string;
+  riskLevel: RiskLevel;
+  zone: string;
+  waitMinutes: number;
+  residentName: string;
+  priority: number;
+  priorityScore: number;
+  reason: string;
+  status: '待指派' | '处理中' | '已完成';
+  assignee?: string;
+  time: string;
+}
+
+export interface DispatchAssignInput {
+  dispatchId: string;
+  assignee: string;
 }
 
 export interface EventItem {
   id: string;
   type: string;
   risk: string;
+  riskLevel: RiskLevel;
   zone: string;
   camera: string;
   time: string;
@@ -25,6 +135,15 @@ export interface EventItem {
   summary: string;
   decision: DecisionPayload;
   detections?: DetectionResult[];
+}
+
+export interface DecisionPayload {
+  riskScore: number;
+  riskLevel: RiskLevel;
+  cause: string;
+  suggestion: string;
+  basis?: string[];
+  knowledgeRefs?: string[];
 }
 
 export interface DashboardStats {
@@ -44,21 +163,6 @@ export interface KnowledgeArticle {
   content: string;
   updatedAt: string;
   scenario: string;
-}
-
-export interface DispatchItem {
-  id: string;
-  eventId: string;
-  type: string;
-  risk: string;
-  zone: string;
-  waitMinutes: number;
-  residentName: string;
-  priority: number;
-  reason: string;
-  status: '待指派' | '处理中' | '已完成';
-  assignee?: string;
-  time: string;
 }
 
 export interface BehaviorMetric {
@@ -85,13 +189,17 @@ export interface ResidentProfile {
   riskEventTrend: { day: string; count: number }[];
 }
 
+export type EmergencyStepStatus = 'pending' | 'doing' | 'done' | 'skipped';
+
 export interface EmergencyStep {
   id: string;
   order: number;
   title: string;
   note: string;
   knowledgeRef: string;
-  completed: boolean;
+  status: EmergencyStepStatus;
+  completedAt?: string;
+  startedAt?: string;
   remark?: string;
 }
 
@@ -99,7 +207,28 @@ export interface EmergencyPlan {
   id: string;
   eventType: string;
   icon: string;
-  riskLevel: string;
+  riskLevel: RiskLevel;
   estimatedMinutes: number;
+  status: EmergencyPlanStatus;
+  startedAt?: string;
+  completedAt?: string;
+  currentStepIndex: number;
   steps: EmergencyStep[];
+}
+
+export type EmergencyPlanStatus = 'idle' | 'executing' | 'completed' | 'paused';
+
+export interface StepRecordInput {
+  planId: string;
+  stepId: string;
+  action: 'start' | 'complete' | 'skip';
+  remark?: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  timestamp: string;
 }

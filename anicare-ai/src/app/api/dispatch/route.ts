@@ -1,15 +1,19 @@
-import { NextResponse } from 'next/server';
-import { mockDispatchQueue } from '@/lib/mock-data';
+import type { DispatchAssignInput } from '@/types';
+import { DispatchService } from '@/services/dispatch.service';
+import { apiSuccess, apiError, parseBody } from '@/lib/api-response';
 
 export async function GET() {
-  return NextResponse.json(mockDispatchQueue);
+  const queue = DispatchService.getQueue();
+  return apiSuccess(queue);
 }
 
 export async function POST(req: Request) {
-  const { id, assignee } = await req.json();
-  const item = mockDispatchQueue.find((d) => d.id === id);
-  if (!item) {
-    return NextResponse.json({ error: '调度项不存在' }, { status: 404 });
+  try {
+    const input = await parseBody<DispatchAssignInput>(req);
+    const result = DispatchService.assign(input);
+    if (!result.success) return apiError(result.message, 404);
+    return apiSuccess(result, result.message);
+  } catch (err) {
+    return apiError(err instanceof Error ? err.message : '调度操作失败');
   }
-  return NextResponse.json({ success: true, message: `已指派 ${assignee} 处理 ${item.type}事件` });
 }

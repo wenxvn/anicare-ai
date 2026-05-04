@@ -1,12 +1,13 @@
-import { NextResponse } from 'next/server';
+import type { DecisionInput } from '@/types';
+import { DecisionService } from '@/services/decision.service';
+import { apiSuccess, apiError, parseBody } from '@/lib/api-response';
 
-export async function POST() {
-  // TODO: 接入 LLM Agent / 规则引擎
-  await new Promise((resolve) => setTimeout(resolve, 800));
-  return NextResponse.json({
-    riskScore: 86,
-    cause: '夜间照明不足、步态异常、地面湿滑',
-    suggestion: '立即派人确认现场，并启动二次巡检',
-    message: '当前为模拟决策结果',
-  });
+export async function POST(req: Request) {
+  try {
+    const input = await parseBody<DecisionInput>(req);
+    const result = await DecisionService.evaluate(input);
+    return apiSuccess(result, `当前模式: ${DecisionService.getMode()}`);
+  } catch (err) {
+    return apiError(err instanceof Error ? err.message : '决策评估失败');
+  }
 }

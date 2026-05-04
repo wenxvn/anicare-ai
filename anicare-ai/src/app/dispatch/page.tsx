@@ -12,44 +12,44 @@ import type { DispatchItem } from '@/types';
 
 const fallbackQueue: DispatchItem[] = [
   {
-    id: 'dsp-001', eventId: 'evt-20250501-001', type: '摔倒未响应', risk: '紧急', zone: 'A栋-3层-走廊',
-    waitMinutes: 8, residentName: '张建国', priority: 1,
+    id: 'dsp-001', eventId: 'evt-20250501-001', type: '摔倒未响应', risk: '紧急', riskLevel: 'critical',
+    zone: 'A栋-3层-走廊', waitMinutes: 8, residentName: '张建国', priority: 1, priorityScore: 100,
     reason: '风险等级为紧急，老人跌倒后超过 3 分钟未出现明显移动，周围无护理人员，已超过黄金响应时间。',
     status: '待指派', time: '2025-05-01 03:12:05',
   },
   {
-    id: 'dsp-002', eventId: 'evt-20250501-008', type: '楼梯口摔倒', risk: '紧急', zone: 'B栋-1层-楼梯口',
-    waitMinutes: 3, residentName: '刘德华', priority: 2,
+    id: 'dsp-002', eventId: 'evt-20250501-008', type: '楼梯口摔倒', risk: '紧急', riskLevel: 'critical',
+    zone: 'B栋-1层-楼梯口', waitMinutes: 3, residentName: '刘德华', priority: 2, priorityScore: 95,
     reason: '楼梯口摔倒存在二次碰撞风险，且楼梯湿滑，需要优先确认是否骨折。',
     status: '处理中', assignee: '赵文强', time: '2025-05-01 09:15:33',
   },
   {
-    id: 'dsp-003', eventId: 'evt-20250501-005', type: '久卧未动', risk: '高风险', zone: 'B栋-3层-房间302',
-    waitMinutes: 22, residentName: '王秀兰', priority: 3,
+    id: 'dsp-003', eventId: 'evt-20250501-005', type: '久卧未动', risk: '高风险', riskLevel: 'high',
+    zone: 'B栋-3层-房间302', waitMinutes: 22, residentName: '王秀兰', priority: 3, priorityScore: 83,
     reason: '床位连续 50 分钟未检测到翻身动作，存在压疮和低体温风险，且室温低于安全阈值。',
     status: '待指派', time: '2025-05-01 08:42:10',
   },
   {
-    id: 'dsp-004', eventId: 'evt-20250501-002', type: '夜间离床未归', risk: '高风险', zone: 'B栋-5层-房间508',
-    waitMinutes: 15, residentName: '陈国华', priority: 4,
+    id: 'dsp-004', eventId: 'evt-20250501-002', type: '夜间离床未归', risk: '高风险', riskLevel: 'high',
+    zone: 'B栋-5层-房间508', waitMinutes: 15, residentName: '陈国华', priority: 4, priorityScore: 79,
     reason: '老人行动不便，凌晨离床超过 15 分钟未归，夜间照明不足，跌倒风险较高。',
     status: '待指派', time: '2025-05-01 02:16:33',
   },
   {
-    id: 'dsp-005', eventId: 'evt-20250501-003', type: '烟火疑似异常', risk: '高风险', zone: 'C栋-1层-茶水间',
-    waitMinutes: 5, residentName: '—', priority: 5,
+    id: 'dsp-005', eventId: 'evt-20250501-003', type: '烟火疑似异常', risk: '高风险', riskLevel: 'high',
+    zone: 'C栋-1层-茶水间', waitMinutes: 5, residentName: '—', priority: 5, priorityScore: 77,
     reason: '茶水间烟雾浓度持续上升，可能涉及电器故障，需要确认设备状态和通风口。',
     status: '待指派', time: '2025-05-01 11:05:18',
   },
   {
-    id: 'dsp-006', eventId: 'evt-20250501-009', type: '无人看护', risk: '中风险', zone: 'C栋-3层-康复区',
-    waitMinutes: 18, residentName: '多名老人', priority: 6,
+    id: 'dsp-006', eventId: 'evt-20250501-009', type: '无人看护', risk: '中风险', riskLevel: 'medium',
+    zone: 'C栋-3层-康复区', waitMinutes: 18, residentName: '多名老人', priority: 6, priorityScore: 72,
     reason: '康复区有 3 名老人活动但无护理人员在场，存在安全隐患。',
     status: '待指派', time: '2025-05-01 15:48:22',
   },
   {
-    id: 'dsp-007', eventId: 'evt-20250501-004', type: '长时间滞留', risk: '中风险', zone: 'A栋-1层-电梯口',
-    waitMinutes: 25, residentName: '李明辉', priority: 7,
+    id: 'dsp-007', eventId: 'evt-20250501-004', type: '长时间滞留', risk: '中风险', riskLevel: 'medium',
+    zone: 'A栋-1层-电梯口', waitMinutes: 25, residentName: '李明辉', priority: 7, priorityScore: 67,
     reason: '老人在电梯口滞留超过 10 分钟，可能存在迷路风险，需确认是否需要引导。',
     status: '待指派', time: '2025-05-01 16:30:45',
   },
@@ -64,7 +64,7 @@ export default function DispatchPage() {
   }, []);
 
   const pendingCount = queue.filter((d) => d.status === '待指派').length;
-  const urgentCount = queue.filter((d) => d.risk === '紧急').length;
+  const urgentCount = queue.filter((d) => d.riskLevel === 'critical' || d.risk === '紧急').length;
   const avgWait = queue.length > 0 ? (queue.reduce((s, d) => s + d.waitMinutes, 0) / queue.length).toFixed(1) : '0';
   const doneRate = queue.length > 0 ? Math.round((queue.filter((d) => d.status === '已完成').length / queue.length) * 100) : 0;
 
@@ -131,7 +131,7 @@ export default function DispatchPage() {
                   item.status === '处理中' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
                   'bg-emerald-50 text-emerald-600 border border-emerald-200'
                 }`}>{item.status}</span>
-                <RiskBadge risk={item.risk} />
+                <RiskBadge risk={item.riskLevel || item.risk} />
               </div>
             </div>
 

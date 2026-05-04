@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import { mockEvents } from "@/lib/mock-data";
+import { mockEvents } from '@/lib/mock-data';
+import { apiSuccess } from '@/lib/api-response';
 
 export async function GET() {
-  return NextResponse.json(mockEvents);
+  return apiSuccess(mockEvents);
 }

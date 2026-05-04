@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
-import { mockEvents } from "@/lib/mock-data";
+import { mockEvents } from '@/lib/mock-data';
+import { apiSuccess, apiError } from '@/lib/api-response';
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
-  const event = mockEvents.find((item) => item.id === params.id);
-  if (!event) return NextResponse.json({ message: "not found" }, { status: 404 });
-  return NextResponse.json(event);
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
+  const event = mockEvents.find((e) => e.id === params.id);
+  if (!event) return apiError('事件不存在', 404);
+  return apiSuccess(event);
 }
