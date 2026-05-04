@@ -8,7 +8,8 @@ import { SectionHeader } from '@/components/ui/section-header';
 import { StatCard } from '@/components/ui/stat-card';
 import { RiskBadge } from '@/components/ui/risk-badge';
 import { fetchJson } from '@/lib/api-client';
-import type { DispatchItem } from '@/types';
+import type { DispatchItem, PredictionOverview } from '@/types';
+import { mockPredictionOverview } from '@/lib/mock-prediction';
 
 const fallbackQueue: DispatchItem[] = [
   {
@@ -58,9 +59,11 @@ const fallbackQueue: DispatchItem[] = [
 export default function DispatchPage() {
   const [queue, setQueue] = useState<DispatchItem[]>(fallbackQueue);
   const [assigning, setAssigning] = useState<string | null>(null);
+  const [prediction, setPrediction] = useState<PredictionOverview>(mockPredictionOverview);
 
   useEffect(() => {
     fetchJson<DispatchItem[]>('/api/dispatch').then(setQueue).catch(() => {});
+    fetchJson<PredictionOverview>('/api/prediction').then(setPrediction).catch(() => {});
   }, []);
 
   const pendingCount = queue.filter((d) => d.status === '待指派').length;
@@ -103,6 +106,40 @@ export default function DispatchPage() {
           </p>
         </motion.div>
       )}
+
+      <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-gradient-to-br from-orange-50/40 to-white p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:chart-timeline-variant-shimmer" className="text-lg text-teal-600" />
+              <p className="text-sm font-semibold text-[#1a1615]">未来 15 分钟高风险区域</p>
+            </div>
+            <p className="mt-1 text-xs text-[#5c524a]">系统预测以下区域风险将在短期内上升，建议优先安排巡查</p>
+          </div>
+          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
+            预测中心
+          </Link>
+        </div>
+        <div className="mt-3 space-y-2">
+          {prediction.forecast15min.highRiskRooms.map((room, i) => {
+            const priorityColor = room.patrolPriority === '紧急' ? 'bg-red-50 text-red-600' : room.patrolPriority === '高' ? 'bg-orange-50 text-orange-600' : 'bg-amber-50 text-amber-600';
+            return (
+              <motion.div
+                key={room.roomId}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="flex items-center gap-3 rounded-2xl bg-white/70 px-4 py-2.5"
+              >
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-xs font-bold text-[#1a1615] shadow-sm">{i + 1}</span>
+                <span className="min-w-0 flex-1 text-sm font-medium text-[#1a1615]">{room.roomName}</span>
+                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${priorityColor}`}>{room.patrolPriority}优先</span>
+                <span className="text-sm font-bold text-[#1a1615]">{room.predictedScore}<span className="text-[10px] font-normal text-[#5c524a]/50"> 分</span></span>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-[#1a1615]">风险优先级队列</h3>

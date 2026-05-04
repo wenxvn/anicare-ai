@@ -10,13 +10,14 @@ const coreCapabilities = [
   { icon: 'mdi:fire-alert', title: '烟火与环境隐患识别', description: '烟雾浓度一异常，系统立刻帮你盯住。' },
   { icon: 'mdi:bed-alert', title: '离床未归与异常滞留识别', description: '老人半夜离开床位没回来，不用靠运气发现了。' },
   { icon: 'mdi:brain', title: 'AI 风险评级与处置建议', description: '不只是报警，还会告诉你先处理哪件事。' },
+  { icon: 'mdi:merge', title: '多模态融合风险预测', description: '视觉、床压、门磁、毫米波四源融合，提前预判未来风险走势。' },
 ];
 
 const quickEntries = [
+  { href: '/prediction-center', title: '风险预测中心', description: '多模态融合评分，提前预判未来 30 分钟高风险区域。', icon: 'mdi:chart-timeline-variant-shimmer' },
   { href: '/detect', title: '体验智能检测', description: '上传一张图，看看系统怎么识别风险。', icon: 'mdi:eye-check-outline' },
   { href: '/events', title: '查看事件管理', description: '快速筛选紧急、高风险、待处理事件。', icon: 'mdi:alert-octagon-outline' },
   { href: '/dashboard', title: '查看数据看板', description: '看看今天系统替护理员筛掉了多少普通画面。', icon: 'mdi:chart-areaspline' },
-  { href: '/knowledge', title: '咨询智能助手', description: '护理问题随时问，系统帮你查知识库。', icon: 'mdi:robot-outline' },
 ];
 
 export default function HomePage() {
@@ -65,7 +66,7 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold text-[#1a1615]">核心能力</h2>
           <p className="mt-2 text-sm text-[#5c524a]">系统先帮你把最危险的事挑出来，护理员一看就知道先处理哪件事。</p>
         </motion.div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {coreCapabilities.map((item, index) => (
             <motion.div key={item.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + index * 0.08 }} className="card-glow flex items-start gap-4 rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">

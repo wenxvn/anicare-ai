@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
+import Link from 'next/link';
 import { SectionHeader } from '@/components/ui/section-header';
 import { StatCard } from '@/components/ui/stat-card';
 import { fetchJson } from '@/lib/api-client';
 import { AreaChart, BarChart, Bar, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { DashboardStats } from '@/types';
+import type { DashboardStats, PredictionOverview } from '@/types';
+import { mockPredictionOverview } from '@/lib/mock-prediction';
 
 const fallbackStats: DashboardStats = {
   todayEvents: 12,
@@ -29,9 +32,11 @@ const fallbackStats: DashboardStats = {
 
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>(fallbackStats);
+  const [prediction, setPrediction] = useState<PredictionOverview>(mockPredictionOverview);
 
   useEffect(() => {
     fetchJson<DashboardStats>('/api/dashboard').then(setStats).catch(() => {});
+    fetchJson<PredictionOverview>('/api/prediction').then(setPrediction).catch(() => {});
   }, []);
 
   return (
@@ -91,6 +96,77 @@ export default function DashboardPage() {
               </div>
               <p className="mt-1 text-xs text-teal-600">热度 {item.score}</p>
             </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:merge" className="text-lg text-teal-600" />
+              <p className="text-sm font-semibold text-[#1a1615]">多模态融合风险评估</p>
+            </div>
+            <p className="mt-1 text-xs text-[#5c524a]">当前系统实时融合视觉、床压、门磁、毫米波数据</p>
+          </div>
+          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
+            查看详情
+          </Link>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {prediction.fusionRisk.modalities.map((m, i) => (
+            <motion.div
+              key={m.type}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="rounded-2xl bg-[#faf8f5] p-3"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-[#5c524a]">{m.label}</span>
+                <span className="flex items-center gap-1 text-[10px]">
+                  <span className={`h-1.5 w-1.5 rounded-full ${m.online ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                  <span className={m.online ? 'text-emerald-600' : 'text-gray-400'}>{m.online ? '在线' : '离线'}</span>
+                </span>
+              </div>
+              <p className="mt-2 text-2xl font-bold text-[#1a1615]">{m.score}<span className="text-xs font-normal text-[#5c524a]/50"> 分</span></p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:chart-timeline-variant-shimmer" className="text-lg text-teal-600" />
+              <p className="text-sm font-semibold text-[#1a1615]">未来 30 分钟高风险区域预判</p>
+            </div>
+            <p className="mt-1 text-xs text-[#5c524a]">建议优先巡查以下区域</p>
+          </div>
+          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
+            查看全部
+          </Link>
+        </div>
+        <div className="mt-4 space-y-2">
+          {prediction.forecast30min.highRiskRooms.slice(0, 3).map((room, i) => (
+            <motion.div
+              key={room.roomId}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.08 }}
+              className="flex items-center gap-3 rounded-2xl bg-[#faf8f5] px-4 py-3"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#1a1615]">{i + 1}</div>
+              <div className="min-w-0 flex-1">
+                <span className="text-sm font-medium text-[#1a1615]">{room.roomName}</span>
+                <p className="truncate text-xs text-[#5c524a]/70">{room.reasons[0]}</p>
+              </div>
+              <div className="text-right">
+                <span className="text-base font-bold text-[#1a1615]">{room.predictedScore}</span>
+                <p className="text-[10px] text-[#5c524a]/50">预计 {room.triggerTime}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
       </div>

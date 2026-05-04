@@ -225,6 +225,92 @@ export interface StepRecordInput {
   remark?: string;
 }
 
+export type ModalityType = 'vision' | 'bed_pressure' | 'door_sensor' | 'mmwave';
+
+export interface ModalityStatus {
+  type: ModalityType;
+  label: string;
+  online: boolean;
+  score: number;
+  lastUpdate: string;
+  detail: string;
+}
+
+export interface FusionRiskData {
+  totalScore: number;
+  riskLevel: RiskLevel;
+  confidence: number;
+  modalities: ModalityStatus[];
+  trend: 'rising' | 'stable' | 'declining';
+  summary: string;
+  updatedAt: string;
+}
+
+export interface ForecastTimePoint {
+  time: string;
+  score: number;
+}
+
+export interface ForecastRoom {
+  roomId: string;
+  roomName: string;
+  zone: string;
+  currentScore: number;
+  predictedScore: number;
+  window: '15min' | '30min';
+  triggerTime: string;
+  patrolPriority: '紧急' | '高' | '中' | '低';
+  reasons: string[];
+}
+
+export interface ShortTermForecast {
+  horizon: '15min' | '30min';
+  trendData: ForecastTimePoint[];
+  highRiskRooms: ForecastRoom[];
+  summary: string;
+  generatedAt: string;
+}
+
+export interface AlertContributor {
+  factor: string;
+  weight: number;
+  description: string;
+}
+
+export type AlertStatus = 'pending' | 'dispatched' | 'resolved';
+
+export interface ExplainableAlert {
+  id: string;
+  alertType: string;
+  riskLevel: RiskLevel;
+  riskScore: number;
+  zone: string;
+  roomName: string;
+  triggerReason: string;
+  contributors: AlertContributor[];
+  suggestion: string;
+  confidence: number;
+  status: AlertStatus;
+  createdAt: string;
+}
+
+export interface ModelRunStatus {
+  modelVersion: string;
+  inferenceLatencyMs: number;
+  dataFreshness: string;
+  lastRunAt: string;
+  status: 'running' | 'idle' | 'error';
+  accuracy: number;
+}
+
+export interface PredictionOverview {
+  fusionRisk: FusionRiskData;
+  forecast15min: ShortTermForecast;
+  forecast30min: ShortTermForecast;
+  alerts: ExplainableAlert[];
+  modelStatus: ModelRunStatus;
+}
+
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
