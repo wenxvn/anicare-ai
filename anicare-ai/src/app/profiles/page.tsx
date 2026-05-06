@@ -66,7 +66,7 @@ export default function ProfilesPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title="老人行为画像" description="不是所有老人凌晨出门都一样危险，要看他平时是不是这样。系统会记住每位老人的日常习惯，一旦今天跟平时不一样，马上提醒你。" />
+      <SectionHeader title="老人行为画像" description="" />
 
       {!selected ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

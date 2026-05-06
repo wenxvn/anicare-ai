@@ -9,7 +9,7 @@ import { Sidebar } from '@/components/nav/sidebar';
 const publicPaths = ['/login'];
 
 function AppContent({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -31,9 +31,9 @@ function AppContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex flex-1 flex-col">
-        <TopNav onMenuClick={() => setSidebarOpen(true)} />
+      <Sidebar collapsed={sidebarCollapsed} onNavigate={() => {}} />
+      <div className="flex flex-1 flex-col min-w-0">
+        <TopNav onToggleSidebar={() => setSidebarCollapsed((prev) => !prev)} />
         <main className="flex-1 px-6 pb-10 pt-6 lg:px-10">{children}</main>
       </div>
     </div>

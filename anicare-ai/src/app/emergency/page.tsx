@@ -57,7 +57,7 @@ export default function EmergencyPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title="应急流程引导" description="护理员不用临场想步骤，系统一步步带着做。选一个事件类型，按步骤处理，每一步都有知识库撑腰。" />
+      <SectionHeader title="应急流程引导" description="" />
 
       {!selectedPlan ? (
         <>

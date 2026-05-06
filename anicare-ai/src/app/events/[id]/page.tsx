@@ -9,6 +9,28 @@ import { RiskBadge } from '@/components/ui/risk-badge';
 import { LiveDecision } from '@/components/decision/live-decision';
 import { mockEvents } from '@/lib/mock-data';
 
+const eventImageMap: Record<string, string> = {
+  '摔倒': 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1280&h=720&fit=crop',
+  '摔倒未响应': 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=1280&h=720&fit=crop',
+  '离床未归': 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1280&h=720&fit=crop',
+  '夜间离床未归': 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=1280&h=720&fit=crop',
+  '烟火疑似异常': 'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=1280&h=720&fit=crop',
+  '长时间滞留': 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1280&h=720&fit=crop',
+  '久卧未动': 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1280&h=720&fit=crop',
+  '冲突': 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?w=1280&h=720&fit=crop',
+  '无人看护': 'https://images.unsplash.com/photo-1516549655169-df83a0774514?w=1280&h=720&fit=crop',
+  '异常滞留': 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1280&h=720&fit=crop',
+};
+
+const defaultImage = 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1280&h=720&fit=crop';
+
+function getEventImage(type: string): string {
+  for (const [key, url] of Object.entries(eventImageMap)) {
+    if (type.includes(key)) return url;
+  }
+  return defaultImage;
+}
+
 export default function EventDetailPage() {
   const params = useParams();
   const event = mockEvents.find((item) => item.id === params.id);
@@ -38,7 +60,7 @@ export default function EventDetailPage() {
         <div className="space-y-4">
           <div className="overflow-hidden rounded-3xl border border-[#1a1615]/8">
             <div className="relative aspect-video">
-              <Image src={`https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1280&h=720&fit=crop&seed=${event.id}`} alt={event.type} fill className="object-cover" />
+              <Image src={getEventImage(event.type)} alt={event.type} fill className="object-cover" />
             </div>
           </div>
           <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">

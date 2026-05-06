@@ -9,15 +9,22 @@ const coreCapabilities = [
   { icon: 'mdi:human-fall-down', title: '摔倒与久卧识别', description: '老人摔倒后，不再等到下一轮巡房才被发现。' },
   { icon: 'mdi:fire-alert', title: '烟火与环境隐患识别', description: '烟雾浓度一异常，系统立刻帮你盯住。' },
   { icon: 'mdi:bed-alert', title: '离床未归与异常滞留识别', description: '老人半夜离开床位没回来，不用靠运气发现了。' },
-  { icon: 'mdi:brain', title: 'AI 风险评级与处置建议', description: '不只是报警，还会告诉你先处理哪件事。' },
   { icon: 'mdi:merge', title: '多模态融合风险预测', description: '视觉、床压、门磁、毫米波四源融合，提前预判未来风险走势。' },
+  { icon: 'mdi:account-details', title: '老人行为画像分析', description: '记住每位老人的日常习惯，偏离越大风险越高。' },
+  { icon: 'mdi:broadcast', title: '智能风险调度', description: '多个事件同时发生时，自动排出最危险的优先级。' },
+  { icon: 'mdi:ambulance', title: '应急流程引导', description: '护理员按步骤处理，每一步都有知识库撑腰。' },
+  { icon: 'mdi:robot-outline', title: '智能助手问答', description: '护理安全方面的问题随时问，结合知识库给出专业建议。' },
 ];
 
 const quickEntries = [
+  { href: '/detect', title: '智能检测', description: '上传一张图，看看系统怎么识别风险。', icon: 'mdi:eye-check-outline' },
   { href: '/prediction-center', title: '风险预测中心', description: '多模态融合评分，提前预判未来 30 分钟高风险区域。', icon: 'mdi:chart-timeline-variant-shimmer' },
-  { href: '/detect', title: '体验智能检测', description: '上传一张图，看看系统怎么识别风险。', icon: 'mdi:eye-check-outline' },
-  { href: '/events', title: '查看事件管理', description: '快速筛选紧急、高风险、待处理事件。', icon: 'mdi:alert-octagon-outline' },
-  { href: '/dashboard', title: '查看数据看板', description: '看看今天系统替护理员筛掉了多少普通画面。', icon: 'mdi:chart-areaspline' },
+  { href: '/dispatch', title: '风险调度中心', description: '自动排序优先级，护理员一看就知道先处理哪件事。', icon: 'mdi:broadcast' },
+  { href: '/profiles', title: '行为画像', description: '每位老人的日常习惯和今日行为偏离度。', icon: 'mdi:account-details' },
+  { href: '/emergency', title: '应急流程', description: '选择事件类型，系统一步步带着做。', icon: 'mdi:ambulance' },
+  { href: '/events', title: '事件管理', description: '快速筛选紧急、高风险、待处理事件。', icon: 'mdi:alert-octagon-outline' },
+  { href: '/dashboard', title: '数据看板', description: '看看今天系统替护理员筛掉了多少普通画面。', icon: 'mdi:chart-areaspline' },
+  { href: '/knowledge', title: '智能助手', description: '有任何护理安全方面的问题，随时向助手提问。', icon: 'mdi:robot-outline' },
 ];
 
 export default function HomePage() {
@@ -25,10 +32,6 @@ export default function HomePage() {
     <div className="space-y-14">
       <section className="relative mx-auto grid max-w-6xl gap-10 pt-8 lg:grid-cols-[1.35fr_1fr]">
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <p className="inline-flex items-center gap-2 rounded-full border border-teal-500/20 bg-teal-500/10 px-4 py-1.5 text-xs text-teal-700">
-            <Icon icon="mdi:shield-check" />
-            中国机器人及人工智能大赛 · 人工智能创新赛
-          </p>
           <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-[#1a1615] sm:text-5xl">
             别等到下一轮巡房，<br />才发现老人已经摔倒。
           </h1>
@@ -39,10 +42,6 @@ export default function HomePage() {
             <Link href="/detect" className="inline-flex items-center gap-2 rounded-2xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
               <Icon icon="mdi:eye-check-outline" />
               开始风险演示
-            </Link>
-            <Link href="/about" className="inline-flex items-center gap-2 rounded-2xl border border-[#1a1615]/10 px-6 py-3 text-sm text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-              <Icon icon="mdi:information-outline" />
-              了解项目详情
             </Link>
           </div>
         </motion.div>
@@ -64,9 +63,8 @@ export default function HomePage() {
       <section className="mx-auto max-w-6xl">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h2 className="text-2xl font-semibold text-[#1a1615]">核心能力</h2>
-          <p className="mt-2 text-sm text-[#5c524a]">系统先帮你把最危险的事挑出来，护理员一看就知道先处理哪件事。</p>
         </motion.div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {coreCapabilities.map((item, index) => (
             <motion.div key={item.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + index * 0.08 }} className="card-glow flex items-start gap-4 rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">

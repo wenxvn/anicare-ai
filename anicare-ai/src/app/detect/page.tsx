@@ -27,19 +27,7 @@ export default function DetectPage() {
     setPhase('uploading');
     setTimeout(() => setPhase('analyzing'), 600);
 
-    try {
-      const output = await postJson<VisionDetectOutput>('/api/vision/detect', {
-        imageUrl,
-        zone: '演示区域',
-      });
-
-      setResults(output.detections);
-      setProcessingTime(output.processingTimeMs);
-
-      const maxConfidence = Math.max(...output.detections.map((d) => d.confidence), 0);
-      setRiskScore(Math.round(maxConfidence * 100));
-      setPhase('done');
-    } catch {
+    const fallbackResults = () => {
       setResults([
         { label: '人员摔倒', confidence: 0.94, bbox: { x: 280, y: 180, w: 220, h: 300 }, category: 'fall' },
         { label: '长时间静止', confidence: 0.88, category: 'still' },
@@ -48,6 +36,25 @@ export default function DetectPage() {
       setRiskScore(87);
       setProcessingTime(820);
       setPhase('done');
+    };
+
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 5000);
+      const output = await postJson<VisionDetectOutput>('/api/vision', {
+        imageUrl,
+        zone: '演示区域',
+      }, { signal: controller.signal });
+      clearTimeout(timer);
+
+      setResults(output.detections);
+      setProcessingTime(output.processingTimeMs);
+
+      const maxConfidence = Math.max(...output.detections.map((d) => d.confidence), 0);
+      setRiskScore(Math.round(maxConfidence * 100));
+      setPhase('done');
+    } catch {
+      fallbackResults();
     }
   };
 
@@ -82,7 +89,7 @@ export default function DetectPage() {
               <Icon icon="mdi:cloud-upload-outline" className="text-3xl" />
             </div>
             <p className="mt-4 text-base font-semibold text-[#1a1615]">拖拽图片到此处，或点击上传</p>
-            <p className="mt-2 text-sm text-[#5c524a]">支持 JPG、PNG 格式，最大 10MB</p>
+            <p className="mt-2 text-sm text-[#5c524a]">支持 JPG、PNG 格式</p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <button onClick={handleFileSelect} className="inline-flex items-center gap-2 rounded-2xl bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
                 <Icon icon="mdi:upload" />
@@ -167,10 +174,7 @@ export default function DetectPage() {
                   </div>
                 </div>
               </div>
-              <Link href="/decision" className="flex w-full items-center justify-center gap-2 rounded-2xl bg-teal-600 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
-                <Icon icon="mdi:brain" />
-                生成 AI 决策建议
-              </Link>
+
             </div>
           </div>
         </motion.div>

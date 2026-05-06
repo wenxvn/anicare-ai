@@ -8,7 +8,7 @@ import { StatCard } from '@/components/ui/stat-card';
 import { FusionRiskCard } from '@/components/prediction/fusion-risk-card';
 import { ShortTermForecastCard } from '@/components/prediction/short-term-forecast';
 import { ExplainableAlertList } from '@/components/prediction/explainable-alert';
-import { ModelStatusPanel } from '@/components/prediction/model-status-panel';
+
 import { fetchJson } from '@/lib/api-client';
 import type { PredictionOverview } from '@/types';
 import { mockPredictionOverview } from '@/lib/mock-prediction';
@@ -113,7 +113,7 @@ export default function PredictionCenterPage() {
 
       <ExplainableAlertList alerts={overview.alerts} />
 
-      <ModelStatusPanel status={overview.modelStatus} />
+
     </div>
   );
 }
