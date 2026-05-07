@@ -17,7 +17,7 @@ const coreCapabilities = [
 ];
 
 const quickEntries = [
-  { href: '/detect', title: '智能检测', description: '上传一张图，看看系统怎么识别风险。', icon: 'mdi:eye-check-outline' },
+  { href: '/detect', title: '实时监测', description: '查看各区域摄像头的实时监控画面与风险分析。', icon: 'mdi:eye-check-outline' },
   { href: '/prediction-center', title: '风险预测中心', description: '多模态融合评分，提前预判未来 30 分钟高风险区域。', icon: 'mdi:chart-timeline-variant-shimmer' },
   { href: '/dispatch', title: '风险调度中心', description: '自动排序优先级，护理员一看就知道先处理哪件事。', icon: 'mdi:broadcast' },
   { href: '/profiles', title: '行为画像', description: '每位老人的日常习惯和今日行为偏离度。', icon: 'mdi:account-details' },

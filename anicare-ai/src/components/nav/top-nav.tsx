@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth-context';
 
 const navLinks = [
   { href: '/', label: '首页', icon: 'mdi:home-heart' },
-  { href: '/detect', label: '智能检测', icon: 'mdi:eye-check-outline' },
+  { href: '/detect', label: '实时监测', icon: 'mdi:eye-check-outline' },
   { href: '/dispatch', label: '风险调度', icon: 'mdi:broadcast' },
   { href: '/prediction-center', label: '风险预测', icon: 'mdi:chart-timeline-variant-shimmer' },
   { href: '/profiles', label: '行为画像', icon: 'mdi:account-details' },
