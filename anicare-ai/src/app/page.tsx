@@ -6,10 +6,14 @@ import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 
 const coreCapabilities = [
-  { icon: 'mdi:human-fall-down', title: '摔倒与久卧识别', description: '老人摔倒后，不再等到下一轮巡房才被发现。' },
+  { icon: 'mdi:account-injury', title: '摔倒与久卧识别', description: '老人摔倒后，不再等到下一轮巡房才被发现。' },
   { icon: 'mdi:fire-alert', title: '烟火与环境隐患识别', description: '烟雾浓度一异常，系统立刻帮你盯住。' },
-  { icon: 'mdi:bed-alert', title: '离床未归与异常滞留识别', description: '老人半夜离开床位没回来，不用靠运气发现了。' },
+  { icon: 'mdi:bed-outline', title: '离床未归与异常滞留识别', description: '老人半夜离开床位没回来，不用靠运气发现了。' },
   { icon: 'mdi:merge', title: '多模态融合风险预测', description: '视觉、床压、门磁、毫米波四源融合，提前预判未来风险走势。' },
+  { icon: 'mdi:heart-pulse', title: '可穿戴健康监护', description: '心率、血氧、体温、呼吸、活动量、睡眠实时监测，数据异常立即预警。' },
+  { icon: 'mdi:emoticon-neutral-outline', title: '情绪状态识别', description: '基于面部表情、行为、生理和互动数据，AI 辅助判断老人情绪状态。' },
+  { icon: 'mdi:shield-alert-outline', title: '抑郁焦虑风险提示', description: '综合多维数据进行心理健康辅助评估，及时发现抑郁倾向和焦虑风险。' },
+  { icon: 'mdi:brain', title: '多模态 AI 决策', description: '融合视觉、传感器、行为、情绪多源数据，提供身心状态综合分析与决策依据。' },
   { icon: 'mdi:account-details', title: '老人行为画像分析', description: '记住每位老人的日常习惯，偏离越大风险越高。' },
   { icon: 'mdi:broadcast', title: '智能风险调度', description: '多个事件同时发生时，自动排出最危险的优先级。' },
   { icon: 'mdi:ambulance', title: '应急流程引导', description: '护理员按步骤处理，每一步都有知识库撑腰。' },
@@ -18,6 +22,7 @@ const coreCapabilities = [
 
 const quickEntries = [
   { href: '/detect', title: '实时监测', description: '查看各区域摄像头的实时监控画面与风险分析。', icon: 'mdi:eye-check-outline' },
+  { href: '/health', title: '健康监护', description: '可穿戴传感器数据、情绪识别、心理健康风险提示和 AI 健康建议。', icon: 'mdi:heart-pulse' },
   { href: '/prediction-center', title: '风险预测中心', description: '多模态融合评分，提前预判未来 30 分钟高风险区域。', icon: 'mdi:chart-timeline-variant-shimmer' },
   { href: '/dispatch', title: '风险调度中心', description: '自动排序优先级，护理员一看就知道先处理哪件事。', icon: 'mdi:broadcast' },
   { href: '/profiles', title: '行为画像', description: '每位老人的日常习惯和今日行为偏离度。', icon: 'mdi:account-details' },
@@ -48,14 +53,7 @@ export default function HomePage() {
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55, delay: 0.1 }} className="relative">
           <div className="absolute -inset-8 rounded-[36px] bg-gradient-to-br from-teal-500/15 via-transparent to-emerald-500/10 blur-3xl" />
           <div className="relative overflow-hidden rounded-[28px] border border-[#1a1615]/8">
-            <Image src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=960&h=720&fit=crop" alt="康养安全场景" width={960} height={720} className="h-full w-full object-cover" priority />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            <div className="absolute bottom-5 left-5 right-5">
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-xs text-[#1a1615] backdrop-blur">
-                <span className="inline-block h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                模拟实时监控画面
-              </div>
-            </div>
+            <Image src="/pictures/2.jpg" alt="康养安全场景" width={960} height={720} className="h-full w-full object-cover" priority />
           </div>
         </motion.div>
       </section>
@@ -92,11 +90,10 @@ export default function HomePage() {
 
       <section className="mx-auto max-w-6xl pb-8">
         <h2 className="text-2xl font-semibold text-[#1a1615]">快速进入</h2>
-        <p className="mt-2 text-sm text-[#5c524a]">这个网站不是普通监控后台，而是让护理员更快看到危险、更准判断优先级。</p>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
           {quickEntries.map((item, index) => (
-            <motion.div key={item.href} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + index * 0.06 }}>
-              <Link href={item.href} className="card-glow group flex flex-col rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
+            <motion.div key={item.href} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + index * 0.06 }} className="flex">
+              <Link href={item.href} className="card-glow group flex h-full flex-col rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600 transition-colors group-hover:bg-teal-500/20">
                   <Icon icon={item.icon} className="text-2xl" />
                 </div>

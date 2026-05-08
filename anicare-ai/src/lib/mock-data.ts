@@ -24,7 +24,7 @@ export const mockEvents: EventItem[] = [
     decision: {
       riskScore: 92,
       riskLevel: 'critical',
-      cause: '走廊湿滑 + 夜间照明不足 + 姿态角度异常',
+      cause: '走廊湿滑 + 姿态角度异常',
       suggestion: '立即通知最近护理员前往现场，保持老人原地状态，避免盲目移动，记录事件并生成护理报告。',
       basis: ['姿态角度异常', '持续静止时间超过阈值', '周围无人响应', '场景位于走廊转角，存在二次碰撞风险'],
       knowledgeRefs: ['跌倒应急处理流程', '康养机构夜间巡护规范', '老年人突发疾病初步处置指南'],
@@ -50,7 +50,7 @@ export const mockEvents: EventItem[] = [
     decision: {
       riskScore: 81,
       riskLevel: 'high',
-      cause: '行动不便 + 夜间照明不足 + 超时未归',
+      cause: '行动不便 + 超时未归',
       suggestion: '优先确认是否在卫生间内滞留，必要时安排护工陪同返回床位。',
       basis: ['离床时间超过安全阈值', '行动轨迹中断', '夜间高风险时段'],
       knowledgeRefs: ['夜间离床风险处置规范', '跌倒应急处理流程'],
@@ -134,7 +134,7 @@ export const mockEvents: EventItem[] = [
     decision: {
       riskScore: 63,
       riskLevel: 'medium',
-      cause: '行动不便 + 夜间照明不足',
+      cause: '行动不便',
       suggestion: '优先确认是否在卫生间内滞留，必要时安排护工陪同返回床位。',
       basis: ['离床时间超过安全阈值', '行动轨迹中断'],
       knowledgeRefs: ['夜间离床风险处置规范'],
@@ -382,7 +382,7 @@ export const mockDispatchQueue: DispatchItem[] = [
     residentName: '陈国华',
     priority: 4,
     priorityScore: 79,
-    reason: '老人行动不便，凌晨离床超过 15 分钟未归，夜间照明不足，跌倒风险较高。',
+    reason: '老人行动不便，凌晨离床超过 15 分钟未归，跌倒风险较高。',
     status: '待指派',
     time: '2025-05-01 02:16:33',
   },

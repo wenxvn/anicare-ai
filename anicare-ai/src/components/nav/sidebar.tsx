@@ -8,6 +8,7 @@ import { Icon } from "@iconify/react";
 const links = [
   { href: "/", label: "首页", icon: "mdi:home-heart" },
   { href: "/detect", label: "实时监测", icon: "mdi:eye-check-outline" },
+  { href: "/health", label: "健康监护", icon: "mdi:heart-pulse" },
   { href: "/dispatch", label: "风险调度", icon: "mdi:broadcast" },
   {
     href: "/prediction-center",

@@ -9,6 +9,14 @@ import { RiskBadge } from '@/components/ui/risk-badge';
 import { postJson } from '@/lib/api-client';
 import type { DetectionResult, VisionDetectOutput } from '@/types';
 import { scoreToRiskLevel } from '@/types';
+import { mockElderHealthData } from '@/lib/mock-health';
+
+const healthSummaryMap: Record<string, typeof mockElderHealthData[0]> = {
+  'cam-01': mockElderHealthData[0],
+  'cam-02': mockElderHealthData[5],
+  'cam-03': mockElderHealthData[1],
+  'cam-04': mockElderHealthData[2],
+};
 
 interface CameraFeed {
   id: string;
@@ -22,7 +30,7 @@ const cameraFeeds: CameraFeed[] = [
   {
     id: 'cam-01',
     location: '3号楼A区-走廊',
-    imageUrl: 'https://images.unsplash.com/photo-1559757175-5700dde675bc?w=960&h=540&fit=crop',
+    imageUrl: '/pictures/6.jpg',
     detections: [
       { label: '人员摔倒', confidence: 0.94, bbox: { x: 280, y: 120, w: 200, h: 280 }, category: 'fall' },
       { label: '周围无人响应', confidence: 0.82, category: 'no_response' },
@@ -32,7 +40,7 @@ const cameraFeeds: CameraFeed[] = [
   {
     id: 'cam-02',
     location: '活动大厅-东侧',
-    imageUrl: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=960&h=540&fit=crop',
+    imageUrl: '/pictures/4.jpg',
     detections: [
       { label: '烟火疑似异常', confidence: 0.78, bbox: { x: 600, y: 80, w: 180, h: 160 }, category: 'fire' },
     ],
@@ -41,7 +49,7 @@ const cameraFeeds: CameraFeed[] = [
   {
     id: 'cam-03',
     location: '2号楼B区-床位区',
-    imageUrl: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=960&h=540&fit=crop',
+    imageUrl: '/pictures/5.jpg',
     detections: [
       { label: '久卧未动', confidence: 0.89, bbox: { x: 350, y: 200, w: 240, h: 180 }, category: 'still' },
       { label: '异常滞留', confidence: 0.76, category: 'stuck' },
@@ -51,7 +59,7 @@ const cameraFeeds: CameraFeed[] = [
   {
     id: 'cam-04',
     location: '花园入口-南门',
-    imageUrl: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?w=960&h=540&fit=crop',
+    imageUrl: '/pictures/3.jpg',
     detections: [
       { label: '夜间离床未归', confidence: 0.91, bbox: { x: 400, y: 150, w: 160, h: 300 }, category: 'leave' },
     ],
@@ -76,7 +84,7 @@ function LiveClock() {
     return () => clearInterval(timer);
   }, []);
 
-  return <span className="font-mono text-xs">{time}</span>;
+  return <span className="font-mono text-xs text-white">{time}</span>;
 }
 
 function CameraOverlay({ feed }: { feed: CameraFeed }) {
@@ -205,7 +213,7 @@ export default function DetectPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid gap-4 lg:grid-cols-2"
+            className="grid gap-3 lg:grid-cols-2"
           >
             {cameraFeeds.map((feed, index) => (
               <motion.div
@@ -215,7 +223,7 @@ export default function DetectPage() {
                 transition={{ delay: index * 0.1 }}
                 className="group relative overflow-hidden rounded-2xl border border-[#1a1615]/10 bg-black"
               >
-                <div className="relative aspect-video">
+                <div className="relative aspect-[3/2]">
                   <Image
                     src={feed.imageUrl}
                     alt={feed.location}
@@ -225,6 +233,22 @@ export default function DetectPage() {
                   />
                   <CameraOverlay feed={feed} />
                 </div>
+                {healthSummaryMap[feed.id] && (
+                  <div className="absolute bottom-0 left-0 right-0 z-20 bg-black/70 px-3 py-2 backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-medium text-white">{healthSummaryMap[feed.id].name}</span>
+                      <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${healthSummaryMap[feed.id].emotionStatus === '平稳' ? 'bg-emerald-500/80 text-white' : 'bg-amber-500/80 text-white'}`}>
+                        {healthSummaryMap[feed.id].emotionStatus}
+                      </span>
+                    </div>
+                    <div className="mt-1 flex flex-wrap gap-1.5">
+                      <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] text-white">身体风险：{healthSummaryMap[feed.id].bodyRiskLevel}</span>
+                      <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] text-white">心理风险：{healthSummaryMap[feed.id].mentalRiskLevel}</span>
+                      <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] text-white">护理等级：{healthSummaryMap[feed.id].carePriority}</span>
+                    </div>
+                    <p className="mt-1 text-[10px] leading-tight text-white/70">AI 建议：{healthSummaryMap[feed.id].suggestions.caregiver.substring(0, 40)}...</p>
+                  </div>
+                )}
                 {phase === 'capturing' && (
                   <motion.div
                     initial={{ opacity: 0 }}
@@ -314,7 +338,7 @@ export default function DetectPage() {
                   transition={{ delay: index * 0.12 }}
                   className="card-glow overflow-hidden rounded-2xl border border-[#1a1615]/10 bg-white"
                 >
-                  <div className="relative aspect-video">
+                  <div className="relative aspect-[3/2]">
                     <Image
                       src={feed.imageUrl}
                       alt={feed.location}

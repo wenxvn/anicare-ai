@@ -33,7 +33,7 @@ const fallbackQueue: DispatchItem[] = [
   {
     id: 'dsp-004', eventId: 'evt-20250501-002', type: '夜间离床未归', risk: '高风险', riskLevel: 'high',
     zone: 'B栋-5层-房间508', waitMinutes: 15, residentName: '陈国华', priority: 4, priorityScore: 79,
-    reason: '老人行动不便，凌晨离床超过 15 分钟未归，夜间照明不足，跌倒风险较高。',
+    reason: '老人行动不便，凌晨离床超过 15 分钟未归，跌倒风险较高。',
     status: '待指派', time: '2025-05-01 02:16:33',
   },
   {
@@ -53,6 +53,42 @@ const fallbackQueue: DispatchItem[] = [
     zone: 'A栋-1层-电梯口', waitMinutes: 25, residentName: '李明辉', priority: 7, priorityScore: 67,
     reason: '老人在电梯口滞留超过 10 分钟，可能存在迷路风险，需确认是否需要引导。',
     status: '待指派', time: '2025-05-01 16:30:45',
+  },
+  {
+    id: 'dsp-008', eventId: 'evt-20250501-010', type: '活动量持续下降', risk: '中风险', riskLevel: 'medium',
+    zone: 'B栋-3层-房间302', waitMinutes: 12, residentName: '王秀兰', priority: 8, priorityScore: 62,
+    reason: '老人近7天活动量持续下降，今日步数仅1200步，久卧时间超10小时，血氧偏低。身体健康风险为高风险。',
+    status: '待指派', time: '2025-05-01 10:00:00',
+  },
+  {
+    id: 'dsp-009', eventId: 'evt-20250501-011', type: '连续低落情绪', risk: '高风险', riskLevel: 'high',
+    zone: 'A栋-3层-房间301', waitMinutes: 18, residentName: '张建国', priority: 9, priorityScore: 58,
+    reason: '老人连续5天出现低落情绪标记，活动量下降28%，夜间醒来次数增加，心理健康风险为高风险。',
+    status: '待指派', time: '2025-05-01 09:00:00',
+  },
+  {
+    id: 'dsp-010', eventId: 'evt-20250501-012', type: '焦虑倾向升高', risk: '中风险', riskLevel: 'medium',
+    zone: 'B栋-3层-房间302', waitMinutes: 20, residentName: '王秀兰', priority: 10, priorityScore: 55,
+    reason: '老人焦虑评分持续上升，反复按呼叫铃，面部表情呈现紧张特征，睡眠质量持续下降。',
+    status: '待指派', time: '2025-05-01 08:30:00',
+  },
+  {
+    id: 'dsp-011', eventId: 'evt-20250501-013', type: '夜间离床频繁', risk: '中风险', riskLevel: 'medium',
+    zone: 'B栋-5层-房间508', waitMinutes: 10, residentName: '陈国华', priority: 11, priorityScore: 52,
+    reason: '老人夜间离床频繁，当夜离床4次总时长超40分钟，孤独风险升高，社交互动减少。',
+    status: '待指派', time: '2025-05-01 07:00:00',
+  },
+  {
+    id: 'dsp-012', eventId: 'evt-20250501-014', type: '情绪状态恶化', risk: '高风险', riskLevel: 'high',
+    zone: 'C栋-2层-房间206', waitMinutes: 6, residentName: '赵文秀', priority: 12, priorityScore: 48,
+    reason: '老人多项身体指标异常（血氧92%、体温37.1°C），情绪状态持续恶化，拒绝进食，身体和心理风险均为高风险。',
+    status: '待指派', time: '2025-05-01 06:30:00',
+  },
+  {
+    id: 'dsp-013', eventId: 'evt-20250501-015', type: '孤独风险升高', risk: '低风险', riskLevel: 'low',
+    zone: 'A栋-4层-房间405', waitMinutes: 30, residentName: '孙丽芳', priority: 13, priorityScore: 45,
+    reason: '老人近期情绪波动频率增加，可能与家属探视不规律有关，孤独风险升高。',
+    status: '待指派', time: '2025-05-01 11:00:00',
   },
 ];
 
@@ -83,7 +119,7 @@ export default function DispatchPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title="风险调度中心" description="多个事件同时发生时，系统先把最危险的事排到最前面。护理员一看就知道先处理哪件事。" />
+      <SectionHeader title="风险调度中心" description="" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard label="当前待处理" value={pendingCount} icon={<Icon icon="mdi:clock-alert-outline" className="text-xl" />} helper="等待指派的风险事件" />
