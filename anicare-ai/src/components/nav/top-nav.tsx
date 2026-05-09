@@ -1,76 +1,82 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Icon } from '@iconify/react';
-import clsx from 'clsx';
 import { useAuth } from '@/lib/auth-context';
-
-const navLinks = [
-  { href: '/', label: '首页', icon: 'mdi:home-heart' },
-  { href: '/detect', label: '实时监测', icon: 'mdi:eye-check-outline' },
-  { href: '/health', label: '健康监护', icon: 'mdi:heart-pulse' },
-  { href: '/dispatch', label: '风险调度', icon: 'mdi:broadcast' },
-  { href: '/prediction-center', label: '风险预测', icon: 'mdi:chart-timeline-variant-shimmer' },
-  { href: '/profiles', label: '行为画像', icon: 'mdi:account-details' },
-  { href: '/emergency', label: '应急流程', icon: 'mdi:ambulance' },
-  { href: '/events', label: '事件管理', icon: 'mdi:alert-octagon-outline' },
-  { href: '/dashboard', label: '数据看板', icon: 'mdi:chart-areaspline' },
-  { href: '/knowledge', label: '智能助手', icon: 'mdi:robot-outline' },
-];
 
 interface TopNavProps {
   onToggleSidebar: () => void;
 }
 
+const statusItems = [
+  { label: '系统在线', value: '99.98%', icon: 'mdi:check-decagram-outline', tone: 'text-emerald-600' },
+  { label: '摄像头', value: '36/38', icon: 'mdi:cctv', tone: 'text-teal-600' },
+  { label: '传感器', value: '124/128', icon: 'mdi:access-point-network', tone: 'text-cyan-600' },
+  { label: '待处理', value: '7', icon: 'mdi:bell-alert-outline', tone: 'text-red-600' },
+];
+
+function LiveTime() {
+  const [time, setTime] = useState('');
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      setTime(now.toLocaleString('zh-CN', {
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }));
+    };
+    update();
+    const timer = window.setInterval(update, 30_000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return <span className="font-mono text-xs text-[#5c524a]">{time}</span>;
+}
+
 export function TopNav({ onToggleSidebar }: TopNavProps) {
   const { user, logout } = useAuth();
-  const pathname = usePathname();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-[#1a1615]/8 bg-white/70 px-4 backdrop-blur lg:px-6">
-      <div className="flex items-center gap-3">
-        <button onClick={onToggleSidebar} className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600 transition-colors hover:bg-teal-500/20" title="切换侧栏">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-[#1a1615]/8 bg-white/90 px-4 backdrop-blur lg:px-6">
+      <div className="flex min-w-0 items-center gap-3">
+        <button
+          onClick={onToggleSidebar}
+          className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-500/10 text-teal-700 transition-colors hover:bg-teal-500/20"
+          title="切换侧边栏"
+        >
           <Icon icon="mdi:menu" className="text-lg" />
         </button>
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-teal-500/10 text-teal-600">
-            <Icon icon="mdi:shield-check" className="text-base" />
-          </div>
-          <span className="text-sm font-semibold text-[#1a1615]">安养智巡</span>
+        <div className="hidden items-center gap-2 sm:flex">
+          <span className="inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="text-sm font-semibold text-[#1a1615]">安养智巡运行中</span>
         </div>
-        <nav className="ml-4 hidden items-center gap-1 lg:flex">
-          {navLinks.map((item) => {
-            const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={clsx(
-                  'flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-medium transition-colors',
-                  active
-                    ? 'bg-teal-500/10 text-teal-700'
-                    : 'text-[#5c524a] hover:bg-[#f8f5f0] hover:text-[#1a1615]'
-                )}
-              >
-                <Icon icon={item.icon} className="text-sm" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="ml-2 hidden items-center gap-2 xl:flex">
+          {statusItems.map((item) => (
+            <div key={item.label} className="flex items-center gap-1.5 rounded-lg border border-[#1a1615]/8 bg-[#f8f5f0] px-2.5 py-1.5">
+              <Icon icon={item.icon} className={`text-sm ${item.tone}`} />
+              <span className="text-[11px] text-[#5c524a]">{item.label}</span>
+              <span className="text-xs font-semibold text-[#1a1615]">{item.value}</span>
+            </div>
+          ))}
+        </div>
       </div>
+
       <div className="flex items-center gap-3">
+        <LiveTime />
+        <button className="relative flex h-8 w-8 items-center justify-center rounded-lg border border-[#1a1615]/8 bg-white text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700" title="通知">
+          <Icon icon="mdi:bell-outline" className="text-base" />
+          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500" />
+        </button>
         {user ? (
-          <>
-            <span className="text-sm text-[#5c524a]">
-              <Icon icon="mdi:account-circle" className="mr-1 inline text-base text-teal-600" />
-              {user.username}
-            </span>
-            <button onClick={logout} className="rounded-2xl border border-[#1a1615]/10 px-3 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+          <div className="flex items-center gap-2">
+            <span className="hidden text-sm text-[#5c524a] sm:inline">{user.username}</span>
+            <button onClick={logout} className="rounded-lg border border-[#1a1615]/10 px-3 py-1.5 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
               退出
             </button>
-          </>
+          </div>
         ) : null}
       </div>
     </header>

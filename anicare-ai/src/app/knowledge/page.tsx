@@ -1,147 +1,295 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
-import { SectionHeader } from '@/components/ui/section-header';
+import { RiskBadge } from '@/components/ui/risk-badge';
+import { mockKnowledge } from '@/lib/mock-data';
+import type { AssistantDecisionReply } from '@/types';
 
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
-
-const quickQuestions = [
-  '老人摔倒了怎么处理？',
-  '夜间离床超过10分钟该怎么办？',
-  '检测到烟雾异常应该怎么处置？',
-  '如何预防老人压疮？',
+const quickScenarios = [
+  {
+    title: '摔倒未响应',
+    prompt: 'A栋3层走廊检测到老人摔倒，12秒内未移动，周围没有护理员，应该如何处理？',
+    icon: 'mdi:account-injury-outline',
+  },
+  {
+    title: '夜间离床',
+    prompt: 'B栋508房老人凌晨离床超过15分钟未归，门磁未复位，护理员应该先检查哪里？',
+    icon: 'mdi:bed-outline',
+  },
+  {
+    title: '烟火异常',
+    prompt: 'C栋茶水间烟雾浓度持续上升，视觉模型提示电器区域异常发热，如何处置？',
+    icon: 'mdi:fire-alert',
+  },
+  {
+    title: '压疮风险',
+    prompt: 'B栋302房老人久卧未动50分钟，床压无变化且室温偏低，如何安排护理？',
+    icon: 'mdi:bed-clock',
+  },
+  {
+    title: '情绪低落',
+    prompt: '老人连续5天情绪低落，活动量下降，夜间醒来次数增加，需要如何跟进？',
+    icon: 'mdi:emoticon-sad-outline',
+  },
 ];
 
+const fallbackDecision: AssistantDecisionReply = {
+  riskJudgement: '当前判断为高风险事件。',
+  riskLevel: 'high',
+  confidence: 0.88,
+  summary: '系统已结合实时事件、老人画像和护理知识库生成处置建议。',
+  steps: ['确认现场状态', '派单给对应楼层护理员', '记录处置结果并进入事件归档'],
+  cautions: ['先确认老人意识和呼吸状态', '不要在未评估前盲目移动老人'],
+  references: mockKnowledge.slice(0, 2).map((item) => ({
+    title: item.title,
+    source: '知识库',
+    excerpt: item.content.slice(0, 90),
+  })),
+  toolsUsed: [
+    { name: 'rag.search', status: 'completed', result: '检索到相关护理规范' },
+    { name: 'risk.classifier', status: 'completed', result: '风险等级：high' },
+    { name: 'dispatch.helper', status: 'completed', result: '建议通知对应楼层护理员' },
+  ],
+  recommendedActions: ['通知楼层护理员', '同步事件详情', '进入处置闭环'],
+  suggestedAssignee: '对应楼层护理员',
+};
+
+type ChatResponse = {
+  reply?: string;
+  decision?: AssistantDecisionReply;
+  error?: string;
+};
+
+function toolStatusClass(status: string) {
+  if (status === 'completed') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+  if (status === 'running') return 'bg-teal-50 text-teal-700 border-teal-200';
+  return 'bg-red-50 text-red-700 border-red-200';
+}
+
 export default function AssistantPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: '你好，我是安养智巡智能助手。我可以回答关于老人安全风险处置、应急流程、护理规范等方面的问题。请问有什么可以帮助您的？',
-    },
-  ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(quickScenarios[0].prompt);
   const [loading, setLoading] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const [replyText, setReplyText] = useState('');
+  const [decision, setDecision] = useState<AssistantDecisionReply>(fallbackDecision);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const visibleKnowledge = useMemo(() => mockKnowledge.slice(0, 5), []);
 
-  const sendMessage = async (text: string) => {
-    if (!text.trim() || loading) return;
-    const userMsg: Message = { role: 'user', content: text.trim() };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput('');
+  const sendMessage = async (text = input) => {
+    const message = text.trim();
+    if (!message || loading) return;
+
+    setInput(message);
     setLoading(true);
-
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text.trim() }),
+        body: JSON.stringify({
+          message,
+          knowledgeRefs: visibleKnowledge.map((item) => item.id),
+        }),
       });
-      const data = await res.json();
-      if (data.reply) {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
-      } else {
-        setMessages((prev) => [...prev, { role: 'assistant', content: data.error || '抱歉，暂时无法回答您的问题。' }]);
-      }
+      const data = (await res.json()) as ChatResponse;
+      if (!res.ok || data.error) throw new Error(data.error ?? '助手服务调用失败');
+      setReplyText(data.reply ?? '');
+      setDecision(data.decision ?? fallbackDecision);
     } catch {
-      setMessages((prev) => [...prev, { role: 'assistant', content: '网络连接失败，请稍后再试。' }]);
+      setReplyText('当前使用本地护理知识库给出建议。');
+      setDecision(fallbackDecision);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    sendMessage(input);
-  };
-
   return (
-    <div className="space-y-8">
-      <SectionHeader title="智能助手" description="有任何护理安全方面的问题，都可以向我提问。我会结合知识库为您给出专业的处置建议。" />
-
-      <div className="card-glow mx-auto flex h-[calc(100vh-280px)] max-w-3xl flex-col rounded-3xl border border-[#1a1615]/8 bg-white">
-        <div className="flex-1 overflow-y-auto p-5">
-          <div className="space-y-4">
-            {messages.map((msg, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div className={`flex items-start gap-2.5 max-w-[85%] ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${msg.role === 'user' ? 'bg-teal-600 text-white' : 'bg-[#f8f5f0] text-teal-600'}`}>
-                    <Icon icon={msg.role === 'user' ? 'mdi:account' : 'mdi:robot-outline'} className="text-sm" />
-                  </div>
-                  <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user' ? 'bg-teal-600 text-white' : 'bg-[#f8f5f0] text-[#1a1615]'}`}>
-                    {msg.content}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-            {loading && (
-              <div className="flex justify-start">
-                <div className="flex items-start gap-2.5">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f8f5f0] text-teal-600">
-                    <Icon icon="mdi:robot-outline" className="text-sm" />
-                  </div>
-                  <div className="rounded-2xl bg-[#f8f5f0] px-4 py-3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="h-2 w-2 animate-bounce rounded-full bg-teal-400" style={{ animationDelay: '0ms' }} />
-                      <span className="h-2 w-2 animate-bounce rounded-full bg-teal-400" style={{ animationDelay: '150ms' }} />
-                      <span className="h-2 w-2 animate-bounce rounded-full bg-teal-400" style={{ animationDelay: '300ms' }} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            <div ref={bottomRef} />
-          </div>
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm text-[#5c524a]">护理决策助手</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">RAG 知识库与工具调用</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5c524a]">
+            输入现场问题后，助手会结合应急知识库、风险分类器和调度工具，输出结构化处置步骤和引用依据。
+          </p>
         </div>
+        <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          知识库已同步
+        </div>
+      </div>
 
-        {messages.length === 1 && (
-          <div className="px-5 pb-3">
-            <p className="mb-2 text-xs text-[#5c524a]/50">快速提问</p>
-            <div className="flex flex-wrap gap-2">
-              {quickQuestions.map((q) => (
+      <div className="grid gap-5 xl:grid-cols-[420px_1fr]">
+        <section className="space-y-5">
+          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:message-question-outline" className="text-lg text-teal-600" />
+              <h2 className="text-base font-semibold text-[#1a1615]">值班场景输入</h2>
+            </div>
+            <div className="mt-4 grid gap-2">
+              {quickScenarios.map((item) => (
                 <button
-                  key={q}
-                  onClick={() => sendMessage(q)}
-                  className="rounded-2xl border border-[#1a1615]/8 px-3 py-1.5 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700"
+                  key={item.title}
+                  onClick={() => sendMessage(item.prompt)}
+                  className="flex items-center gap-3 rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] px-3 py-2.5 text-left transition-colors hover:border-teal-500/35 hover:bg-white"
                 >
-                  {q}
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-500/10 text-teal-700">
+                    <Icon icon={item.icon} className="text-base" />
+                  </span>
+                  <span className="text-sm font-medium text-[#1a1615]">{item.title}</span>
                 </button>
               ))}
             </div>
-          </div>
-        )}
 
-        <form onSubmit={handleSubmit} className="border-t border-[#1a1615]/8 p-4">
-          <div className="flex gap-3">
-            <input
+            <textarea
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="输入您的问题..."
-              disabled={loading}
-              className="flex-1 rounded-2xl border border-[#1a1615]/10 bg-[#f8f5f0] px-4 py-2.5 text-sm text-[#1a1615] placeholder:text-[#5c524a]/40 focus:border-teal-500 focus:outline-none"
+              onChange={(event) => setInput(event.target.value)}
+              rows={5}
+              className="mt-4 w-full resize-none rounded-xl border border-[#1a1615]/10 bg-[#f8f5f0] px-4 py-3 text-sm leading-relaxed text-[#1a1615] outline-none transition-colors focus:border-teal-500"
+              placeholder="输入现场情况或护理问题..."
             />
             <button
-              type="submit"
+              onClick={() => sendMessage()}
               disabled={loading || !input.trim()}
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-teal-600 text-white transition-colors hover:bg-teal-500 disabled:opacity-40"
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-500 disabled:opacity-50"
             >
-              <Icon icon="mdi:send" className="text-lg" />
+              <Icon icon={loading ? 'mdi:loading' : 'mdi:send'} className={loading ? 'animate-spin' : ''} />
+              {loading ? '研判中...' : '生成护理建议'}
             </button>
           </div>
-        </form>
+
+          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:tools" className="text-lg text-teal-600" />
+              <h2 className="text-base font-semibold text-[#1a1615]">启用工具</h2>
+            </div>
+            <div className="mt-4 space-y-2">
+              {['rag.search', 'risk.classifier', 'dispatch.helper', 'care.plan'].map((tool) => (
+                <div key={tool} className="flex items-center justify-between rounded-xl bg-[#f8f5f0] px-3 py-2">
+                  <span className="font-mono text-xs text-[#1a1615]">{tool}</span>
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">可用</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-5">
+          <motion.div key={`${decision.summary}-${decision.riskLevel}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Icon icon="mdi:clipboard-pulse-outline" className="text-lg text-teal-600" />
+                  <h2 className="text-base font-semibold text-[#1a1615]">结构化护理建议</h2>
+                </div>
+                <p className="mt-1 text-xs text-[#5c524a]">风险判断、处置步骤、注意事项和建议派单对象。</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <RiskBadge risk={decision.riskLevel} />
+                <span className="rounded-full border border-[#1a1615]/10 px-2.5 py-1 text-xs text-[#5c524a]">置信度 {(decision.confidence * 100).toFixed(0)}%</span>
+              </div>
+            </div>
+
+            <div className="mt-4 rounded-xl bg-teal-50 px-4 py-3 text-sm leading-relaxed text-teal-900">
+              {replyText || decision.summary}
+            </div>
+
+            <div className="mt-5 grid gap-4 lg:grid-cols-3">
+              <div className="rounded-xl bg-[#f8f5f0] p-4">
+                <p className="text-xs font-medium text-[#5c524a]">处置步骤</p>
+                <ol className="mt-3 space-y-2">
+                  {decision.steps.map((step, index) => (
+                    <li key={step} className="flex gap-2 text-sm leading-relaxed text-[#1a1615]">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-600 text-[10px] font-bold text-white">{index + 1}</span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div className="rounded-xl bg-[#f8f5f0] p-4">
+                <p className="text-xs font-medium text-[#5c524a]">注意事项</p>
+                <div className="mt-3 space-y-2">
+                  {decision.cautions.map((caution) => (
+                    <div key={caution} className="flex gap-2 text-sm leading-relaxed text-[#1a1615]">
+                      <Icon icon="mdi:alert-circle-outline" className="mt-0.5 shrink-0 text-base text-amber-600" />
+                      {caution}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="rounded-xl bg-[#f8f5f0] p-4">
+                <p className="text-xs font-medium text-[#5c524a]">建议动作</p>
+                <div className="mt-3 space-y-2">
+                  {decision.recommendedActions.map((action) => (
+                    <div key={action} className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1615]">{action}</div>
+                  ))}
+                </div>
+                <div className="mt-3 rounded-lg bg-teal-50 px-3 py-2">
+                  <p className="text-[10px] text-teal-700">建议派单对象</p>
+                  <p className="mt-1 text-sm font-semibold text-teal-900">{decision.suggestedAssignee}</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
+            <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:console-line" className="text-lg text-teal-600" />
+                <h2 className="text-base font-semibold text-[#1a1615]">工具调用结果</h2>
+              </div>
+              <div className="mt-4 space-y-3">
+                {decision.toolsUsed.map((tool) => (
+                  <div key={tool.name} className="rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-xs font-semibold text-[#1a1615]">{tool.name}</span>
+                      <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${toolStatusClass(tool.status)}`}>{tool.status}</span>
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-[#5c524a]">{tool.result}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:book-open-variant" className="text-lg text-teal-600" />
+                <h2 className="text-base font-semibold text-[#1a1615]">知识引用</h2>
+              </div>
+              <div className="mt-4 space-y-3">
+                {decision.references.map((ref) => (
+                  <div key={ref.title} className="rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] p-3">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-[#1a1615]">{ref.title}</p>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5c524a]">{ref.source}</span>
+                    </div>
+                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#5c524a]">{ref.excerpt}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:database-search-outline" className="text-lg text-teal-600" />
+              <h2 className="text-base font-semibold text-[#1a1615]">应急知识库索引</h2>
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {visibleKnowledge.map((item) => (
+                <div key={item.id} className="rounded-xl bg-[#f8f5f0] p-3">
+                  <p className="text-sm font-semibold text-[#1a1615]">{item.title}</p>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {item.tags.slice(0, 3).map((tag) => (
+                      <span key={tag} className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5c524a]">{tag}</span>
+                    ))}
+                  </div>
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#5c524a]">{item.scenario}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

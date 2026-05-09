@@ -303,12 +303,71 @@ export interface ModelRunStatus {
   accuracy: number;
 }
 
+export interface VisionPipelineStep {
+  id: string;
+  stage: string;
+  modelName: string;
+  input: string;
+  output: string;
+  confidence: number;
+  latencyMs: number;
+  status: 'running' | 'completed' | 'warning';
+  detail: string;
+}
+
+export interface AgentRuntimeStatus {
+  id: string;
+  name: string;
+  role: string;
+  status: 'running' | 'idle' | 'handoff' | 'completed';
+  dataSources: string[];
+  toolsUsed: string[];
+  conclusion: string;
+  nextAction: string;
+  updatedAt: string;
+}
+
+export interface PredictionExplanationFactor {
+  label: string;
+  value: string;
+  weight: number;
+  trend: 'up' | 'down' | 'stable';
+}
+
 export interface PredictionOverview {
   fusionRisk: FusionRiskData;
   forecast15min: ShortTermForecast;
   forecast30min: ShortTermForecast;
   alerts: ExplainableAlert[];
   modelStatus: ModelRunStatus;
+  visionPipeline?: VisionPipelineStep[];
+  agentRuntime?: AgentRuntimeStatus[];
+  explanationFactors?: PredictionExplanationFactor[];
+}
+
+export interface AssistantReference {
+  title: string;
+  source: string;
+  excerpt: string;
+}
+
+export interface AssistantToolCall {
+  name: string;
+  status: 'completed' | 'running' | 'failed';
+  result: string;
+}
+
+export interface AssistantDecisionReply {
+  riskJudgement: string;
+  riskLevel: RiskLevel;
+  confidence: number;
+  summary: string;
+  steps: string[];
+  cautions: string[];
+  references: AssistantReference[];
+  toolsUsed: AssistantToolCall[];
+  recommendedActions: string[];
+  suggestedAssignee: string;
 }
 
 export interface ApiResponse<T> {

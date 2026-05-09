@@ -1,4 +1,13 @@
-import type { PredictionOverview, FusionRiskData, ShortTermForecast, ExplainableAlert, ModelRunStatus } from '@/types';
+import type {
+  PredictionOverview,
+  FusionRiskData,
+  ShortTermForecast,
+  ExplainableAlert,
+  ModelRunStatus,
+  VisionPipelineStep,
+  AgentRuntimeStatus,
+  PredictionExplanationFactor,
+} from '@/types';
 
 export const mockFusionRisk: FusionRiskData = {
   totalScore: 73,
@@ -274,10 +283,137 @@ export const mockModelStatus: ModelRunStatus = {
   accuracy: 91.3,
 };
 
+export const mockVisionPipeline: VisionPipelineStep[] = [
+  {
+    id: 'pipe-vision-detect',
+    stage: '目标检测',
+    modelName: 'YOLO11-CareDet',
+    input: 'CAM-A3-01 实时视频帧',
+    output: '老人、护理员、烟雾、床位边界',
+    confidence: 0.94,
+    latencyMs: 38,
+    status: 'completed',
+    detail: '定位走廊转角处异常姿态目标，并识别周围 3 米内无护理员靠近。',
+  },
+  {
+    id: 'pipe-pose',
+    stage: '人体姿态',
+    modelName: 'Pose-RTM + 时序平滑',
+    input: '目标检测框与连续 32 帧骨架点',
+    output: '躯干角度、肢体支撑点、静止时长',
+    confidence: 0.91,
+    latencyMs: 44,
+    status: 'completed',
+    detail: '躯干倾角异常且关键点高度接近地面，符合跌倒后静止特征。',
+  },
+  {
+    id: 'pipe-segment',
+    stage: '目标分割',
+    modelName: 'SAM2-CareSeg',
+    input: '检测框、走廊区域提示点',
+    output: '人体轮廓、地面湿滑区域、障碍物区域',
+    confidence: 0.88,
+    latencyMs: 61,
+    status: 'completed',
+    detail: '分割出疑似湿滑地面区域，用于解释跌倒环境因素。',
+  },
+  {
+    id: 'pipe-track',
+    stage: '轨迹分析',
+    modelName: 'ByteTrack + 行为时序模型',
+    input: '近 10 分钟轨迹与停留点',
+    output: '滞留、离床未归、反复徘徊',
+    confidence: 0.86,
+    latencyMs: 29,
+    status: 'completed',
+    detail: '轨迹在走廊转角处中断，连续静止超过阈值。',
+  },
+  {
+    id: 'pipe-anomaly',
+    stage: '异常判别',
+    modelName: 'Temporal Risk Transformer',
+    input: '视觉、床压、门磁、毫米波融合特征',
+    output: '跌倒未响应，高优先级处置',
+    confidence: 0.92,
+    latencyMs: 52,
+    status: 'running',
+    detail: '将姿态异常、无人响应、夜间时段和历史跌倒风险融合为紧急事件。',
+  },
+  {
+    id: 'pipe-fusion',
+    stage: '风险融合',
+    modelName: 'AniCare-Fusion-v2.3.1',
+    input: '多模型输出与护理规则库',
+    output: '风险 92 分，建议立即派单',
+    confidence: 0.93,
+    latencyMs: 35,
+    status: 'completed',
+    detail: '生成可解释因子与调度建议，交给风险研判智能体确认。',
+  },
+];
+
+export const mockAgentRuntime: AgentRuntimeStatus[] = [
+  {
+    id: 'agent-perception',
+    name: '感知智能体',
+    role: '汇总视频、传感器和设备状态，筛选异常信号。',
+    status: 'completed',
+    dataSources: ['视频流', '床压传感器', '门磁', '毫米波雷达'],
+    toolsUsed: ['vision.detect', 'sensor.readings', 'device.health'],
+    conclusion: 'A栋 3层走廊存在跌倒后静止，周围无人响应。',
+    nextAction: '移交风险研判智能体计算优先级。',
+    updatedAt: '03:14:52',
+  },
+  {
+    id: 'agent-risk',
+    name: '风险研判智能体',
+    role: '融合多模型输出、老人画像和护理规则，生成风险等级。',
+    status: 'running',
+    dataSources: ['视觉流水线', '老人行为画像', '历史事件', '护理规则库'],
+    toolsUsed: ['risk.score', 'profile.lookup', 'rag.search'],
+    conclusion: '综合风险 92 分，达到紧急事件阈值。',
+    nextAction: '生成处置建议并请求调度智能体派单。',
+    updatedAt: '03:14:56',
+  },
+  {
+    id: 'agent-dispatch',
+    name: '调度智能体',
+    role: '根据楼层、距离、负载和事件等级推荐护理员。',
+    status: 'handoff',
+    dataSources: ['当班排班', '楼层责任区', '事件队列'],
+    toolsUsed: ['dispatch.rank', 'nurse.availability'],
+    conclusion: '建议指派 A栋3层责任护理员张晓梅，预计 2 分钟到场。',
+    nextAction: '等待值班主管确认派单。',
+    updatedAt: '03:14:58',
+  },
+  {
+    id: 'agent-care',
+    name: '护理建议智能体',
+    role: '检索应急知识库，生成现场处置步骤和注意事项。',
+    status: 'completed',
+    dataSources: ['应急流程库', '护理规范', '健康监护数据'],
+    toolsUsed: ['rag.search', 'care.plan'],
+    conclusion: '建议保持老人原地状态，先确认意识、呼吸和疼痛部位。',
+    nextAction: '同步到事件详情与护理决策助手。',
+    updatedAt: '03:15:01',
+  },
+];
+
+export const mockExplanationFactors: PredictionExplanationFactor[] = [
+  { label: '跌倒后静止时长', value: '12 秒', weight: 0.28, trend: 'up' },
+  { label: '周围无人响应', value: '3 米内无人', weight: 0.22, trend: 'up' },
+  { label: '历史跌倒风险', value: '近 30 天 2 次', weight: 0.18, trend: 'up' },
+  { label: '夜间低照度', value: '03:12 走廊', weight: 0.14, trend: 'stable' },
+  { label: '传感器一致性', value: '视觉 + 毫米波一致', weight: 0.18, trend: 'up' },
+];
+
 export const mockPredictionOverview: PredictionOverview = {
   fusionRisk: mockFusionRisk,
   forecast15min: mockForecast15min,
   forecast30min: mockForecast30min,
   alerts: mockAlerts,
   modelStatus: mockModelStatus,
+  visionPipeline: mockVisionPipeline,
+  agentRuntime: mockAgentRuntime,
+  explanationFactors: mockExplanationFactors,
 };

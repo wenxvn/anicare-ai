@@ -1,21 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
-import Link from 'next/link';
-import { SectionHeader } from '@/components/ui/section-header';
-import { StatCard } from '@/components/ui/stat-card';
 import { RiskBadge } from '@/components/ui/risk-badge';
+import { StatCard } from '@/components/ui/stat-card';
 import { fetchJson } from '@/lib/api-client';
-import type { DispatchItem, PredictionOverview } from '@/types';
-import { mockPredictionOverview } from '@/lib/mock-prediction';
+import type { DispatchItem } from '@/types';
 
-const fallbackQueue: DispatchItem[] = [
+const initialQueue: DispatchItem[] = [
   {
     id: 'dsp-001', eventId: 'evt-20250501-001', type: '摔倒未响应', risk: '紧急', riskLevel: 'critical',
     zone: 'A栋-3层-走廊', waitMinutes: 8, residentName: '张建国', priority: 1, priorityScore: 100,
-    reason: '风险等级为紧急，老人跌倒后超过 3 分钟未出现明显移动，周围无护理人员，已超过黄金响应时间。',
+    reason: '老人跌倒后超过 3 分钟未出现明显移动，周围无护理人员，已超过黄金响应时间。',
     status: '待指派', time: '2025-05-01 03:12:05',
   },
   {
@@ -27,7 +25,7 @@ const fallbackQueue: DispatchItem[] = [
   {
     id: 'dsp-003', eventId: 'evt-20250501-005', type: '久卧未动', risk: '高风险', riskLevel: 'high',
     zone: 'B栋-3层-房间302', waitMinutes: 22, residentName: '王秀兰', priority: 3, priorityScore: 83,
-    reason: '床位连续 50 分钟未检测到翻身动作，存在压疮和低体温风险，且室温低于安全阈值。',
+    reason: '床位连续 50 分钟未检测到翻身动作，存在压疮和低体温风险。',
     status: '待指派', time: '2025-05-01 08:42:10',
   },
   {
@@ -38,211 +36,212 @@ const fallbackQueue: DispatchItem[] = [
   },
   {
     id: 'dsp-005', eventId: 'evt-20250501-003', type: '烟火疑似异常', risk: '高风险', riskLevel: 'high',
-    zone: 'C栋-1层-茶水间', waitMinutes: 5, residentName: '—', priority: 5, priorityScore: 77,
-    reason: '茶水间烟雾浓度持续上升，可能涉及电器故障，需要确认设备状态和通风口。',
-    status: '待指派', time: '2025-05-01 11:05:18',
+    zone: 'C栋-1层-茶水间', waitMinutes: 5, residentName: '公共区域', priority: 5, priorityScore: 77,
+    reason: '茶水间烟雾浓度持续上升，可能涉及电器故障。',
+    status: '处理中', assignee: '李建国', time: '2025-05-01 11:05:18',
   },
   {
     id: 'dsp-006', eventId: 'evt-20250501-009', type: '无人看护', risk: '中风险', riskLevel: 'medium',
     zone: 'C栋-3层-康复区', waitMinutes: 18, residentName: '多名老人', priority: 6, priorityScore: 72,
     reason: '康复区有 3 名老人活动但无护理人员在场，存在安全隐患。',
-    status: '待指派', time: '2025-05-01 15:48:22',
-  },
-  {
-    id: 'dsp-007', eventId: 'evt-20250501-004', type: '长时间滞留', risk: '中风险', riskLevel: 'medium',
-    zone: 'A栋-1层-电梯口', waitMinutes: 25, residentName: '李明辉', priority: 7, priorityScore: 67,
-    reason: '老人在电梯口滞留超过 10 分钟，可能存在迷路风险，需确认是否需要引导。',
-    status: '待指派', time: '2025-05-01 16:30:45',
-  },
-  {
-    id: 'dsp-008', eventId: 'evt-20250501-010', type: '活动量持续下降', risk: '中风险', riskLevel: 'medium',
-    zone: 'B栋-3层-房间302', waitMinutes: 12, residentName: '王秀兰', priority: 8, priorityScore: 62,
-    reason: '老人近7天活动量持续下降，今日步数仅1200步，久卧时间超10小时，血氧偏低。身体健康风险为高风险。',
-    status: '待指派', time: '2025-05-01 10:00:00',
-  },
-  {
-    id: 'dsp-009', eventId: 'evt-20250501-011', type: '连续低落情绪', risk: '高风险', riskLevel: 'high',
-    zone: 'A栋-3层-房间301', waitMinutes: 18, residentName: '张建国', priority: 9, priorityScore: 58,
-    reason: '老人连续5天出现低落情绪标记，活动量下降28%，夜间醒来次数增加，心理健康风险为高风险。',
-    status: '待指派', time: '2025-05-01 09:00:00',
-  },
-  {
-    id: 'dsp-010', eventId: 'evt-20250501-012', type: '焦虑倾向升高', risk: '中风险', riskLevel: 'medium',
-    zone: 'B栋-3层-房间302', waitMinutes: 20, residentName: '王秀兰', priority: 10, priorityScore: 55,
-    reason: '老人焦虑评分持续上升，反复按呼叫铃，面部表情呈现紧张特征，睡眠质量持续下降。',
-    status: '待指派', time: '2025-05-01 08:30:00',
-  },
-  {
-    id: 'dsp-011', eventId: 'evt-20250501-013', type: '夜间离床频繁', risk: '中风险', riskLevel: 'medium',
-    zone: 'B栋-5层-房间508', waitMinutes: 10, residentName: '陈国华', priority: 11, priorityScore: 52,
-    reason: '老人夜间离床频繁，当夜离床4次总时长超40分钟，孤独风险升高，社交互动减少。',
-    status: '待指派', time: '2025-05-01 07:00:00',
-  },
-  {
-    id: 'dsp-012', eventId: 'evt-20250501-014', type: '情绪状态恶化', risk: '高风险', riskLevel: 'high',
-    zone: 'C栋-2层-房间206', waitMinutes: 6, residentName: '赵文秀', priority: 12, priorityScore: 48,
-    reason: '老人多项身体指标异常（血氧92%、体温37.1°C），情绪状态持续恶化，拒绝进食，身体和心理风险均为高风险。',
-    status: '待指派', time: '2025-05-01 06:30:00',
-  },
-  {
-    id: 'dsp-013', eventId: 'evt-20250501-015', type: '孤独风险升高', risk: '低风险', riskLevel: 'low',
-    zone: 'A栋-4层-房间405', waitMinutes: 30, residentName: '孙丽芳', priority: 13, priorityScore: 45,
-    reason: '老人近期情绪波动频率增加，可能与家属探视不规律有关，孤独风险升高。',
-    status: '待指派', time: '2025-05-01 11:00:00',
+    status: '已完成', assignee: '王美华', time: '2025-05-01 15:48:22',
   },
 ];
 
+const nurses = [
+  { name: '赵文强', floor: 'B栋1-3层', distance: '1 分钟', status: '处理中' },
+  { name: '李建国', floor: 'C栋1层', distance: '2 分钟', status: '处理中' },
+  { name: '王美华', floor: 'A栋1-2层', distance: '空闲', status: '可接单' },
+  { name: '张晓梅', floor: 'A栋3-4层', distance: '空闲', status: '可接单' },
+];
+
+type BoardColumn = '待指派' | '已派单' | '处理中' | '已完成';
+
+const columns: { key: BoardColumn; title: string; helper: string; icon: string }[] = [
+  { key: '待指派', title: '待派单', helper: '需要值班主管确认', icon: 'mdi:clock-alert-outline' },
+  { key: '已派单', title: '已派单', helper: '等待护理员接单', icon: 'mdi:account-arrow-right-outline' },
+  { key: '处理中', title: '处理中', helper: '护理员已到场或在路上', icon: 'mdi:progress-clock' },
+  { key: '已完成', title: '已完成', helper: '已记录并归档', icon: 'mdi:check-circle-outline' },
+];
+
+function displayStatus(item: DispatchItem): BoardColumn {
+  if (item.status === '待指派') return '待指派';
+  if (item.status === '处理中' && item.assignee === '系统指派') return '已派单';
+  return item.status as BoardColumn;
+}
+
+function etaFor(item: DispatchItem) {
+  if (displayStatus(item) === '已完成') return '已归档';
+  if (item.waitMinutes <= 5) return '预计 2 分钟到场';
+  if (item.waitMinutes <= 15) return '预计 4 分钟到场';
+  return '需立即确认';
+}
+
 export default function DispatchPage() {
-  const [queue, setQueue] = useState<DispatchItem[]>(fallbackQueue);
+  const [queue, setQueue] = useState<DispatchItem[]>(initialQueue);
   const [assigning, setAssigning] = useState<string | null>(null);
-  const [prediction, setPrediction] = useState<PredictionOverview>(mockPredictionOverview);
 
   useEffect(() => {
-    fetchJson<DispatchItem[]>('/api/dispatch').then(setQueue).catch(() => {});
-    fetchJson<PredictionOverview>('/api/prediction').then(setPrediction).catch(() => {});
+    fetchJson<DispatchItem[]>('/api/dispatch').then((items) => {
+      if (items.length) setQueue(items.slice(0, 8));
+    }).catch(() => {});
   }, []);
 
-  const pendingCount = queue.filter((d) => d.status === '待指派').length;
-  const urgentCount = queue.filter((d) => d.riskLevel === 'critical' || d.risk === '紧急').length;
-  const avgWait = queue.length > 0 ? (queue.reduce((s, d) => s + d.waitMinutes, 0) / queue.length).toFixed(1) : '0';
-  const doneRate = queue.length > 0 ? Math.round((queue.filter((d) => d.status === '已完成').length / queue.length) * 100) : 0;
+  const stats = useMemo(() => {
+    const pending = queue.filter((item) => displayStatus(item) === '待指派').length;
+    const active = queue.filter((item) => ['已派单', '处理中'].includes(displayStatus(item))).length;
+    const urgent = queue.filter((item) => item.riskLevel === 'critical').length;
+    const avgWait = queue.length ? (queue.reduce((sum, item) => sum + item.waitMinutes, 0) / queue.length).toFixed(1) : '0';
+    return { pending, active, urgent, avgWait };
+  }, [queue]);
 
   const handleAssign = (id: string) => {
     setAssigning(id);
-    setTimeout(() => {
-      setQueue((prev) => prev.map((d) => d.id === id ? { ...d, status: '处理中' as const, assignee: '系统指派' } : d));
+    window.setTimeout(() => {
+      setQueue((prev) => prev.map((item) => item.id === id ? { ...item, status: '处理中', assignee: '系统指派' } : item));
       setAssigning(null);
-    }, 800);
+    }, 500);
   };
 
-  const topItem = queue.find((d) => d.status === '待指派');
+  const handleComplete = (id: string) => {
+    setQueue((prev) => prev.map((item) => item.id === id ? { ...item, status: '已完成' } : item));
+  };
+
+  const topItem = queue.find((item) => displayStatus(item) === '待指派');
 
   return (
-    <div className="space-y-8">
-      <SectionHeader title="风险调度中心" description="" />
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm text-[#5c524a]">风险调度中心</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">护理响应闭环</h1>
+        </div>
+        <Link href="/emergency" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
+          <Icon icon="mdi:ambulance" />
+          应急流程
+        </Link>
+      </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="当前待处理" value={pendingCount} icon={<Icon icon="mdi:clock-alert-outline" className="text-xl" />} helper="等待指派的风险事件" />
-        <StatCard label="紧急事件" value={urgentCount} icon={<Icon icon="mdi:alert-circle-outline" className="text-xl" />} helper="需要立即响应的事件" />
-        <StatCard label="平均等待时长" value={`${avgWait} 分钟`} icon={<Icon icon="mdi:timer-sand" className="text-xl" />} helper="从事件发生到指派的平均时间" />
-        <StatCard label="调度完成率" value={`${doneRate}%`} icon={<Icon icon="mdi:check-circle-outline" className="text-xl" />} helper="今天调度任务完成比例" />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard label="待派单事件" value={stats.pending} icon={<Icon icon="mdi:clock-alert-outline" className="text-xl" />} helper="等待主管确认和派发" />
+        <StatCard label="正在响应" value={stats.active} icon={<Icon icon="mdi:run-fast" className="text-xl" />} helper="已派单或处理中事件" />
+        <StatCard label="紧急事件" value={stats.urgent} icon={<Icon icon="mdi:alert-circle-outline" className="text-xl" />} helper="需要立即到场确认" />
+        <StatCard label="平均等待" value={`${stats.avgWait} 分钟`} icon={<Icon icon="mdi:timer-sand" className="text-xl" />} helper="从识别到当前状态" />
       </div>
 
       {topItem && (
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-6">
-          <div className="flex items-center gap-3 text-teal-700">
-            <Icon icon="mdi:lightbulb-on-outline" className="text-xl" />
-            <p className="text-sm font-semibold">AI 调度建议</p>
+        <section className="card-glow rounded-2xl border border-red-200 bg-red-50/70 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2 text-red-700">
+                <Icon icon="mdi:alert-decagram-outline" className="text-xl" />
+                <p className="text-sm font-semibold">当前优先处理</p>
+              </div>
+              <p className="mt-2 text-sm leading-relaxed text-[#1a1615]">
+                {topItem.zone} 的 {topItem.type} 已等待 {topItem.waitMinutes} 分钟，建议立即指派 A栋当班护理员并同步应急流程。
+              </p>
+            </div>
+            <button onClick={() => handleAssign(topItem.id)} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-500">
+              <Icon icon="mdi:account-plus-outline" />
+              立即派单
+            </button>
           </div>
-          <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">
-            建议优先处理 <span className="font-semibold text-[#1a1615]">{topItem.zone} {topItem.type}</span> 事件，
-            因为该事件风险等级为 <span className="font-semibold text-[#1a1615]">{topItem.risk}</span>，
-            受影响老人为 <span className="font-semibold text-[#1a1615]">{topItem.residentName}</span>，
-            已等待 <span className="font-semibold text-[#1a1615]">{topItem.waitMinutes} 分钟</span>，已超过黄金响应时间。
-          </p>
-        </motion.div>
+        </section>
       )}
 
-      <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-gradient-to-br from-orange-50/40 to-white p-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2">
-              <Icon icon="mdi:chart-timeline-variant-shimmer" className="text-lg text-teal-600" />
-              <p className="text-sm font-semibold text-[#1a1615]">未来 15 分钟高风险区域</p>
-            </div>
-            <p className="mt-1 text-xs text-[#5c524a]">系统预测以下区域风险将在短期内上升，建议优先安排巡查</p>
-          </div>
-          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
-            预测中心
-          </Link>
-        </div>
-        <div className="mt-3 space-y-2">
-          {prediction.forecast15min.highRiskRooms.map((room, i) => {
-            const priorityColor = room.patrolPriority === '紧急' ? 'bg-red-50 text-red-600' : room.patrolPriority === '高' ? 'bg-orange-50 text-orange-600' : 'bg-amber-50 text-amber-600';
+      <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
+        <section className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+          {columns.map((column) => {
+            const items = queue.filter((item) => displayStatus(item) === column.key);
             return (
-              <motion.div
-                key={room.roomId}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className="flex items-center gap-3 rounded-2xl bg-white/70 px-4 py-2.5"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white text-xs font-bold text-[#1a1615] shadow-sm">{i + 1}</span>
-                <span className="min-w-0 flex-1 text-sm font-medium text-[#1a1615]">{room.roomName}</span>
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${priorityColor}`}>{room.patrolPriority}优先</span>
-                <span className="text-sm font-bold text-[#1a1615]">{room.predictedScore}<span className="text-[10px] font-normal text-[#5c524a]/50"> 分</span></span>
-              </motion.div>
+              <div key={column.key} className="rounded-2xl border border-[#1a1615]/8 bg-white p-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Icon icon={column.icon} className="text-lg text-teal-600" />
+                      <h2 className="text-sm font-semibold text-[#1a1615]">{column.title}</h2>
+                    </div>
+                    <p className="mt-1 text-xs text-[#5c524a]">{column.helper}</p>
+                  </div>
+                  <span className="rounded-full bg-[#f8f5f0] px-2 py-1 text-xs font-semibold text-[#1a1615]">{items.length}</span>
+                </div>
+                <div className="mt-4 space-y-3">
+                  {items.map((item, index) => (
+                    <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} className="rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] p-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-[#1a1615]">{item.type}</p>
+                          <p className="mt-1 truncate text-xs text-[#5c524a]">{item.zone}</p>
+                        </div>
+                        <RiskBadge risk={item.riskLevel} />
+                      </div>
+                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                        <div className="rounded-lg bg-white px-2 py-1.5">
+                          <p className="text-[#5c524a]/60">护理员</p>
+                          <p className="mt-0.5 font-medium text-[#1a1615]">{item.assignee ?? '未指派'}</p>
+                        </div>
+                        <div className="rounded-lg bg-white px-2 py-1.5">
+                          <p className="text-[#5c524a]/60">预计到场</p>
+                          <p className="mt-0.5 font-medium text-[#1a1615]">{etaFor(item)}</p>
+                        </div>
+                      </div>
+                      <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-[#5c524a]">{item.reason}</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {displayStatus(item) === '待指派' && (
+                          <button onClick={() => handleAssign(item.id)} disabled={assigning === item.id} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
+                            {assigning === item.id ? '派单中' : '派单'}
+                          </button>
+                        )}
+                        {displayStatus(item) !== '已完成' && (
+                          <button onClick={() => handleComplete(item.id)} className="rounded-lg border border-[#1a1615]/10 px-3 py-1.5 text-xs text-[#5c524a] hover:border-teal-500/40 hover:text-teal-700">
+                            完成归档
+                          </button>
+                        )}
+                        <Link href={`/events/${item.eventId}`} className="rounded-lg border border-[#1a1615]/10 px-3 py-1.5 text-xs text-[#5c524a] hover:border-teal-500/40 hover:text-teal-700">
+                          详情
+                        </Link>
+                      </div>
+                    </motion.div>
+                  ))}
+                  {items.length === 0 && (
+                    <div className="rounded-xl border border-dashed border-[#1a1615]/10 px-3 py-8 text-center text-xs text-[#5c524a]/60">
+                      当前无事件
+                    </div>
+                  )}
+                </div>
+              </div>
             );
           })}
-        </div>
-      </div>
+        </section>
 
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-[#1a1615]">风险优先级队列</h3>
-        <p className="text-sm text-[#5c524a]">系统根据风险等级、等待时间和影响范围自动排序，最紧急的排在最前面。</p>
-        {queue.map((item, index) => (
-          <motion.div
-            key={item.id}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.06 }}
-            className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
-                  <span className="text-lg font-bold">#{item.priority}</span>
+        <aside className="space-y-4">
+          <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-4">
+            <h2 className="text-sm font-semibold text-[#1a1615]">当班护理员</h2>
+            <div className="mt-4 space-y-3">
+              {nurses.map((nurse) => (
+                <div key={nurse.name} className="flex items-center justify-between rounded-xl bg-[#f8f5f0] px-3 py-2">
+                  <div>
+                    <p className="text-sm font-medium text-[#1a1615]">{nurse.name}</p>
+                    <p className="mt-0.5 text-xs text-[#5c524a]">{nurse.floor}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className={`text-xs font-medium ${nurse.status === '可接单' ? 'text-emerald-600' : 'text-orange-600'}`}>{nurse.status}</p>
+                    <p className="mt-0.5 text-xs text-[#5c524a]/60">{nurse.distance}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-base font-semibold text-[#1a1615]">{item.type}</p>
-                  <p className="text-xs text-[#5c524a]/50">{item.eventId}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${
-                  item.status === '待指派' ? 'bg-red-50 text-red-600 border border-red-200' :
-                  item.status === '处理中' ? 'bg-orange-50 text-orange-600 border border-orange-200' :
-                  'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                }`}>{item.status}</span>
-                <RiskBadge risk={item.riskLevel || item.risk} />
-              </div>
+              ))}
             </div>
+          </section>
 
-            <div className="mt-3 flex flex-wrap gap-x-6 gap-y-2 text-xs text-[#5c524a]">
-              <span className="flex items-center gap-1"><Icon icon="mdi:map-marker-outline" className="text-sm" />{item.zone}</span>
-              <span className="flex items-center gap-1"><Icon icon="mdi:clock-outline" className="text-sm" />等待 {item.waitMinutes} 分钟</span>
-              <span className="flex items-center gap-1"><Icon icon="mdi:account-outline" className="text-sm" />受影响：{item.residentName}</span>
-              {item.assignee && <span className="flex items-center gap-1"><Icon icon="mdi:account-check-outline" className="text-sm" />指派：{item.assignee}</span>}
+          <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-4">
+            <h2 className="text-sm font-semibold text-[#1a1615]">响应规则</h2>
+            <div className="mt-4 space-y-3 text-xs text-[#5c524a]">
+              <p className="rounded-xl bg-red-50 px-3 py-2 text-red-700">紧急事件：2 分钟内完成派单，5 分钟内到场。</p>
+              <p className="rounded-xl bg-orange-50 px-3 py-2 text-orange-700">高风险事件：5 分钟内派单，10 分钟内反馈处置状态。</p>
+              <p className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-700">所有事件完成后自动进入归档，保留处置记录。</p>
             </div>
-
-            <p className="mt-3 rounded-2xl bg-[#f8f5f0] px-4 py-3 text-sm text-[#5c524a]">
-              <span className="text-[#5c524a]/50">推荐理由：</span>{item.reason}
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              {item.status === '待指派' && (
-                <button onClick={() => handleAssign(item.id)} disabled={assigning === item.id} className="inline-flex items-center gap-1.5 rounded-2xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-500 disabled:opacity-50">
-                  <Icon icon="mdi:account-plus-outline" className="text-sm" />
-                  {assigning === item.id ? '指派中...' : '指派护理员'}
-                </button>
-              )}
-              {item.status === '待指派' && (
-                <button className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-                  <Icon icon="mdi:play-circle-outline" className="text-sm" />
-                  标记处理中
-                </button>
-              )}
-              <Link href="/emergency" className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-                <Icon icon="mdi:ambulance" className="text-sm" />
-                查看应急流程
-              </Link>
-              <Link href={`/events/${item.eventId}`} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-                <Icon icon="mdi:arrow-right" className="text-sm" />
-                查看事件详情
-              </Link>
-            </div>
-          </motion.div>
-        ))}
+          </section>
+        </aside>
       </div>
     </div>
   );

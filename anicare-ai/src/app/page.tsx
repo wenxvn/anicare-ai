@@ -4,110 +4,173 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
+import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { RiskBadge } from '@/components/ui/risk-badge';
+import { StatCard } from '@/components/ui/stat-card';
+import { mockEvents } from '@/lib/mock-data';
+import { mockPredictionOverview } from '@/lib/mock-prediction';
 
-const coreCapabilities = [
-  { icon: 'mdi:account-injury', title: '摔倒与久卧识别', description: '老人摔倒后，不再等到下一轮巡房才被发现。' },
-  { icon: 'mdi:fire-alert', title: '烟火与环境隐患识别', description: '烟雾浓度一异常，系统立刻帮你盯住。' },
-  { icon: 'mdi:bed-outline', title: '离床未归与异常滞留识别', description: '老人半夜离开床位没回来，不用靠运气发现了。' },
-  { icon: 'mdi:merge', title: '多模态融合风险预测', description: '视觉、床压、门磁、毫米波四源融合，提前预判未来风险走势。' },
-  { icon: 'mdi:heart-pulse', title: '可穿戴健康监护', description: '心率、血氧、体温、呼吸、活动量、睡眠实时监测，数据异常立即预警。' },
-  { icon: 'mdi:emoticon-neutral-outline', title: '情绪状态识别', description: '基于面部表情、行为、生理和互动数据，AI 辅助判断老人情绪状态。' },
-  { icon: 'mdi:shield-alert-outline', title: '抑郁焦虑风险提示', description: '综合多维数据进行心理健康辅助评估，及时发现抑郁倾向和焦虑风险。' },
-  { icon: 'mdi:brain', title: '多模态 AI 决策', description: '融合视觉、传感器、行为、情绪多源数据，提供身心状态综合分析与决策依据。' },
-  { icon: 'mdi:account-details', title: '老人行为画像分析', description: '记住每位老人的日常习惯，偏离越大风险越高。' },
-  { icon: 'mdi:broadcast', title: '智能风险调度', description: '多个事件同时发生时，自动排出最危险的优先级。' },
-  { icon: 'mdi:ambulance', title: '应急流程引导', description: '护理员按步骤处理，每一步都有知识库撑腰。' },
-  { icon: 'mdi:robot-outline', title: '智能助手问答', description: '护理安全方面的问题随时问，结合知识库给出专业建议。' },
+const dutyStats = [
+  { label: '今日告警', value: 26, helper: '已自动研判并生成处置建议', icon: 'mdi:alert-octagon-outline' },
+  { label: '待处理高风险', value: 7, helper: '包含 2 起紧急事件', icon: 'mdi:clock-alert-outline' },
+  { label: '平均响应', value: '4.2 分钟', helper: '从识别到护理员接单', icon: 'mdi:timer-check-outline' },
+  { label: '设备在线率', value: '97.6%', helper: '摄像头与传感器综合在线', icon: 'mdi:access-point-check' },
 ];
 
-const quickEntries = [
-  { href: '/detect', title: '实时监测', description: '查看各区域摄像头的实时监控画面与风险分析。', icon: 'mdi:eye-check-outline' },
-  { href: '/health', title: '健康监护', description: '可穿戴传感器数据、情绪识别、心理健康风险提示和 AI 健康建议。', icon: 'mdi:heart-pulse' },
-  { href: '/prediction-center', title: '风险预测中心', description: '多模态融合评分，提前预判未来 30 分钟高风险区域。', icon: 'mdi:chart-timeline-variant-shimmer' },
-  { href: '/dispatch', title: '风险调度中心', description: '自动排序优先级，护理员一看就知道先处理哪件事。', icon: 'mdi:broadcast' },
-  { href: '/profiles', title: '行为画像', description: '每位老人的日常习惯和今日行为偏离度。', icon: 'mdi:account-details' },
-  { href: '/emergency', title: '应急流程', description: '选择事件类型，系统一步步带着做。', icon: 'mdi:ambulance' },
-  { href: '/events', title: '事件管理', description: '快速筛选紧急、高风险、待处理事件。', icon: 'mdi:alert-octagon-outline' },
-  { href: '/dashboard', title: '数据看板', description: '看看今天系统替护理员筛掉了多少普通画面。', icon: 'mdi:chart-areaspline' },
-  { href: '/knowledge', title: '智能助手', description: '有任何护理安全方面的问题，随时向助手提问。', icon: 'mdi:robot-outline' },
+const activeEvents = [
+  { id: 'evt-20250501-001', type: '摔倒未响应', riskLevel: 'critical' as const, zone: 'A栋 3层走廊', source: '视觉识别 + 无人响应', status: '待派单', wait: '8 分钟' },
+  { id: 'evt-20250501-005', type: '久卧未动', riskLevel: 'high' as const, zone: 'B栋 302房', source: '床垫传感器 + 体温', status: '已派单', wait: '22 分钟' },
+  { id: 'evt-20250501-003', type: '烟火疑似异常', riskLevel: 'high' as const, zone: 'C栋 1层茶水间', source: '烟雾浓度 + 视觉', status: '处理中', wait: '5 分钟' },
+  { id: 'evt-20250501-004', type: '长时间滞留', riskLevel: 'medium' as const, zone: 'A栋 1层电梯口', source: '视觉轨迹', status: '观察中', wait: '25 分钟' },
+];
+
+const deviceGroups = [
+  { label: '摄像头', online: 36, total: 38, icon: 'mdi:cctv' },
+  { label: '床垫传感器', online: 42, total: 44, icon: 'mdi:bed-outline' },
+  { label: '门磁', online: 28, total: 28, icon: 'mdi:door-closed-lock' },
+  { label: '毫米波雷达', online: 18, total: 20, icon: 'mdi:radar' },
+  { label: '可穿戴设备', online: 36, total: 38, icon: 'mdi:watch-variant' },
+];
+
+const quickActions = [
+  { href: '/detect', label: '实时监测', icon: 'mdi:monitor-eye' },
+  { href: '/dispatch', label: '风险调度', icon: 'mdi:account-arrow-right-outline' },
+  { href: '/emergency', label: '应急流程', icon: 'mdi:ambulance' },
+  { href: '/events', label: '事件归档', icon: 'mdi:archive-clock-outline' },
 ];
 
 export default function HomePage() {
-  return (
-    <div className="space-y-14">
-      <section className="relative mx-auto grid max-w-6xl gap-10 pt-8 lg:grid-cols-[1.35fr_1fr]">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-          <h1 className="mt-6 text-4xl font-bold leading-tight tracking-tight text-[#1a1615] sm:text-5xl">
-            别等到下一轮巡房，<br />才发现老人已经摔倒。
-          </h1>
-          <p className="mt-5 max-w-xl text-base leading-relaxed text-[#5c524a]">
-            安养智巡用视觉识别、行为理解和知识库决策，把康养机构里的高风险事件提前拎出来。不是多一个报警器，而是多一个会判断轻重缓急的值班助手。
-          </p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/detect" className="inline-flex items-center gap-2 rounded-2xl bg-teal-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
-              <Icon icon="mdi:eye-check-outline" />
-              开始风险演示
-            </Link>
-          </div>
-        </motion.div>
-        <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55, delay: 0.1 }} className="relative">
-          <div className="absolute -inset-8 rounded-[36px] bg-gradient-to-br from-teal-500/15 via-transparent to-emerald-500/10 blur-3xl" />
-          <div className="relative overflow-hidden rounded-[28px] border border-[#1a1615]/8">
-            <Image src="/pictures/2.jpg" alt="康养安全场景" width={960} height={720} className="h-full w-full object-cover" priority />
-          </div>
-        </motion.div>
-      </section>
+  const trend = [
+    { time: '08:00', value: 4 },
+    { time: '10:00', value: 7 },
+    { time: '12:00', value: 5 },
+    { time: '14:00', value: 11 },
+    { time: '16:00', value: 8 },
+    { time: '18:00', value: 12 },
+  ];
+  const model = mockPredictionOverview.modelStatus;
 
-      <section className="mx-auto max-w-6xl">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <h2 className="text-2xl font-semibold text-[#1a1615]">核心能力</h2>
-        </motion.div>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {coreCapabilities.map((item, index) => (
-            <motion.div key={item.title} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 + index * 0.08 }} className="card-glow flex items-start gap-4 rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
-                <Icon icon={item.icon} className="text-2xl" />
-              </div>
-              <div>
-                <p className="text-base font-semibold text-[#1a1615]">{item.title}</p>
-                <p className="mt-1 text-sm text-[#5c524a]">{item.description}</p>
-              </div>
-            </motion.div>
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-sm text-[#5c524a]">康养中心值班总览</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">今日风险运行态势</h1>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {quickActions.map((item) => (
+            <Link key={item.href} href={item.href} className="inline-flex items-center gap-2 rounded-lg border border-[#1a1615]/10 bg-white px-3 py-2 text-xs font-medium text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+              <Icon icon={item.icon} className="text-base" />
+              {item.label}
+            </Link>
           ))}
         </div>
-      </section>
+      </div>
 
-      <section className="mx-auto max-w-6xl">
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-          <div className="rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-8 text-center">
-            <p className="text-xl font-semibold text-[#1a1615] sm:text-2xl">
-              &ldquo;别再假装靠人工巡查就能看住每一个角落。&rdquo;
-            </p>
-            <p className="mt-3 text-sm text-[#5c524a]">别等到事故发生后，才回头翻监控。</p>
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {dutyStats.map((item) => (
+          <StatCard key={item.label} label={item.label} value={item.value} helper={item.helper} icon={<Icon icon={item.icon} className="text-xl" />} />
+        ))}
+      </div>
+
+      <div className="grid gap-5 xl:grid-cols-[1.35fr_0.9fr]">
+        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-[#1a1615]">当前高风险事件</h2>
+              <p className="mt-1 text-xs text-[#5c524a]">按风险等级和等待时长自动排序</p>
+            </div>
+            <Link href="/dispatch" className="text-xs font-medium text-teal-700 hover:text-teal-600">进入调度</Link>
           </div>
-        </motion.div>
-      </section>
+          <div className="mt-4 overflow-hidden rounded-xl border border-[#1a1615]/8">
+            <div className="grid grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] bg-[#f8f5f0] px-4 py-2 text-xs font-medium text-[#5c524a]">
+              <span>事件</span><span>位置</span><span>识别来源</span><span>状态</span><span>等待</span>
+            </div>
+            {activeEvents.map((item) => (
+              <Link key={item.id} href={`/events/${item.id}`} className="grid grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] items-center border-t border-[#1a1615]/8 px-4 py-3 text-sm transition-colors hover:bg-[#f8f5f0]">
+                <span className="flex min-w-0 items-center gap-2">
+                  <RiskBadge risk={item.riskLevel} />
+                  <span className="truncate font-medium text-[#1a1615]">{item.type}</span>
+                </span>
+                <span className="truncate text-[#5c524a]">{item.zone}</span>
+                <span className="truncate text-[#5c524a]">{item.source}</span>
+                <span className="text-[#1a1615]">{item.status}</span>
+                <span className="font-mono text-xs text-red-600">{item.wait}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
 
-      <section className="mx-auto max-w-6xl pb-8">
-        <h2 className="text-2xl font-semibold text-[#1a1615]">快速进入</h2>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 items-stretch">
-          {quickEntries.map((item, index) => (
-            <motion.div key={item.href} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 + index * 0.06 }} className="flex">
-              <Link href={item.href} className="card-glow group flex h-full flex-col rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600 transition-colors group-hover:bg-teal-500/20">
-                  <Icon icon={item.icon} className="text-2xl" />
-                </div>
-                <p className="mt-4 text-base font-semibold text-[#1a1615]">{item.title}</p>
-                <p className="mt-2 flex-1 text-sm text-[#5c524a]">{item.description}</p>
-                <div className="mt-4 flex items-center gap-1 text-xs text-teal-600">
-                  <span>进入</span>
-                  <Icon icon="mdi:arrow-right" className="text-sm" />
+        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-base font-semibold text-[#1a1615]">实时监测缩略图</h2>
+              <p className="mt-1 text-xs text-[#5c524a]">重点区域在线巡检</p>
+            </div>
+            <span className="flex items-center gap-1 text-xs text-emerald-600"><span className="h-2 w-2 rounded-full bg-emerald-500" />LIVE</span>
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            {['/pictures/6.jpg', '/pictures/4.jpg', '/pictures/5.jpg', '/pictures/3.jpg'].map((src, index) => (
+              <Link key={src} href="/detect" className="group relative overflow-hidden rounded-xl border border-[#1a1615]/8">
+                <Image src={src} alt="监测画面" width={320} height={180} className="aspect-video w-full object-cover transition-transform group-hover:scale-105" />
+                <div className="absolute inset-x-0 bottom-0 bg-black/55 px-2 py-1 text-[11px] text-white">
+                  CAM-0{index + 1} · {index === 0 ? '紧急' : index === 2 ? '高风险' : '正常'}
                 </div>
               </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <div className="grid gap-5 xl:grid-cols-[1fr_1fr_0.9fr]">
+        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5 xl:col-span-1">
+          <h2 className="text-base font-semibold text-[#1a1615]">今日风险趋势</h2>
+          <div className="mt-4 h-56">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trend}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
+                <XAxis dataKey="time" stroke="rgba(92,82,74,0.55)" tickLine={false} axisLine={false} />
+                <YAxis stroke="rgba(92,82,74,0.55)" tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ background: '#fff', borderRadius: 12, border: '1px solid rgba(26,22,21,0.08)' }} />
+                <Area type="monotone" dataKey="value" stroke="#0d9488" fill="#0d948822" strokeWidth={2} name="告警数" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+
+        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <h2 className="text-base font-semibold text-[#1a1615]">设备在线状态</h2>
+          <div className="mt-4 space-y-3">
+            {deviceGroups.map((item) => {
+              const pct = Math.round((item.online / item.total) * 100);
+              return (
+                <div key={item.label}>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-[#5c524a]"><Icon icon={item.icon} className="text-teal-600" />{item.label}</span>
+                    <span className="font-medium text-[#1a1615]">{item.online}/{item.total}</span>
+                  </div>
+                  <div className="mt-1 h-1.5 rounded-full bg-[#f0ece5]">
+                    <div className="h-1.5 rounded-full bg-teal-500" style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <h2 className="text-base font-semibold text-[#1a1615]">模型运行状态</h2>
+          <div className="mt-4 space-y-3 text-sm">
+            <div className="flex justify-between"><span className="text-[#5c524a]">模型版本</span><span className="font-medium text-[#1a1615]">{model.modelVersion}</span></div>
+            <div className="flex justify-between"><span className="text-[#5c524a]">推理延迟</span><span className="font-medium text-[#1a1615]">{model.inferenceLatencyMs} ms</span></div>
+            <div className="flex justify-between"><span className="text-[#5c524a]">今日识别</span><span className="font-medium text-[#1a1615]">1,286 次</span></div>
+            <div className="flex justify-between"><span className="text-[#5c524a]">高置信告警</span><span className="font-medium text-[#1a1615]">91.4%</span></div>
+          </div>
+          <div className="mt-4 rounded-xl bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
+            模型服务运行正常，最近一次更新 {model.lastRunAt}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
