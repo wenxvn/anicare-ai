@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
-import Link from 'next/link';
 import { SectionHeader } from '@/components/ui/section-header';
 import { StatCard } from '@/components/ui/stat-card';
 import { fetchJson } from '@/lib/api-client';
@@ -104,14 +103,12 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Icon icon="mdi:merge" className="text-lg text-teal-600" />
-              <p className="text-sm font-semibold text-[#1a1615]">多模态融合风险评估</p>
+              <Icon icon="mdi:shield-check-outline" className="text-lg text-teal-600" />
+              <p className="text-sm font-semibold text-[#1a1615]">今日安全巡检概况</p>
             </div>
-            <p className="mt-1 text-xs text-[#5c524a]">当前系统实时融合视觉、床压、门磁、毫米波数据</p>
+            <p className="mt-1 text-xs text-[#5c524a]">系统综合摄像头、床垫、门磁和毫米波设备给出的值班判断</p>
           </div>
-          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
-            查看详情
-          </Link>
+          <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">运行正常</span>
         </div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {prediction.fusionRisk.modalities.map((m, i) => (
@@ -130,6 +127,7 @@ export default function DashboardPage() {
                 </span>
               </div>
               <p className="mt-2 text-2xl font-bold text-[#1a1615]">{m.score}<span className="text-xs font-normal text-[#5c524a]/50"> 分</span></p>
+              <p className="mt-1 truncate text-[11px] text-[#5c524a]/60">{m.detail}</p>
             </motion.div>
           ))}
         </div>
@@ -139,14 +137,12 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Icon icon="mdi:chart-timeline-variant-shimmer" className="text-lg text-teal-600" />
-              <p className="text-sm font-semibold text-[#1a1615]">未来 30 分钟高风险区域预判</p>
+              <Icon icon="mdi:map-search-outline" className="text-lg text-teal-600" />
+              <p className="text-sm font-semibold text-[#1a1615]">下一轮重点巡查建议</p>
             </div>
-            <p className="mt-1 text-xs text-[#5c524a]">建议优先巡查以下区域</p>
+            <p className="mt-1 text-xs text-[#5c524a]">根据近期事件、老人画像和设备状态自动生成</p>
           </div>
-          <Link href="/prediction-center" className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700 transition-colors hover:bg-teal-500/20">
-            查看全部
-          </Link>
+          <span className="rounded-xl bg-teal-500/10 px-4 py-2 text-xs font-medium text-teal-700">已同步到值班任务</span>
         </div>
         <div className="mt-4 space-y-2">
           {prediction.forecast30min.highRiskRooms.slice(0, 3).map((room, i) => (

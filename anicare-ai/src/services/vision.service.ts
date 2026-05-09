@@ -43,7 +43,10 @@ class YoloVisionAdapter implements VisionAdapter {
 
     const result = await res.json();
     return {
-      detections: result.detections,
+      detections: result.detections ?? [],
+      poses: result.poses ?? [],
+      riskSignals: result.riskSignals ?? [],
+      imageSize: result.imageSize,
       processingTimeMs: Date.now() - start,
       modelVersion: result.modelVersion || 'yolo-v8',
       rawModelOutput: result,

@@ -37,6 +37,7 @@ export interface DetectionResult {
   confidence: number;
   bbox?: BoundingBox;
   category?: string;
+  source?: string;
 }
 
 export interface VisionDetectInput {
@@ -51,6 +52,23 @@ export interface VisionDetectOutput {
   detections: DetectionResult[];
   processingTimeMs: number;
   modelVersion: string;
+  poses?: {
+    label: string;
+    confidence: number;
+    keypoints: { x: number; y: number; confidence: number }[];
+    bbox?: BoundingBox;
+  }[];
+  riskSignals?: {
+    code: string;
+    label: string;
+    severity: RiskLevel;
+    confidence: number;
+    reason: string;
+  }[];
+  imageSize?: {
+    width: number;
+    height: number;
+  };
   rawModelOutput?: unknown;
 }
 

@@ -61,7 +61,25 @@ export default function EmergencyPage() {
 
       {!selectedPlan ? (
         <>
-          <p className="text-sm text-[#5c524a]">选择一个事件类型，系统会带您一步步处理。</p>
+          <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+            <div className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
+              <div className="flex items-center gap-2">
+                <Icon icon="mdi:playlist-check" className="text-xl text-teal-600" />
+                <p className="text-sm font-semibold text-[#1a1615]">预案匹配说明</p>
+              </div>
+              <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">
+                值班系统会根据事件类型、风险等级、老人画像和所在区域自动匹配处置流程。护理员只需要按步骤确认现场情况，系统会记录每一步的开始时间、完成时间和备注。
+              </p>
+            </div>
+            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+              <p className="text-sm font-semibold text-[#1a1615]">当前推荐</p>
+              <div className="mt-3 space-y-2 text-sm text-[#5c524a]">
+                <div className="flex items-center justify-between"><span>待处理事件</span><span className="font-semibold text-[#1a1615]">3 起</span></div>
+                <div className="flex items-center justify-between"><span>可用预案</span><span className="font-semibold text-[#1a1615]">{plans.length} 套</span></div>
+                <div className="flex items-center justify-between"><span>知识库状态</span><span className="font-semibold text-emerald-700">已更新</span></div>
+              </div>
+            </div>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan, index) => (
               <motion.div

@@ -154,6 +154,32 @@ export default function ProfilesPage() {
                   </div>
                 </div>
 
+                <div className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <Icon icon="mdi:clipboard-text-search-outline" className="text-lg text-teal-600" />
+                      <p className="text-sm font-semibold text-[#1a1615]">本周护理关注摘要</p>
+                    </div>
+                    <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">自动生成</span>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">
+                    {selected.name} 本周主要关注点为 {selected.riskTags.join('、')}。系统结合活动趋势、夜间离床记录和历史事件，建议当班护理员在
+                    {selected.frequentZones.slice(0, 2).join('、')} 增加巡查频次，并在交接班时复核今日状态。
+                  </p>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                    {[
+                      { label: '重点巡查', value: selected.frequentZones[0] ?? selected.room },
+                      { label: '关注原因', value: selected.riskTags[0] ?? '行为波动' },
+                      { label: '建议频次', value: selected.todayDeviation >= 70 ? '每 30 分钟' : '每 2 小时' },
+                    ].map((item) => (
+                      <div key={item.label} className="rounded-2xl bg-[#f8f5f0] p-3">
+                        <p className="text-xs text-[#5c524a]/50">{item.label}</p>
+                        <p className="mt-1 text-sm font-semibold text-[#1a1615]">{item.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#1a1615]">7 天活动趋势</p>
                   <p className="mt-1 text-xs text-[#5c524a]">每天的活动时长（小时）</p>

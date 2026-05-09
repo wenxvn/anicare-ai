@@ -10,11 +10,6 @@ const links = [
   { href: "/detect", label: "实时监测", icon: "mdi:eye-check-outline" },
   { href: "/health", label: "健康监护", icon: "mdi:heart-pulse" },
   { href: "/dispatch", label: "风险调度", icon: "mdi:broadcast" },
-  {
-    href: "/prediction-center",
-    label: "风险预测",
-    icon: "mdi:chart-timeline-variant-shimmer",
-  },
   { href: "/profiles", label: "行为画像", icon: "mdi:account-details" },
   { href: "/emergency", label: "应急流程", icon: "mdi:ambulance" },
   { href: "/events", label: "事件管理", icon: "mdi:alert-octagon-outline" },

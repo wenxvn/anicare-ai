@@ -4,6 +4,7 @@ setlocal
 set PROJECT_DIR=%~dp0anicare-ai
 set ENV_NAME=CARIC
 set PORT=3000
+set VISION_PORT=8001
 
 where node >nul 2>nul
 if %ERRORLEVEL% neq 0 (
@@ -32,6 +33,38 @@ if not exist "%PROJECT_DIR%\node_modules" (
 for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":%PORT% " ^| findstr "LISTENING"') do (
   echo [INFO] Port %PORT% is in use by PID %%a, killing...
   taskkill /F /PID %%a >nul 2>nul
+)
+
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr ":%VISION_PORT% " ^| findstr "LISTENING"') do (
+  echo [INFO] Vision port %VISION_PORT% is in use by PID %%a, killing...
+  taskkill /F /PID %%a >nul 2>nul
+)
+
+echo [INFO] Checking local vision service dependencies...
+pushd "%PROJECT_DIR%"
+python -c "import fastapi, uvicorn, ultralytics, cv2, numpy, pydantic, click" >nul 2>nul
+if %ERRORLEVEL% neq 0 (
+  echo [INFO] Installing vision service dependencies...
+  python -m pip install -r vision_service\requirements.txt
+  if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Vision dependency install failed.
+    pause
+    exit /b 1
+  )
+)
+popd
+
+echo [INFO] Starting local YOLO vision service on port %VISION_PORT% ...
+pushd "%PROJECT_DIR%"
+start "AniCare Vision" cmd /k "python -m uvicorn vision_service.main:app --host 127.0.0.1 --port %VISION_PORT%"
+popd
+
+echo [INFO] Waiting for vision service to be ready...
+powershell -Command "$deadline=(Get-Date).AddSeconds(90); while ((Get-Date) -lt $deadline) { if ((Test-NetConnection -ComputerName localhost -Port %VISION_PORT% -WarningAction SilentlyContinue).TcpTestSucceeded) { exit 0 }; Start-Sleep -Milliseconds 800 }; exit 1"
+if %ERRORLEVEL% neq 0 (
+  echo [ERROR] Vision service did not start. Check the AniCare Vision window for Python errors.
+  pause
+  exit /b 1
 )
 
 echo [INFO] Starting AniCare AI dev server on port %PORT% ...

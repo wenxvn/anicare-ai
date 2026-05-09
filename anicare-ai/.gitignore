@@ -25,6 +25,8 @@ dist/
 .DS_Store
 *.tsbuildinfo
 next-env.d.ts
+*.pt
+Ultralytics/
 
 # debug
 npm-debug.log*
