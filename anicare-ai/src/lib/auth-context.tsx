@@ -9,18 +9,21 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
+  ready: boolean;
   login: (username: string, password: string) => boolean;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
+  ready: false,
   login: () => false,
   logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [ready, setReady] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -28,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (stored) {
       try { setUser(JSON.parse(stored)); } catch { /* ignore */ }
     }
+    setReady(true);
   }, []);
 
   const login = (username: string, password: string): boolean => {
@@ -47,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, ready, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

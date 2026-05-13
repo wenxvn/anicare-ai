@@ -6,13 +6,13 @@ const config: Config = {
     extend: {
       colors: {
         surface: {
-          900: '#f8f5f0',
+          900: '#f5f7fb',
           800: '#ffffff',
-          700: '#f3efe8'
+          700: '#e8edf5'
         },
         warm: {
-          50: '#1a1615',
-          100: '#5c524a',
+          50: '#172033',
+          100: '#5d6b82',
           500: '#0d9488'
         },
         accent: {
@@ -34,8 +34,8 @@ const config: Config = {
         }
       },
       borderRadius: {
-        '2xl': '1rem',
-        '3xl': '1.25rem'
+        '2xl': '0.75rem',
+        '3xl': '0.875rem'
       }
     }
   },

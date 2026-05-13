@@ -22,7 +22,7 @@ interface RiskBadgeProps {
 export function RiskBadge({ risk }: RiskBadgeProps) {
   const displayLabel = RISK_LEVEL_LABEL[risk as RiskLevel] ?? risk;
   return (
-    <span className={clsx('rounded-full border px-2.5 py-1 text-xs font-medium', riskStyles[risk] ?? 'border-[#1a1615]/10 text-[#5c524a]')}>
+    <span className={clsx('rounded-full border px-2.5 py-1 text-xs font-medium', riskStyles[risk] ?? 'border-[#172033]/10 text-[#5d6b82]')}>
       {displayLabel}
     </span>
   );

@@ -28,10 +28,10 @@ export function LiveDecision({ decision }: LiveDecisionProps) {
       <div className="mt-4 space-y-3">
         {stages.map((label, index) => (
           <div key={label} className="flex items-center gap-3 text-sm">
-            <span className={"flex h-6 w-6 items-center justify-center rounded-full border text-xs " + (index <= step ? 'border-teal-500/40 bg-teal-500/10 text-teal-700' : 'border-[#1a1615]/10 text-[#5c524a]/40')}>
+            <span className={"flex h-6 w-6 items-center justify-center rounded-full border text-xs " + (index <= step ? 'border-teal-500/40 bg-teal-500/10 text-teal-700' : 'border-[#172033]/10 text-[#5d6b82]/40')}>
               {index < step ? '✓' : index + 1}
             </span>
-            <span className={index <= step ? 'text-[#1a1615]' : 'text-[#5c524a]/40'}>{label}</span>
+            <span className={index <= step ? 'text-[#172033]' : 'text-[#5d6b82]/40'}>{label}</span>
           </div>
         ))}
       </div>
@@ -39,11 +39,11 @@ export function LiveDecision({ decision }: LiveDecisionProps) {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 2.2 }}
-        className="mt-6 rounded-2xl border border-[#1a1615]/8 bg-[#f8f5f0] p-4 text-sm leading-relaxed text-[#5c524a]"
+        className="mt-6 rounded-2xl border border-[#172033]/8 bg-[#f5f7fb] p-4 text-sm leading-relaxed text-[#5d6b82]"
       >
-        <p><span className="text-[#5c524a]/50">风险评分：</span>{decision.riskScore}</p>
-        <p className="mt-2"><span className="text-[#5c524a]/50">原因判断：</span>{decision.cause}</p>
-        <p className="mt-2"><span className="text-[#5c524a]/50">处置建议：</span>{decision.suggestion}</p>
+        <p><span className="text-[#5d6b82]/50">风险评分：</span>{decision.riskScore}</p>
+        <p className="mt-2"><span className="text-[#5d6b82]/50">原因判断：</span>{decision.cause}</p>
+        <p className="mt-2"><span className="text-[#5d6b82]/50">处置建议：</span>{decision.suggestion}</p>
       </motion.div>
     </div>
   );

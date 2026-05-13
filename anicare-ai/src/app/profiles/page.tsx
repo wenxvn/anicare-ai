@@ -77,7 +77,7 @@ export default function ProfilesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.06 }}
               onClick={() => setSelected(p)}
-              className="card-glow cursor-pointer rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
+              className="card-glow cursor-pointer rounded-3xl border border-[#172033]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
             >
               <div className="flex items-start justify-between">
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
@@ -89,15 +89,15 @@ export default function ProfilesPage() {
                   ))}
                 </div>
               </div>
-              <p className="mt-4 text-base font-semibold text-[#1a1615]">{p.name}</p>
-              <p className="text-xs text-[#5c524a]/50">{p.room} · {p.age} 岁</p>
+              <p className="mt-4 text-base font-semibold text-[#172033]">{p.name}</p>
+              <p className="text-xs text-[#5d6b82]/50">{p.room} · {p.age} 岁</p>
               <div className="mt-3 flex items-center gap-2">
                 <span className={`inline-block h-2 w-2 rounded-full ${
                   p.todayStatus.includes('待处理') || p.todayStatus.includes('摔倒') ? 'bg-red-500 animate-pulse' :
                   p.todayStatus.includes('已通知') || p.todayStatus.includes('待确认') ? 'bg-orange-500' :
                   p.todayStatus.includes('观察中') ? 'bg-amber-500' : 'bg-emerald-500'
                 }`} />
-                <span className="text-sm text-[#5c524a]">{p.todayStatus}</span>
+                <span className="text-sm text-[#5d6b82]">{p.todayStatus}</span>
               </div>
               <div className="mt-3 text-xs text-teal-600">
                 点击查看行为画像 →
@@ -108,21 +108,21 @@ export default function ProfilesPage() {
       ) : (
         <AnimatePresence mode="wait">
           <motion.div key={selected.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
-            <button onClick={() => setSelected(null)} className="mb-6 inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-sm text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+            <button onClick={() => setSelected(null)} className="mb-6 inline-flex items-center gap-1.5 rounded-2xl border border-[#172033]/10 px-4 py-2 text-sm text-[#5d6b82] transition-colors hover:border-teal-500/40 hover:text-teal-700">
               <Icon icon="mdi:arrow-left" className="text-base" />
               返回老人列表
             </button>
 
             <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
               <div className="space-y-5">
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <div className="flex items-center gap-4">
                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
                       <Icon icon="mdi:account-circle" className="text-3xl" />
                     </div>
                     <div>
-                      <p className="text-xl font-semibold text-[#1a1615]">{selected.name}</p>
-                      <p className="text-sm text-[#5c524a]">{selected.room} · {selected.age} 岁</p>
+                      <p className="text-xl font-semibold text-[#172033]">{selected.name}</p>
+                      <p className="text-sm text-[#5d6b82]">{selected.room} · {selected.age} 岁</p>
                       <div className="mt-1 flex gap-2">
                         {selected.riskTags.map((tag) => (
                           <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-600">{tag}</span>
@@ -132,8 +132,8 @@ export default function ProfilesPage() {
                   </div>
                 </div>
 
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">日常习惯数据</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">日常习惯数据</p>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     {[
                       { label: '平均起床时间', value: selected.avgWakeTime, icon: 'mdi:weather-sunset-up' },
@@ -143,12 +143,12 @@ export default function ProfilesPage() {
                       { label: '近 7 天异常', value: `${selected.weeklyAnomalies} 次`, icon: 'mdi:alert-circle-outline' },
                       { label: '今日偏离度', value: `${selected.todayDeviation}%`, icon: 'mdi:trending-up' },
                     ].map((item) => (
-                      <div key={item.label} className="rounded-2xl border border-[#1a1615]/8 bg-[#f8f5f0] p-3">
+                      <div key={item.label} className="rounded-2xl border border-[#172033]/8 bg-[#f5f7fb] p-3">
                         <div className="flex items-center gap-2">
                           <Icon icon={item.icon} className="text-sm text-teal-600" />
-                          <span className="text-xs text-[#5c524a]/50">{item.label}</span>
+                          <span className="text-xs text-[#5d6b82]/50">{item.label}</span>
                         </div>
-                        <p className="mt-1.5 text-sm font-semibold text-[#1a1615]">{item.value}</p>
+                        <p className="mt-1.5 text-sm font-semibold text-[#172033]">{item.value}</p>
                       </div>
                     ))}
                   </div>
@@ -158,11 +158,11 @@ export default function ProfilesPage() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
                       <Icon icon="mdi:clipboard-text-search-outline" className="text-lg text-teal-600" />
-                      <p className="text-sm font-semibold text-[#1a1615]">本周护理关注摘要</p>
+                      <p className="text-sm font-semibold text-[#172033]">本周护理关注摘要</p>
                     </div>
                     <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">自动生成</span>
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">
+                  <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">
                     {selected.name} 本周主要关注点为 {selected.riskTags.join('、')}。系统结合活动趋势、夜间离床记录和历史事件，建议当班护理员在
                     {selected.frequentZones.slice(0, 2).join('、')} 增加巡查频次，并在交接班时复核今日状态。
                   </p>
@@ -172,24 +172,24 @@ export default function ProfilesPage() {
                       { label: '关注原因', value: selected.riskTags[0] ?? '行为波动' },
                       { label: '建议频次', value: selected.todayDeviation >= 70 ? '每 30 分钟' : '每 2 小时' },
                     ].map((item) => (
-                      <div key={item.label} className="rounded-2xl bg-[#f8f5f0] p-3">
-                        <p className="text-xs text-[#5c524a]/50">{item.label}</p>
-                        <p className="mt-1 text-sm font-semibold text-[#1a1615]">{item.value}</p>
+                      <div key={item.label} className="rounded-2xl bg-[#f5f7fb] p-3">
+                        <p className="text-xs text-[#5d6b82]/50">{item.label}</p>
+                        <p className="mt-1 text-sm font-semibold text-[#172033]">{item.value}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">7 天活动趋势</p>
-                  <p className="mt-1 text-xs text-[#5c524a]">每天的活动时长（小时）</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">7 天活动趋势</p>
+                  <p className="mt-1 text-xs text-[#5d6b82]">每天的活动时长（小时）</p>
                   <div className="mt-4 h-52">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={selected.weeklyActivityTrend}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
-                        <XAxis dataKey="day" stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} />
-                        <YAxis stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} />
-                        <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(26,22,21,0.08)' }} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
+                        <XAxis dataKey="day" stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} />
+                        <YAxis stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} />
+                        <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(23,32,51,0.08)' }} />
                         <Area type="monotone" dataKey="hours" stroke="#0d9488" fill="#0d948822" strokeWidth={2} name="活动时长" />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -197,31 +197,31 @@ export default function ProfilesPage() {
                 </div>
 
                 <div className="grid gap-5 xl:grid-cols-2">
-                  <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                    <p className="text-sm font-semibold text-[#1a1615]">夜间离床次数趋势</p>
-                    <p className="mt-1 text-xs text-[#5c524a]">每晚离床次数</p>
+                  <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                    <p className="text-sm font-semibold text-[#172033]">夜间离床次数趋势</p>
+                    <p className="mt-1 text-xs text-[#5d6b82]">每晚离床次数</p>
                     <div className="mt-4 h-48">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={selected.nightLeaveTrend}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
-                          <XAxis dataKey="day" stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} fontSize={12} />
-                          <YAxis stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} />
-                          <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(26,22,21,0.08)' }} />
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
+                          <XAxis dataKey="day" stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} fontSize={12} />
+                          <YAxis stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} />
+                          <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(23,32,51,0.08)' }} />
                           <Bar dataKey="count" fill="#0d9488" radius={[8, 8, 0, 0]} name="离床次数" />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
-                  <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                    <p className="text-sm font-semibold text-[#1a1615]">风险事件频次</p>
-                    <p className="mt-1 text-xs text-[#5c524a]">每天触发的风险事件数</p>
+                  <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                    <p className="text-sm font-semibold text-[#172033]">风险事件频次</p>
+                    <p className="mt-1 text-xs text-[#5d6b82]">每天触发的风险事件数</p>
                     <div className="mt-4 h-48">
                       <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={selected.riskEventTrend}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
-                          <XAxis dataKey="day" stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} fontSize={12} />
-                          <YAxis stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} />
-                          <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(26,22,21,0.08)' }} />
+                          <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
+                          <XAxis dataKey="day" stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} fontSize={12} />
+                          <YAxis stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} />
+                          <Tooltip contentStyle={{ background: '#fff', borderRadius: 16, border: '1px solid rgba(23,32,51,0.08)' }} />
                           <Bar dataKey="count" fill="#dc2626" radius={[8, 8, 0, 0]} name="风险事件" />
                         </BarChart>
                       </ResponsiveContainer>
@@ -238,35 +238,35 @@ export default function ProfilesPage() {
                   </div>
                   <div className="mt-4">
                     <div className="mb-3 flex items-center gap-3">
-                      <span className="text-3xl font-bold text-[#1a1615]">{selected.todayDeviation}<span className="text-base text-[#5c524a]/50">%</span></span>
+                      <span className="text-3xl font-bold text-[#172033]">{selected.todayDeviation}<span className="text-base text-[#5d6b82]/50">%</span></span>
                       <div className="flex-1">
-                        <div className="h-2 rounded-full bg-[#f0ece5]">
+                        <div className="h-2 rounded-full bg-[#e8edf5]">
                           <div className={`h-2 rounded-full ${selected.todayDeviation >= 70 ? 'bg-red-500' : selected.todayDeviation >= 40 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${selected.todayDeviation}%` }} />
                         </div>
-                        <p className="mt-1 text-xs text-[#5c524a]/50">今日行为偏离度</p>
+                        <p className="mt-1 text-xs text-[#5d6b82]/50">今日行为偏离度</p>
                       </div>
                     </div>
-                    <p className="text-sm leading-relaxed text-[#5c524a]">{selected.deviationSummary}</p>
+                    <p className="text-sm leading-relaxed text-[#5d6b82]">{selected.deviationSummary}</p>
                   </div>
                 </div>
 
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">今日状态</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">今日状态</p>
                   <div className="mt-3 flex items-center gap-2">
                     <span className={`inline-block h-2.5 w-2.5 rounded-full ${
                       selected.todayStatus.includes('待处理') || selected.todayStatus.includes('摔倒') ? 'bg-red-500 animate-pulse' :
                       selected.todayStatus.includes('已通知') || selected.todayStatus.includes('待确认') ? 'bg-orange-500' :
                       selected.todayStatus.includes('观察中') ? 'bg-amber-500' : 'bg-emerald-500'
                     }`} />
-                    <span className="text-sm text-[#1a1615]">{selected.todayStatus}</span>
+                    <span className="text-sm text-[#172033]">{selected.todayStatus}</span>
                   </div>
                 </div>
 
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">常去区域</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">常去区域</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selected.frequentZones.map((zone) => (
-                      <span key={zone} className="rounded-2xl border border-[#1a1615]/8 bg-[#f8f5f0] px-3 py-1.5 text-xs text-[#5c524a]">
+                      <span key={zone} className="rounded-2xl border border-[#172033]/8 bg-[#f5f7fb] px-3 py-1.5 text-xs text-[#5d6b82]">
                         <Icon icon="mdi:map-marker-outline" className="mr-1 inline text-sm text-teal-600" />
                         {zone}
                       </span>
@@ -274,8 +274,8 @@ export default function ProfilesPage() {
                   </div>
                 </div>
 
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">风险标签</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">风险标签</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selected.riskTags.map((tag) => (
                       <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-600">{tag}</span>

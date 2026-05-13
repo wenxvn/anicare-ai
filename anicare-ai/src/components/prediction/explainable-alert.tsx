@@ -47,10 +47,10 @@ function AlertCard({ alert, index, onStatusChange }: AlertCardProps) {
             <span className={clsx('rounded-full px-2.5 py-0.5 text-[11px] font-medium', statusCfg.color)}>
               {statusCfg.label}
             </span>
-            <span className="text-xs text-[#5c524a]/50">{alert.alertType}</span>
+            <span className="text-xs text-[#5d6b82]/50">{alert.alertType}</span>
           </div>
-          <p className="mt-1.5 text-sm font-medium text-[#1a1615]">{alert.zone} · {alert.roomName}</p>
-          <p className="mt-1 text-xs leading-relaxed text-[#5c524a]/80">{alert.triggerReason}</p>
+          <p className="mt-1.5 text-sm font-medium text-[#172033]">{alert.zone} · {alert.roomName}</p>
+          <p className="mt-1 text-xs leading-relaxed text-[#5d6b82]/80">{alert.triggerReason}</p>
         </div>
         <div className="flex items-center gap-1.5">
           {statusCfg.next && (
@@ -63,7 +63,7 @@ function AlertCard({ alert, index, onStatusChange }: AlertCardProps) {
           )}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="rounded-xl p-1.5 text-[#5c524a] transition-colors hover:bg-[#f8f5f0] hover:text-[#1a1615]"
+            className="rounded-xl p-1.5 text-[#5d6b82] transition-colors hover:bg-[#f5f7fb] hover:text-[#172033]"
           >
             <Icon icon={expanded ? 'mdi:chevron-up' : 'mdi:chevron-down'} className="text-lg" />
           </button>
@@ -79,17 +79,17 @@ function AlertCard({ alert, index, onStatusChange }: AlertCardProps) {
             transition={{ duration: 0.3 }}
             className="overflow-hidden"
           >
-            <div className="mt-3 space-y-3 border-t border-[#1a1615]/6 pt-3">
+            <div className="mt-3 space-y-3 border-t border-[#172033]/6 pt-3">
               <div>
-                <p className="text-xs font-medium text-[#5c524a]">触发贡献因子</p>
+                <p className="text-xs font-medium text-[#5d6b82]">触发贡献因子</p>
                 <div className="mt-2 space-y-2">
                   {alert.contributors.map((c, ci) => (
                     <div key={ci}>
                       <div className="flex items-center justify-between text-xs">
-                        <span className="text-[#1a1615]">{c.factor}</span>
-                        <span className="font-medium text-[#1a1615]">{(c.weight * 100).toFixed(0)}%</span>
+                        <span className="text-[#172033]">{c.factor}</span>
+                        <span className="font-medium text-[#172033]">{(c.weight * 100).toFixed(0)}%</span>
                       </div>
-                      <div className="mt-1 h-1.5 rounded-full bg-[#f0ece5]">
+                      <div className="mt-1 h-1.5 rounded-full bg-[#e8edf5]">
                         <motion.div
                           className="h-1.5 rounded-full bg-teal-500"
                           initial={{ width: 0 }}
@@ -97,7 +97,7 @@ function AlertCard({ alert, index, onStatusChange }: AlertCardProps) {
                           transition={{ delay: ci * 0.1, duration: 0.5 }}
                         />
                       </div>
-                      <p className="mt-0.5 text-[10px] text-[#5c524a]/60">{c.description}</p>
+                      <p className="mt-0.5 text-[10px] text-[#5d6b82]/60">{c.description}</p>
                     </div>
                   ))}
                 </div>
@@ -108,7 +108,7 @@ function AlertCard({ alert, index, onStatusChange }: AlertCardProps) {
                 <p className="mt-1 text-xs leading-relaxed text-teal-800">{alert.suggestion}</p>
               </div>
 
-              <div className="flex items-center gap-4 text-[10px] text-[#5c524a]/50">
+              <div className="flex items-center gap-4 text-[10px] text-[#5d6b82]/50">
                 <span>置信度 {(alert.confidence * 100).toFixed(0)}%</span>
                 <span>触发时间 {alert.createdAt}</span>
               </div>
@@ -142,14 +142,14 @@ export function ExplainableAlertList({ alerts: initialAlerts, className }: Expla
   };
 
   return (
-    <div className={clsx('card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5', className)}>
+    <div className={clsx('card-glow rounded-3xl border border-[#172033]/8 bg-white p-5', className)}>
       <div className="flex items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <Icon icon="mdi:message-alert-outline" className="text-lg text-teal-600" />
-            <p className="text-sm font-semibold text-[#1a1615]">可解释预警队列</p>
+            <p className="text-sm font-semibold text-[#172033]">可解释预警队列</p>
           </div>
-          <p className="mt-1 text-xs text-[#5c524a]">每条预警附带触发依据、贡献因子与处置建议</p>
+          <p className="mt-1 text-xs text-[#5d6b82]">每条预警附带触发依据、贡献因子与处置建议</p>
         </div>
         <div className="flex gap-1.5">
           {[
@@ -163,7 +163,7 @@ export function ExplainableAlertList({ alerts: initialAlerts, className }: Expla
               onClick={() => setFilter(f.key)}
               className={clsx(
                 'rounded-xl px-3 py-1.5 text-xs font-medium transition-colors',
-                filter === f.key ? 'bg-teal-500/10 text-teal-700' : 'text-[#5c524a] hover:bg-[#f8f5f0]'
+                filter === f.key ? 'bg-teal-500/10 text-teal-700' : 'text-[#5d6b82] hover:bg-[#f5f7fb]'
               )}
             >
               {f.label} ({counts[f.key]})
@@ -174,7 +174,7 @@ export function ExplainableAlertList({ alerts: initialAlerts, className }: Expla
 
       <div className="mt-4 space-y-3">
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 py-8 text-[#5c524a]/40">
+          <div className="flex flex-col items-center gap-2 py-8 text-[#5d6b82]/40">
             <Icon icon="mdi:check-circle-outline" className="text-3xl" />
             <p className="text-sm">当前筛选条件下暂无预警</p>
           </div>

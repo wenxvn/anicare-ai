@@ -29,7 +29,7 @@ function RiskRing({ score, riskLevel }: { score: number; riskLevel: string }) {
   return (
     <div className="relative flex items-center justify-center">
       <svg width="132" height="132" className="-rotate-90">
-        <circle cx="66" cy="66" r={radius} fill="none" stroke="rgba(26,22,21,0.06)" strokeWidth="10" />
+        <circle cx="66" cy="66" r={radius} fill="none" stroke="rgba(23,32,51,0.06)" strokeWidth="10" />
         <motion.circle
           cx="66" cy="66" r={radius} fill="none"
           stroke={colors.stroke}
@@ -43,14 +43,14 @@ function RiskRing({ score, riskLevel }: { score: number; riskLevel: string }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <motion.span
-          className="text-3xl font-bold text-[#1a1615]"
+          className="text-3xl font-bold text-[#172033]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
         >
           {score}
         </motion.span>
-        <span className="text-xs text-[#5c524a]">风险总分</span>
+        <span className="text-xs text-[#5d6b82]">风险总分</span>
       </div>
     </div>
   );
@@ -62,7 +62,7 @@ function ModalityRow({ modality, index }: { modality: ModalityStatus; index: num
       initial={{ opacity: 0, x: -12 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: 0.2 + index * 0.1, duration: 0.4 }}
-      className="flex items-center gap-3 rounded-2xl border border-[#1a1615]/6 bg-[#faf8f5] px-4 py-3"
+      className="flex items-center gap-3 rounded-2xl border border-[#172033]/6 bg-[#f8fafc] px-4 py-3"
     >
       <div className={clsx(
         'flex h-9 w-9 items-center justify-center rounded-xl',
@@ -72,7 +72,7 @@ function ModalityRow({ modality, index }: { modality: ModalityStatus; index: num
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-[#1a1615]">{modality.label}</span>
+          <span className="text-sm font-medium text-[#172033]">{modality.label}</span>
           <span className={clsx(
             'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium',
             modality.online ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-100 text-gray-500'
@@ -81,11 +81,11 @@ function ModalityRow({ modality, index }: { modality: ModalityStatus; index: num
             {modality.online ? '在线' : '离线'}
           </span>
         </div>
-        <p className="mt-0.5 truncate text-xs text-[#5c524a]/70">{modality.detail}</p>
+        <p className="mt-0.5 truncate text-xs text-[#5d6b82]/70">{modality.detail}</p>
       </div>
       <div className="text-right">
-        <span className="text-lg font-semibold text-[#1a1615]">{modality.score}</span>
-        <p className="text-[10px] text-[#5c524a]/50">分</p>
+        <span className="text-lg font-semibold text-[#172033]">{modality.score}</span>
+        <p className="text-[10px] text-[#5d6b82]/50">分</p>
       </div>
     </motion.div>
   );
@@ -103,7 +103,7 @@ export function FusionRiskCard({ data, className }: FusionRiskCardProps) {
 
   return (
     <div className={clsx(
-      'card-glow rounded-3xl border border-[#1a1615]/8 bg-gradient-to-br p-5',
+      'card-glow rounded-3xl border border-[#172033]/8 bg-gradient-to-br p-5',
       colors.bg,
       className
     )}>
@@ -111,9 +111,9 @@ export function FusionRiskCard({ data, className }: FusionRiskCardProps) {
         <div>
           <div className="flex items-center gap-2">
             <Icon icon="mdi:merge" className="text-lg text-teal-600" />
-            <p className="text-sm font-semibold text-[#1a1615]">多模态融合风险评估</p>
+            <p className="text-sm font-semibold text-[#172033]">多模态融合风险评估</p>
           </div>
-          <p className="mt-1 text-xs text-[#5c524a]">视觉 · 床压 · 门磁 · 毫米波四源融合</p>
+          <p className="mt-1 text-xs text-[#5d6b82]">视觉 · 床压 · 门磁 · 毫米波四源融合</p>
         </div>
         <div className="flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1">
           <Icon icon={trendIcon} className={clsx('text-sm', trendColor)} />
@@ -136,7 +136,7 @@ export function FusionRiskCard({ data, className }: FusionRiskCardProps) {
             )}>
               {RISK_LEVEL_LABEL[data.riskLevel]}
             </span>
-            <span className="text-xs text-[#5c524a]">置信度 {(data.confidence * 100).toFixed(0)}%</span>
+            <span className="text-xs text-[#5d6b82]">置信度 {(data.confidence * 100).toFixed(0)}%</span>
           </div>
         </div>
 
@@ -148,8 +148,8 @@ export function FusionRiskCard({ data, className }: FusionRiskCardProps) {
       </div>
 
       <div className="mt-4 rounded-2xl bg-white/60 p-4">
-        <p className="text-xs font-medium text-[#5c524a]">融合分析摘要</p>
-        <p className="mt-1 text-sm leading-relaxed text-[#1a1615]/80">{data.summary}</p>
+        <p className="text-xs font-medium text-[#5d6b82]">融合分析摘要</p>
+        <p className="mt-1 text-sm leading-relaxed text-[#172033]/80">{data.summary}</p>
       </div>
     </div>
   );

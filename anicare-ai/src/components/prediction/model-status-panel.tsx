@@ -20,10 +20,10 @@ export function ModelStatusPanel({ status, className }: ModelStatusPanelProps) {
   const cfg = STATUS_CONFIG[status.status] || STATUS_CONFIG.idle;
 
   return (
-    <div className={clsx('card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5', className)}>
+    <div className={clsx('card-glow rounded-3xl border border-[#172033]/8 bg-white p-5', className)}>
       <div className="flex items-center gap-2">
         <Icon icon="mdi:cpu-64-bit" className="text-lg text-teal-600" />
-        <p className="text-sm font-semibold text-[#1a1615]">模型运行状态</p>
+        <p className="text-sm font-semibold text-[#172033]">模型运行状态</p>
         <span className="ml-auto inline-flex items-center gap-1.5 text-xs font-medium">
           <span className={clsx('h-2 w-2 rounded-full', cfg.dot)} />
           <span className={cfg.color}>{cfg.label}</span>
@@ -42,16 +42,16 @@ export function ModelStatusPanel({ status, className }: ModelStatusPanelProps) {
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.35 }}
-            className="rounded-2xl bg-[#faf8f5] p-3"
+            className="rounded-2xl bg-[#f8fafc] p-3"
           >
-            <Icon icon={item.icon} className="text-sm text-[#5c524a]/50" />
-            <p className="mt-1 text-[10px] text-[#5c524a]/60">{item.label}</p>
-            <p className="mt-0.5 text-sm font-semibold text-[#1a1615]">{item.value}</p>
+            <Icon icon={item.icon} className="text-sm text-[#5d6b82]/50" />
+            <p className="mt-1 text-[10px] text-[#5d6b82]/60">{item.label}</p>
+            <p className="mt-0.5 text-sm font-semibold text-[#172033]">{item.value}</p>
           </motion.div>
         ))}
       </div>
 
-      <div className="mt-3 flex items-center gap-2 text-[10px] text-[#5c524a]/40">
+      <div className="mt-3 flex items-center gap-2 text-[10px] text-[#5d6b82]/40">
         <Icon icon="mdi:clock-outline" className="text-xs" />
         <span>最近一次推理: {status.lastRunAt}</span>
       </div>

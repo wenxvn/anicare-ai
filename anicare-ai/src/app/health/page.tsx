@@ -51,27 +51,27 @@ function HealthScoreRing({ score, label, color }: { score: number; label: string
   return (
     <div className="flex flex-col items-center">
       <svg width="88" height="88" viewBox="0 0 88 88">
-        <circle cx="44" cy="44" r={radius} fill="none" stroke="#f3efe8" strokeWidth="6" />
+        <circle cx="44" cy="44" r={radius} fill="none" stroke="#e8edf5" strokeWidth="6" />
         <circle cx="44" cy="44" r={radius} fill="none" stroke={color} strokeWidth="6" strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} transform="rotate(-90 44 44)" />
-        <text x="44" y="44" textAnchor="middle" dominantBaseline="central" className="text-lg font-bold" fill="#1a1615">{score}</text>
+        <text x="44" y="44" textAnchor="middle" dominantBaseline="central" className="text-lg font-bold" fill="#172033">{score}</text>
       </svg>
-      <span className="mt-1 text-xs text-[#5c524a]">{label}</span>
+      <span className="mt-1 text-xs text-[#5d6b82]">{label}</span>
     </div>
   );
 }
 
 function MiniTag({ label, className }: { label: string; className?: string }) {
-  return <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${className ?? 'border-[#1a1615]/10 text-[#5c524a]'}`}>{label}</span>;
+  return <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-medium ${className ?? 'border-[#172033]/10 text-[#5d6b82]'}`}>{label}</span>;
 }
 
 function ScoreBar({ label, value, max = 100, color = '#0d9488' }: { label: string; value: number; max?: number; color?: string }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
-        <span className="text-[#5c524a]">{label}</span>
-        <span className="font-medium text-[#1a1615]">{value}{max === 100 ? '' : `/${max}`}</span>
+        <span className="text-[#5d6b82]">{label}</span>
+        <span className="font-medium text-[#172033]">{value}{max === 100 ? '' : `/${max}`}</span>
       </div>
-      <div className="h-1.5 rounded-full bg-[#f3efe8]">
+      <div className="h-1.5 rounded-full bg-[#e8edf5]">
         <div className="h-1.5 rounded-full transition-all duration-500" style={{ width: `${(value / max) * 100}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -85,7 +85,7 @@ function ElderListItem({ elder, selected, onClick }: { elder: ElderHealthData; s
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
       onClick={onClick}
-      className={`w-full rounded-2xl border p-3 text-left transition-all ${selected ? 'border-teal-500/40 bg-teal-500/5' : 'border-[#1a1615]/8 bg-white hover:border-teal-500/20'}`}
+      className={`w-full rounded-2xl border p-3 text-left transition-all ${selected ? 'border-teal-500/40 bg-teal-500/5' : 'border-[#172033]/8 bg-white hover:border-teal-500/20'}`}
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -93,8 +93,8 @@ function ElderListItem({ elder, selected, onClick }: { elder: ElderHealthData; s
             <Icon icon="mdi:account-heart-outline" className="text-base" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#1a1615]">{elder.name}</p>
-            <p className="text-[10px] text-[#5c524a]/60">{elder.age}岁 · {elder.gender} · {elder.room} {elder.bed}</p>
+            <p className="text-sm font-semibold text-[#172033]">{elder.name}</p>
+            <p className="text-[10px] text-[#5d6b82]/60">{elder.age}岁 · {elder.gender} · {elder.room} {elder.bed}</p>
           </div>
         </div>
         {isHighPriority && <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-red-500" />}
@@ -105,13 +105,13 @@ function ElderListItem({ elder, selected, onClick }: { elder: ElderHealthData; s
         <MiniTag label={elder.carePriority} className={carePriorityColorMap[elder.carePriority]} />
       </div>
       <div className="mt-2 grid grid-cols-2 gap-2">
-        <div className="rounded-lg bg-[#f8f5f0] px-2 py-1 text-center">
-          <p className="text-[10px] text-[#5c524a]/50">身体</p>
-          <p className="text-sm font-semibold text-[#1a1615]">{elder.bodyHealthScore}</p>
+        <div className="rounded-lg bg-[#f5f7fb] px-2 py-1 text-center">
+          <p className="text-[10px] text-[#5d6b82]/50">身体</p>
+          <p className="text-sm font-semibold text-[#172033]">{elder.bodyHealthScore}</p>
         </div>
-        <div className="rounded-lg bg-[#f8f5f0] px-2 py-1 text-center">
-          <p className="text-[10px] text-[#5c524a]/50">心理</p>
-          <p className="text-sm font-semibold text-[#1a1615]">{elder.mentalHealthScore}</p>
+        <div className="rounded-lg bg-[#f5f7fb] px-2 py-1 text-center">
+          <p className="text-[10px] text-[#5d6b82]/50">心理</p>
+          <p className="text-sm font-semibold text-[#172033]">{elder.mentalHealthScore}</p>
         </div>
       </div>
     </motion.button>
@@ -137,8 +137,8 @@ export default function HealthPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <motion.header initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-          <h1 className="text-3xl font-bold tracking-tight text-[#1a1615] sm:text-4xl">健康监护</h1>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5c524a]">
+          <h1 className="text-3xl font-bold tracking-tight text-[#172033] sm:text-4xl">健康监护</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5d6b82]">
             面向医养结合机构的智慧养老健康监护系统，融合可穿戴传感器数据、行为状态、情绪识别、心理健康风险提示和 AI 健康建议，为护理员提供身体健康与精神健康的综合辅助判断。
           </p>
         </motion.header>
@@ -148,48 +148,48 @@ export default function HealthPage() {
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-[#5c524a]">监护老人总数</p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#1a1615]">{mockElderHealthData.length}</p>
+              <p className="text-sm text-[#5d6b82]">监护老人总数</p>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#172033]">{mockElderHealthData.length}</p>
             </div>
             <div className="rounded-2xl bg-teal-500/10 p-2 text-teal-600"><Icon icon="mdi:account-group" className="text-xl" /></div>
           </div>
-          <p className="mt-3 text-xs text-[#5c524a]/50">当前系统监护中的老人</p>
+          <p className="mt-3 text-xs text-[#5d6b82]/50">当前系统监护中的老人</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }} className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-[#5c524a]">高风险老人</p>
+              <p className="text-sm text-[#5d6b82]">高风险老人</p>
               <p className="mt-2 text-3xl font-semibold tracking-tight text-red-600">{highRiskCount}</p>
             </div>
             <div className="rounded-2xl bg-red-500/10 p-2 text-red-600"><Icon icon="mdi:alert-circle-outline" className="text-xl" /></div>
           </div>
-          <p className="mt-3 text-xs text-[#5c524a]/50">身体或心理高风险需重点关注</p>
+          <p className="mt-3 text-xs text-[#5d6b82]/50">身体或心理高风险需重点关注</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-[#5c524a]">重点关注老人</p>
+              <p className="text-sm text-[#5d6b82]">重点关注老人</p>
               <p className="mt-2 text-3xl font-semibold tracking-tight text-orange-600">{focusCount}</p>
             </div>
             <div className="rounded-2xl bg-orange-500/10 p-2 text-orange-600"><Icon icon="mdi:eye-check-outline" className="text-xl" /></div>
           </div>
-          <p className="mt-3 text-xs text-[#5c524a]/50">需要重点关注或立即处理</p>
+          <p className="mt-3 text-xs text-[#5d6b82]/50">需要重点关注或立即处理</p>
         </motion.div>
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-[#5c524a]">近期风险事件</p>
-              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#1a1615]">{stressEvents}</p>
+              <p className="text-sm text-[#5d6b82]">近期风险事件</p>
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-[#172033]">{stressEvents}</p>
             </div>
             <div className="rounded-2xl bg-amber-500/10 p-2 text-amber-600"><Icon icon="mdi:alert-octagon-outline" className="text-xl" /></div>
           </div>
-          <p className="mt-3 text-xs text-[#5c524a]/50">近期内需要关注的健康事件</p>
+          <p className="mt-3 text-xs text-[#5d6b82]/50">近期内需要关注的健康事件</p>
         </motion.div>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
         <div className="space-y-2">
-          <p className="mb-2 text-sm font-semibold text-[#1a1615]">监护列表</p>
+          <p className="mb-2 text-sm font-semibold text-[#172033]">监护列表</p>
           {mockElderHealthData.map((elder) => (
             <ElderListItem key={elder.id} elder={elder} selected={elder.id === selectedId} onClick={() => setSelectedId(elder.id)} />
           ))}
@@ -198,15 +198,15 @@ export default function HealthPage() {
         <AnimatePresence mode="wait">
           <motion.div key={selected.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="space-y-5">
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
                     <Icon icon="mdi:account-heart-outline" className="text-2xl" />
                   </div>
                   <div>
-                    <p className="text-lg font-semibold text-[#1a1615]">{selected.name}</p>
-                    <p className="text-xs text-[#5c524a]">{selected.age}岁 · {selected.gender} · {selected.room} {selected.bed} · {selected.careLevel}</p>
+                    <p className="text-lg font-semibold text-[#172033]">{selected.name}</p>
+                    <p className="text-xs text-[#5d6b82]">{selected.age}岁 · {selected.gender} · {selected.room} {selected.bed} · {selected.careLevel}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -220,18 +220,18 @@ export default function HealthPage() {
                 <HealthScoreRing score={selected.bodyHealthScore} label="身体健康" color="#0d9488" />
                 <HealthScoreRing score={selected.mentalHealthScore} label="心理健康" color="#6366f1" />
                 <div className="flex flex-col items-center">
-                  <span className="text-2xl font-bold text-[#1a1615]">{(selected.emotionConfidence * 100).toFixed(0)}%</span>
-                  <span className="mt-1 text-xs text-[#5c524a]">情绪置信度</span>
+                  <span className="text-2xl font-bold text-[#172033]">{(selected.emotionConfidence * 100).toFixed(0)}%</span>
+                  <span className="mt-1 text-xs text-[#5d6b82]">情绪置信度</span>
                 </div>
               </div>
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Icon icon="mdi:heart-pulse" className="text-lg text-teal-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">身体健康监护</p>
+                <p className="text-sm font-semibold text-[#172033]">身体健康监护</p>
               </div>
-              <p className="mb-4 text-xs text-[#5c524a]/60">系统融合可穿戴传感器数据与环境监控数据，对老人心率、血氧、体温、呼吸频率、活动量、睡眠状态、久卧和离床行为进行综合分析，辅助护理员及时发现潜在身体健康风险。</p>
+              <p className="mb-4 text-xs text-[#5d6b82]/60">系统融合可穿戴传感器数据与环境监控数据，对老人心率、血氧、体温、呼吸频率、活动量、睡眠状态、久卧和离床行为进行综合分析，辅助护理员及时发现潜在身体健康风险。</p>
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {[
                   { label: '心率', value: `${selected.wearableData.heartRate} bpm`, icon: 'mdi:heart-pulse', ok: selected.wearableData.heartRate >= 60 && selected.wearableData.heartRate <= 100 },
@@ -245,45 +245,45 @@ export default function HealthPage() {
                   { label: '夜间醒来', value: `${selected.wearableData.wakeUpTimes} 次`, icon: 'mdi:alert-circle-outline', ok: selected.wearableData.wakeUpTimes <= 2 },
                   { label: '夜间离床', value: `${selected.wearableData.bedExitTimes} 次`, icon: 'mdi:bed-outline', ok: selected.wearableData.bedExitTimes <= 2 },
                 ].map((item) => (
-                  <div key={item.label} className={`flex items-center gap-3 rounded-2xl border p-3 ${item.ok ? 'border-[#1a1615]/8 bg-[#f8f5f0]' : 'border-red-200 bg-red-50'}`}>
+                  <div key={item.label} className={`flex items-center gap-3 rounded-2xl border p-3 ${item.ok ? 'border-[#172033]/8 bg-[#f5f7fb]' : 'border-red-200 bg-red-50'}`}>
                     <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${item.ok ? 'bg-teal-500/10 text-teal-600' : 'bg-red-500/10 text-red-600'}`}>
                       <Icon icon={item.icon} className="text-lg" />
                     </div>
                     <div>
-                      <p className="text-[10px] text-[#5c524a]/50">{item.label}</p>
-                      <p className={`text-sm font-semibold ${item.ok ? 'text-[#1a1615]' : 'text-red-600'}`}>{item.value}</p>
+                      <p className="text-[10px] text-[#5d6b82]/50">{item.label}</p>
+                      <p className={`text-sm font-semibold ${item.ok ? 'text-[#172033]' : 'text-red-600'}`}>{item.value}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="mt-3 grid grid-cols-3 gap-2">
-                <div className="rounded-xl bg-[#f8f5f0] px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">跌倒风险</p>
-                  <p className={`text-xs font-semibold ${selected.bodyRiskLevel === '高风险' || selected.bodyRiskLevel === '紧急' ? 'text-red-600' : 'text-[#1a1615]'}`}>{selected.wearableData.steps < 2000 ? '偏高' : '正常'}</p>
+                <div className="rounded-xl bg-[#f5f7fb] px-3 py-2 text-center">
+                  <p className="text-[10px] text-[#5d6b82]/50">跌倒风险</p>
+                  <p className={`text-xs font-semibold ${selected.bodyRiskLevel === '高风险' || selected.bodyRiskLevel === '紧急' ? 'text-red-600' : 'text-[#172033]'}`}>{selected.wearableData.steps < 2000 ? '偏高' : '正常'}</p>
                 </div>
-                <div className="rounded-xl bg-[#f8f5f0] px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">活动量异常</p>
-                  <p className={`text-xs font-semibold ${selected.wearableData.steps < 1500 ? 'text-red-600' : selected.wearableData.steps < 3000 ? 'text-amber-600' : 'text-[#1a1615]'}`}>{selected.wearableData.steps < 1500 ? '严重偏低' : selected.wearableData.steps < 3000 ? '偏低' : '正常'}</p>
+                <div className="rounded-xl bg-[#f5f7fb] px-3 py-2 text-center">
+                  <p className="text-[10px] text-[#5d6b82]/50">活动量异常</p>
+                  <p className={`text-xs font-semibold ${selected.wearableData.steps < 1500 ? 'text-red-600' : selected.wearableData.steps < 3000 ? 'text-amber-600' : 'text-[#172033]'}`}>{selected.wearableData.steps < 1500 ? '严重偏低' : selected.wearableData.steps < 3000 ? '偏低' : '正常'}</p>
                 </div>
-                <div className="rounded-xl bg-[#f8f5f0] px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">睡眠质量</p>
-                  <p className={`text-xs font-semibold ${selected.wearableData.sleepHours < 5 ? 'text-red-600' : selected.wearableData.sleepHours < 6 ? 'text-amber-600' : 'text-[#1a1615]'}`}>{selected.wearableData.sleepHours < 5 ? '严重不足' : selected.wearableData.sleepHours < 6 ? '偏低' : '正常'}</p>
+                <div className="rounded-xl bg-[#f5f7fb] px-3 py-2 text-center">
+                  <p className="text-[10px] text-[#5d6b82]/50">睡眠质量</p>
+                  <p className={`text-xs font-semibold ${selected.wearableData.sleepHours < 5 ? 'text-red-600' : selected.wearableData.sleepHours < 6 ? 'text-amber-600' : 'text-[#172033]'}`}>{selected.wearableData.sleepHours < 5 ? '严重不足' : selected.wearableData.sleepHours < 6 ? '偏低' : '正常'}</p>
                 </div>
               </div>
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Icon icon="mdi:brain" className="text-lg text-indigo-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">情绪状态 AI 判断</p>
+                <p className="text-sm font-semibold text-[#172033]">情绪状态 AI 判断</p>
               </div>
-              <p className="mb-4 text-xs text-[#5c524a]/60">心理健康分析结果仅作为护理辅助参考，不能替代专业医学诊断。</p>
+              <p className="mb-4 text-xs text-[#5d6b82]/60">心理健康分析结果仅作为护理辅助参考，不能替代专业医学诊断。</p>
               <div className="flex flex-wrap items-center gap-3 mb-4">
                 <div className="flex items-center gap-2 rounded-2xl border border-indigo-200 bg-indigo-50 px-4 py-2">
                   <Icon icon={emotionIconMap[selected.emotionStatus] ?? 'mdi:emoticon-outline'} className="text-xl text-indigo-600" />
                   <span className="text-sm font-semibold text-indigo-700">当前情绪：{selected.emotionStatus}</span>
                 </div>
-                <span className="text-xs text-[#5c524a]">置信度 {(selected.emotionConfidence * 100).toFixed(0)}%</span>
+                <span className="text-xs text-[#5d6b82]">置信度 {(selected.emotionConfidence * 100).toFixed(0)}%</span>
               </div>
               <div className="space-y-3">
                 {[
@@ -293,23 +293,23 @@ export default function HealthPage() {
                   { label: '互动数据', value: selected.emotionAnalysis.interactionFrequency, icon: 'mdi:account-multiple' },
                   { label: '历史趋势', value: selected.emotionAnalysis.historicalTrend, icon: 'mdi:chart-line' },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-3 rounded-2xl bg-[#f8f5f0] px-4 py-3">
-                    <Icon icon={item.icon} className="mt-0.5 shrink-0 text-base text-[#5c524a]/50" />
+                  <div key={item.label} className="flex items-start gap-3 rounded-2xl bg-[#f5f7fb] px-4 py-3">
+                    <Icon icon={item.icon} className="mt-0.5 shrink-0 text-base text-[#5d6b82]/50" />
                     <div>
-                      <p className="text-xs font-medium text-[#5c524a]">{item.label}</p>
-                      <p className="mt-0.5 text-sm text-[#1a1615]">{item.value}</p>
+                      <p className="text-xs font-medium text-[#5d6b82]">{item.label}</p>
+                      <p className="mt-0.5 text-sm text-[#172033]">{item.value}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Icon icon="mdi:shield-alert-outline" className="text-lg text-amber-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">心理健康风险筛查</p>
+                <p className="text-sm font-semibold text-[#172033]">心理健康风险筛查</p>
               </div>
-              <p className="mb-4 text-xs text-[#5c524a]/60">心理健康分析结果仅作为护理辅助参考，不能替代专业医学诊断。</p>
+              <p className="mb-4 text-xs text-[#5d6b82]/60">心理健康分析结果仅作为护理辅助参考，不能替代专业医学诊断。</p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
                   { label: '抑郁风险提示', value: selected.mentalRisk.depressionRisk, icon: 'mdi:emoticon-sad-outline' },
@@ -320,12 +320,12 @@ export default function HealthPage() {
                   { label: '互动减少风险', value: selected.mentalRisk.interactionDecreaseRisk, icon: 'mdi:account-arrow-down-outline' },
                   { label: '长期低活动风险', value: selected.mentalRisk.longTermLowActivityRisk, icon: 'mdi:trending-down' },
                 ].map((item) => (
-                  <div key={item.label} className="flex items-center gap-3 rounded-2xl border border-[#1a1615]/8 px-4 py-3">
-                    <Icon icon={item.icon} className="shrink-0 text-lg text-[#5c524a]/40" />
+                  <div key={item.label} className="flex items-center gap-3 rounded-2xl border border-[#172033]/8 px-4 py-3">
+                    <Icon icon={item.icon} className="shrink-0 text-lg text-[#5d6b82]/40" />
                     <div className="flex-1">
-                      <p className="text-xs text-[#5c524a]">{item.label}</p>
+                      <p className="text-xs text-[#5d6b82]">{item.label}</p>
                     </div>
-                    <MiniTag label={item.value} className={riskColorMap[item.value] ?? 'border-[#1a1615]/10 text-[#5c524a]'} />
+                    <MiniTag label={item.value} className={riskColorMap[item.value] ?? 'border-[#172033]/10 text-[#5d6b82]'} />
                   </div>
                 ))}
               </div>
@@ -334,26 +334,26 @@ export default function HealthPage() {
             <div className="card-glow rounded-3xl border border-indigo-500/20 bg-gradient-to-br from-indigo-500/5 via-white to-white p-5">
               <div className="flex items-center gap-2 mb-1">
                 <Icon icon="mdi:lightbulb-on-outline" className="text-lg text-indigo-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">AI 决策依据</p>
+                <p className="text-sm font-semibold text-[#172033]">AI 决策依据</p>
               </div>
-              <p className="mb-4 text-xs text-[#5c524a]/60">基于多模态数据融合与特征权重分析，AI 综合判断当前老人身心状态。</p>
-              <div className="rounded-2xl bg-white/70 px-4 py-3 text-sm leading-relaxed text-[#5c524a]">{selected.emotionAnalysis.aiReasoning}</div>
+              <p className="mb-4 text-xs text-[#5d6b82]/60">基于多模态数据融合与特征权重分析，AI 综合判断当前老人身心状态。</p>
+              <div className="rounded-2xl bg-white/70 px-4 py-3 text-sm leading-relaxed text-[#5d6b82]">{selected.emotionAnalysis.aiReasoning}</div>
               <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <div className="rounded-xl bg-white/70 px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">情绪置信度</p>
-                  <p className="text-base font-semibold text-[#1a1615]">{(selected.emotionConfidence * 100).toFixed(0)}%</p>
+                  <p className="text-[10px] text-[#5d6b82]/50">情绪置信度</p>
+                  <p className="text-base font-semibold text-[#172033]">{(selected.emotionConfidence * 100).toFixed(0)}%</p>
                 </div>
                 <div className="rounded-xl bg-white/70 px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">身体风险</p>
-                  <p className="text-base font-semibold text-[#1a1615]">{selected.bodyRiskLevel}</p>
+                  <p className="text-[10px] text-[#5d6b82]/50">身体风险</p>
+                  <p className="text-base font-semibold text-[#172033]">{selected.bodyRiskLevel}</p>
                 </div>
                 <div className="rounded-xl bg-white/70 px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">心理风险</p>
-                  <p className="text-base font-semibold text-[#1a1615]">{selected.mentalRiskLevel}</p>
+                  <p className="text-[10px] text-[#5d6b82]/50">心理风险</p>
+                  <p className="text-base font-semibold text-[#172033]">{selected.mentalRiskLevel}</p>
                 </div>
                 <div className="rounded-xl bg-white/70 px-3 py-2 text-center">
-                  <p className="text-[10px] text-[#5c524a]/50">护理等级</p>
-                  <p className="text-base font-semibold text-[#1a1615]">{selected.carePriority}</p>
+                  <p className="text-[10px] text-[#5d6b82]/50">护理等级</p>
+                  <p className="text-base font-semibold text-[#172033]">{selected.carePriority}</p>
                 </div>
               </div>
             </div>
@@ -361,15 +361,15 @@ export default function HealthPage() {
             <div className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/5 via-white to-white p-5">
               <div className="flex items-center gap-2 mb-3">
                 <Icon icon="mdi:file-document-outline" className="text-lg text-teal-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">AI 健康分析摘要</p>
+                <p className="text-sm font-semibold text-[#172033]">AI 健康分析摘要</p>
               </div>
-              <p className="rounded-2xl bg-white/70 px-4 py-3 text-sm leading-relaxed text-[#5c524a]">
-                AI 综合分析显示，该老人当前身体健康指数为 <span className="font-semibold text-[#1a1615]">{selected.bodyHealthScore}</span>，
-                心理健康指数为 <span className="font-semibold text-[#1a1615]">{selected.mentalHealthScore}</span>，
-                情绪状态为 <span className="font-semibold text-[#1a1615]">{selected.emotionStatus}</span>（置信度 {(selected.emotionConfidence * 100).toFixed(0)}%）。
-                身体健康风险为 <span className="font-semibold text-[#1a1615]">{selected.bodyRiskLevel}</span>，
-                心理健康风险为 <span className="font-semibold text-[#1a1615]">{selected.mentalRiskLevel}</span>，
-                综合护理等级为 <span className="font-semibold text-[#1a1615]">{selected.carePriority}</span>。
+              <p className="rounded-2xl bg-white/70 px-4 py-3 text-sm leading-relaxed text-[#5d6b82]">
+                AI 综合分析显示，该老人当前身体健康指数为 <span className="font-semibold text-[#172033]">{selected.bodyHealthScore}</span>，
+                心理健康指数为 <span className="font-semibold text-[#172033]">{selected.mentalHealthScore}</span>，
+                情绪状态为 <span className="font-semibold text-[#172033]">{selected.emotionStatus}</span>（置信度 {(selected.emotionConfidence * 100).toFixed(0)}%）。
+                身体健康风险为 <span className="font-semibold text-[#172033]">{selected.bodyRiskLevel}</span>，
+                心理健康风险为 <span className="font-semibold text-[#172033]">{selected.mentalRiskLevel}</span>，
+                综合护理等级为 <span className="font-semibold text-[#172033]">{selected.carePriority}</span>。
                 {selected.carePriority === '立即处理' || selected.carePriority === '重点关注'
                   ? '建议护理员立即进行现场评估并记录老人当前状态，同时通知值班医护。'
                   : selected.carePriority === '需要关注'
@@ -385,29 +385,29 @@ export default function HealthPage() {
                 { title: '护理员处置建议', icon: 'mdi:account-nurse', color: 'text-amber-600', bg: 'from-amber-500/5', text: selected.suggestions.caregiver },
                 { title: '家属沟通建议', icon: 'mdi:account-heart-outline', color: 'text-rose-600', bg: 'from-rose-500/5', text: selected.suggestions.family },
               ].map((item) => (
-                <div key={item.title} className={`card-glow rounded-3xl border border-[#1a1615]/8 bg-gradient-to-br ${item.bg} to-white p-5`}>
+                <div key={item.title} className={`card-glow rounded-3xl border border-[#172033]/8 bg-gradient-to-br ${item.bg} to-white p-5`}>
                   <div className="flex items-center gap-2 mb-2">
                     <Icon icon={item.icon} className={`text-lg ${item.color}`} />
-                    <p className="text-sm font-semibold text-[#1a1615]">{item.title}</p>
+                    <p className="text-sm font-semibold text-[#172033]">{item.title}</p>
                   </div>
-                  <p className="text-sm leading-relaxed text-[#5c524a]">{item.text}</p>
+                  <p className="text-sm leading-relaxed text-[#5d6b82]">{item.text}</p>
                 </div>
               ))}
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Icon icon="mdi:chart-areaspline" className="text-lg text-teal-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">近 7 天健康趋势</p>
+                <p className="text-sm font-semibold text-[#172033]">近 7 天健康趋势</p>
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">健康指数趋势</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">健康指数趋势</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={selected.trends.dates.map((d, i) => ({ date: d, body: selected.trends.bodyHealthScores[i], mental: selected.trends.mentalHealthScores[i] }))}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3efe8" />
-                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5c524a' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#5c524a' }} domain={[0, 100]} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} domain={[0, 100]} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 12 }} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Line type="monotone" dataKey="body" name="身体指数" stroke="#0d9488" strokeWidth={2} dot={{ r: 3 }} />
@@ -416,12 +416,12 @@ export default function HealthPage() {
                   </ResponsiveContainer>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">心率与血氧趋势</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">心率与血氧趋势</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <LineChart data={selected.trends.dates.map((d, i) => ({ date: d, hr: selected.trends.heartRates[i], spo2: selected.trends.spo2Values[i] }))}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3efe8" />
-                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5c524a' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#5c524a' }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 12 }} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Line type="monotone" dataKey="hr" name="心率(bpm)" stroke="#dc2626" strokeWidth={2} dot={{ r: 3 }} />
@@ -430,12 +430,12 @@ export default function HealthPage() {
                   </ResponsiveContainer>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">睡眠与活动趋势</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">睡眠与活动趋势</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <AreaChart data={selected.trends.dates.map((d, i) => ({ date: d, sleep: selected.trends.sleepHours[i], steps: selected.trends.steps[i] / 1000 }))}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3efe8" />
-                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5c524a' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#5c524a' }} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 12 }} />
                       <Legend wrapperStyle={{ fontSize: 11 }} />
                       <Area type="monotone" dataKey="sleep" name="睡眠(小时)" fill="#6366f180" stroke="#6366f1" strokeWidth={2} />
@@ -444,11 +444,11 @@ export default function HealthPage() {
                   </ResponsiveContainer>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">情绪评分与综合状态</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">情绪评分与综合状态</p>
                   <ResponsiveContainer width="100%" height={200}>
                     <RadarChart data={radarData}>
-                      <PolarGrid stroke="#f3efe8" />
-                      <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#5c524a' }} />
+                      <PolarGrid stroke="#e8edf5" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11, fill: '#5d6b82' }} />
                       <PolarRadiusAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
                       <Radar name="当前状态" dataKey="value" stroke="#0d9488" fill="#0d9488" fillOpacity={0.2} />
                     </RadarChart>
@@ -457,62 +457,62 @@ export default function HealthPage() {
               </div>
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Icon icon="mdi:alert-octagon-outline" className="text-lg text-red-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">近期健康风险事件</p>
+                <p className="text-sm font-semibold text-[#172033]">近期健康风险事件</p>
               </div>
               <div className="space-y-2">
                 {selected.recentEvents.map((evt, i) => (
-                  <div key={i} className="flex items-start gap-3 rounded-2xl border border-[#1a1615]/8 bg-[#f8f5f0] px-4 py-3">
+                  <div key={i} className="flex items-start gap-3 rounded-2xl border border-[#172033]/8 bg-[#f5f7fb] px-4 py-3">
                     <div className="mt-0.5 shrink-0">
-                      <MiniTag label={evt.level} className={riskColorMap[evt.level] ?? 'border-[#1a1615]/10 text-[#5c524a]'} />
+                      <MiniTag label={evt.level} className={riskColorMap[evt.level] ?? 'border-[#172033]/10 text-[#5d6b82]'} />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-[#1a1615]">{evt.type}</p>
-                        <span className="text-xs text-[#5c524a]/50">{evt.time}</span>
+                        <p className="text-sm font-medium text-[#172033]">{evt.type}</p>
+                        <span className="text-xs text-[#5d6b82]/50">{evt.time}</span>
                       </div>
-                      <p className="mt-1 text-xs text-[#5c524a]">{evt.description}</p>
+                      <p className="mt-1 text-xs text-[#5d6b82]">{evt.description}</p>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Icon icon="mdi:chart-bar" className="text-lg text-teal-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">全院风险分布概览</p>
+                <p className="text-sm font-semibold text-[#172033]">全院风险分布概览</p>
               </div>
               <div className="grid gap-6 lg:grid-cols-2">
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">身体健康风险分布</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">身体健康风险分布</p>
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={[
                       { name: '低风险', value: mockElderHealthData.filter((e) => e.bodyRiskLevel === '低风险').length },
                       { name: '中风险', value: mockElderHealthData.filter((e) => e.bodyRiskLevel === '中风险').length },
                       { name: '高风险', value: mockElderHealthData.filter((e) => e.bodyRiskLevel === '高风险').length },
                     ]}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3efe8" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5c524a' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#5c524a' }} allowDecimals={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} allowDecimals={false} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 12 }} />
                       <Bar dataKey="value" name="人数" fill="#0d9488" radius={[6, 6, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
                 <div>
-                  <p className="mb-2 text-xs font-medium text-[#5c524a]">心理健康风险分布</p>
+                  <p className="mb-2 text-xs font-medium text-[#5d6b82]">心理健康风险分布</p>
                   <ResponsiveContainer width="100%" height={180}>
                     <BarChart data={[
                       { name: '低风险', value: mockElderHealthData.filter((e) => e.mentalRiskLevel === '低风险').length },
                       { name: '中风险', value: mockElderHealthData.filter((e) => e.mentalRiskLevel === '中风险').length },
                       { name: '高风险', value: mockElderHealthData.filter((e) => e.mentalRiskLevel === '高风险').length },
                     ]}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f3efe8" />
-                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5c524a' }} />
-                      <YAxis tick={{ fontSize: 11, fill: '#5c524a' }} allowDecimals={false} />
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                      <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                      <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} allowDecimals={false} />
                       <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e5e5e5', fontSize: 12 }} />
                       <Bar dataKey="value" name="人数" fill="#6366f1" radius={[6, 6, 0, 0]} />
                     </BarChart>

@@ -225,7 +225,7 @@ function CameraCard({ feed, active, currentTime, onClick }: { feed: CameraFeed; 
   return (
     <button
       onClick={onClick}
-      className={`group relative overflow-hidden rounded-2xl border bg-black text-left transition-all ${active ? 'border-teal-500 ring-2 ring-teal-500/20' : 'border-[#1a1615]/8 hover:border-teal-500/40'}`}
+      className={`group relative overflow-hidden rounded-2xl border bg-black text-left transition-all ${active ? 'border-teal-500 ring-2 ring-teal-500/20' : 'border-[#172033]/8 hover:border-teal-500/40'}`}
       style={{ aspectRatio: `${imageWidth} / ${imageHeight}` }}
     >
       <Image src={feed.imageUrl} alt={feed.location} fill sizes="(min-width: 1280px) 50vw, 100vw" className="object-cover opacity-95 transition-transform group-hover:scale-[1.02]" priority={feed.id === 'cam-01'} />
@@ -370,15 +370,15 @@ export default function DetectPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm text-[#5c524a]">实时监测中心</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">视频墙与真实视觉分析</h1>
-          <p className="mt-2 text-sm text-[#5c524a]">检测框和人体关键点来自本地 YOLO 检测/姿态服务；服务未连接时不再绘制预设假框。</p>
+          <p className="text-sm text-[#5d6b82]">实时监测中心</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">视频墙与真实视觉分析</h1>
+          <p className="mt-2 text-sm text-[#5d6b82]">检测框和人体关键点来自本地 YOLO 检测/姿态服务；服务未连接时不再绘制预设假框。</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button
             onClick={handleAnalyze}
             disabled={analyzing}
-            className="inline-flex items-center gap-2 rounded-lg border border-[#1a1615]/10 bg-white px-4 py-2.5 text-sm font-semibold text-[#1a1615] transition-colors hover:border-teal-500/40 hover:text-teal-700 disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-lg border border-[#172033]/10 bg-white px-4 py-2.5 text-sm font-semibold text-[#172033] transition-colors hover:border-teal-500/40 hover:text-teal-700 disabled:opacity-50"
           >
             <Icon icon={analyzing ? 'mdi:loading' : 'mdi:radar'} className={analyzing ? 'animate-spin' : ''} />
             {analyzing ? `分析中 ${analysisProgress}%` : '重新分析当前画面'}
@@ -401,17 +401,17 @@ export default function DetectPage() {
           ))}
         </section>
 
-        <aside className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-4">
+        <aside className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-[#1a1615]">实时事件队列</h2>
-              <p className="mt-1 text-xs text-[#5c524a]">当前画面安全巡检状态</p>
+              <h2 className="text-base font-semibold text-[#172033]">实时事件队列</h2>
+              <p className="mt-1 text-xs text-[#5d6b82]">当前画面安全巡检状态</p>
             </div>
             <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700">{queue.length} 路</span>
           </div>
           <div className="mt-4 space-y-3">
             {queue.length === 0 ? (
-              <div className="rounded-xl border border-dashed border-[#1a1615]/10 px-4 py-8 text-center text-sm text-[#5c524a]/60">
+              <div className="rounded-xl border border-dashed border-[#172033]/10 px-4 py-8 text-center text-sm text-[#5d6b82]/60">
                 暂无模型事件。请选择画面并点击分析。
               </div>
             ) : queue.map((item) => (
@@ -420,9 +420,9 @@ export default function DetectPage() {
                   <span className="text-sm font-semibold text-emerald-800">{item.type}</span>
                   <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-medium text-white">安全</span>
                 </div>
-                <p className="mt-1 text-xs text-[#5c524a]">{item.zone}</p>
+                <p className="mt-1 text-xs text-[#5d6b82]">{item.zone}</p>
                 <div className="mt-2 flex items-center justify-between text-xs">
-                  <span className="text-[#5c524a]">{item.status}</span>
+                  <span className="text-[#5d6b82]">{item.status}</span>
                   <span className="font-mono text-emerald-700">实时更新</span>
                 </div>
               </Link>
@@ -437,76 +437,76 @@ export default function DetectPage() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5"
+          className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5"
         >
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:brain" className="text-lg text-teal-600" />
-                <h2 className="text-base font-semibold text-[#1a1615]">AI 识别详情</h2>
+                <h2 className="text-base font-semibold text-[#172033]">AI 识别详情</h2>
               </div>
-              <p className="mt-1 text-sm text-[#5c524a]">{selected.code} · {selected.location}</p>
+              <p className="mt-1 text-sm text-[#5d6b82]">{selected.code} · {selected.location}</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <RiskBadge risk={selected.riskLevel} />
-              <span className="rounded-full border border-[#1a1615]/10 px-2.5 py-1 text-xs text-[#5c524a]">负责人：{selected.assignee}</span>
-              {selected.modelVersion && <span className="rounded-full border border-[#1a1615]/10 px-2.5 py-1 text-xs text-[#5c524a]">{selected.modelVersion} · {selected.processingTimeMs} ms</span>}
+              <span className="rounded-full border border-[#172033]/10 px-2.5 py-1 text-xs text-[#5d6b82]">负责人：{selected.assignee}</span>
+              {selected.modelVersion && <span className="rounded-full border border-[#172033]/10 px-2.5 py-1 text-xs text-[#5d6b82]">{selected.modelVersion} · {selected.processingTimeMs} ms</span>}
             </div>
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr]">
-            <div className="rounded-xl bg-[#f8f5f0] p-4">
-              <p className="text-xs font-medium text-[#5c524a]">模型检测目标</p>
+            <div className="rounded-xl bg-[#f5f7fb] p-4">
+              <p className="text-xs font-medium text-[#5d6b82]">模型检测目标</p>
               <div className="mt-3 space-y-2">
                 {selected.detections.length === 0 ? (
-                  <p className="text-sm text-[#5c524a]">当前画面暂无模型检测框。</p>
+                  <p className="text-sm text-[#5d6b82]">当前画面暂无模型检测框。</p>
                 ) : selected.detections.map((det, index) => (
                   <div key={`${det.label}-${index}`} className="flex items-center justify-between text-sm">
-                    <span className="text-[#1a1615]">{det.label}</span>
+                    <span className="text-[#172033]">{det.label}</span>
                     <span className="font-mono text-teal-700">{(det.confidence * 100).toFixed(0)}%</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="rounded-xl bg-[#f8f5f0] p-4">
-              <p className="text-xs font-medium text-[#5c524a]">姿态估计</p>
+            <div className="rounded-xl bg-[#f5f7fb] p-4">
+              <p className="text-xs font-medium text-[#5d6b82]">姿态估计</p>
               <div className="mt-3 space-y-2">
                 {selected.poses.length === 0 ? (
-                  <p className="text-sm text-[#5c524a]">当前画面暂无人体关键点。</p>
+                  <p className="text-sm text-[#5d6b82]">当前画面暂无人体关键点。</p>
                 ) : selected.poses.map((pose, index) => {
                   const validPoints = pose.keypoints.filter((point) => point.confidence >= 0.25).length;
                   return (
                     <div key={`pose-detail-${index}`} className="rounded-lg bg-white px-3 py-2 text-sm">
                       <div className="flex items-center justify-between">
-                        <span className="font-medium text-[#1a1615]">人体姿态 #{index + 1}</span>
+                        <span className="font-medium text-[#172033]">人体姿态 #{index + 1}</span>
                         <span className="font-mono text-cyan-700">{(pose.confidence * 100).toFixed(0)}%</span>
                       </div>
-                      <p className="mt-1 text-xs text-[#5c524a]">有效关键点 {validPoints}/17，已叠加骨架连线。</p>
+                      <p className="mt-1 text-xs text-[#5d6b82]">有效关键点 {validPoints}/17，已叠加骨架连线。</p>
                     </div>
                   );
                 })}
               </div>
             </div>
-            <div className="rounded-xl bg-[#f8f5f0] p-4">
-              <p className="text-xs font-medium text-[#5c524a]">规则信号</p>
+            <div className="rounded-xl bg-[#f5f7fb] p-4">
+              <p className="text-xs font-medium text-[#5d6b82]">规则信号</p>
               <div className="mt-3 space-y-2">
                 {selected.riskSignals.length === 0 ? (
-                  <p className="text-sm text-[#5c524a]">等待模型输出。</p>
+                  <p className="text-sm text-[#5d6b82]">等待模型输出。</p>
                 ) : selected.riskSignals.map((signal) => (
                   <div key={signal.code} className="rounded-lg bg-white px-3 py-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-[#1a1615]">{signal.label}</span>
+                      <span className="text-sm font-medium text-[#172033]">{signal.label}</span>
                       <RiskBadge risk={signal.severity} />
                     </div>
-                    <p className="mt-1 text-xs leading-relaxed text-[#5c524a]">{signal.reason}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-[#5d6b82]">{signal.reason}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="rounded-xl bg-teal-50 p-4">
               <p className="text-xs font-medium text-teal-700">建议动作</p>
-              <p className="mt-3 text-sm leading-relaxed text-[#1a1615]">{selected.suggestion}</p>
-              <div className="mt-4 rounded-lg bg-white/70 px-3 py-2 text-xs leading-relaxed text-[#5c524a]">
+              <p className="mt-3 text-sm leading-relaxed text-[#172033]">{selected.suggestion}</p>
+              <div className="mt-4 rounded-lg bg-white/70 px-3 py-2 text-xs leading-relaxed text-[#5d6b82]">
                 静态图片只能证明“检测到目标/姿态异常”，久卧、滞留和无人响应应结合时序帧或传感器数据。
               </div>
             </div>

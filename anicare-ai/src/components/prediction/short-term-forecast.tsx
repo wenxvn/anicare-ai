@@ -22,16 +22,16 @@ export function ShortTermForecastCard({ data, className }: ShortTermForecastProp
   const is15 = data.horizon === '15min';
 
   return (
-    <div className={clsx('card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5', className)}>
+    <div className={clsx('card-glow rounded-3xl border border-[#172033]/8 bg-white p-5', className)}>
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
             <Icon icon="mdi:chart-timeline-variant-shimmer" className="text-lg text-teal-600" />
-            <p className="text-sm font-semibold text-[#1a1615]">
+            <p className="text-sm font-semibold text-[#172033]">
               未来{is15 ? '15' : '30'}分钟风险预测
             </p>
           </div>
-          <p className="mt-1 text-xs text-[#5c524a]">
+          <p className="mt-1 text-xs text-[#5d6b82]">
             基于多模态时序数据的短时风险趋势与高风险区域预判
           </p>
         </div>
@@ -41,7 +41,7 @@ export function ShortTermForecastCard({ data, className }: ShortTermForecastProp
       </div>
 
       <div className="mt-4">
-        <p className="mb-2 text-xs font-medium text-[#5c524a]">风险趋势曲线</p>
+        <p className="mb-2 text-xs font-medium text-[#5d6b82]">风险趋势曲线</p>
         <div className="h-48">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={data.trendData}>
@@ -51,12 +51,12 @@ export function ShortTermForecastCard({ data, className }: ShortTermForecastProp
                   <stop offset="95%" stopColor="#0d9488" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
-              <XAxis dataKey="time" stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} fontSize={11} />
-              <YAxis domain={[40, 100]} stroke="rgba(92,82,74,0.5)" tickLine={false} axisLine={false} fontSize={11} />
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
+              <XAxis dataKey="time" stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} fontSize={11} />
+              <YAxis domain={[40, 100]} stroke="rgba(93,107,130,0.5)" tickLine={false} axisLine={false} fontSize={11} />
               <Tooltip
                 contentStyle={{
-                  background: '#fff', borderRadius: 16, border: '1px solid rgba(26,22,21,0.08)',
+                  background: '#fff', borderRadius: 16, border: '1px solid rgba(23,32,51,0.08)',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.08)', fontSize: 12,
                 }}
                 formatter={(value: number) => [`${value} 分`, '预测风险']}
@@ -70,7 +70,7 @@ export function ShortTermForecastCard({ data, className }: ShortTermForecastProp
       </div>
 
       <div className="mt-4">
-        <p className="mb-2 text-xs font-medium text-[#5c524a]">
+        <p className="mb-2 text-xs font-medium text-[#5d6b82]">
           高风险 TOP {data.highRiskRooms.length} 区域/房间
         </p>
         <div className="space-y-2">
@@ -82,28 +82,28 @@ export function ShortTermForecastCard({ data, className }: ShortTermForecastProp
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 + i * 0.08, duration: 0.4 }}
-                className="flex items-center gap-3 rounded-2xl border border-[#1a1615]/6 bg-[#faf8f5] p-3.5"
+                className="flex items-center gap-3 rounded-2xl border border-[#172033]/6 bg-[#f8fafc] p-3.5"
               >
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#1a1615]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#172033]">
                   {i + 1}
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-[#1a1615]">{room.roomName}</span>
+                    <span className="text-sm font-medium text-[#172033]">{room.roomName}</span>
                     <span className={clsx('inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold', ps.bg, ps.text)}>
                       <span className={clsx('h-1.5 w-1.5 rounded-full', ps.dot)} />
                       {room.patrolPriority}优先
                     </span>
                   </div>
-                  <p className="mt-0.5 text-xs text-[#5c524a]/70">{room.reasons[0]}</p>
+                  <p className="mt-0.5 text-xs text-[#5d6b82]/70">{room.reasons[0]}</p>
                 </div>
                 <div className="text-right">
                   <div className="flex items-center gap-1">
-                    <span className="text-xs text-[#5c524a]/50">{room.currentScore}</span>
-                    <Icon icon="mdi:arrow-right-thin" className="text-xs text-[#5c524a]/30" />
-                    <span className="text-base font-bold text-[#1a1615]">{room.predictedScore}</span>
+                    <span className="text-xs text-[#5d6b82]/50">{room.currentScore}</span>
+                    <Icon icon="mdi:arrow-right-thin" className="text-xs text-[#5d6b82]/30" />
+                    <span className="text-base font-bold text-[#172033]">{room.predictedScore}</span>
                   </div>
-                  <p className="text-[10px] text-[#5c524a]/50">预计 {room.triggerTime}</p>
+                  <p className="text-[10px] text-[#5d6b82]/50">预计 {room.triggerTime}</p>
                 </div>
               </motion.div>
             );

@@ -52,20 +52,56 @@ export default function HomePage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-sm text-[#5c524a]">康养中心值班总览</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">今日风险运行态势</h1>
+      <section className="card-glow relative overflow-hidden rounded-3xl border border-[#172033]/8 bg-white/92 p-5 sm:p-6">
+        <div className="absolute inset-y-0 right-0 hidden w-[38%] overflow-hidden lg:block">
+          <Image
+            src="/pictures/camera-bed-care.jpg"
+            alt="康养机构护理场景"
+            fill
+            priority
+            sizes="38vw"
+            className="object-cover opacity-80"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/70 to-white/10" />
         </div>
-        <div className="flex flex-wrap gap-2">
-          {quickActions.map((item) => (
-            <Link key={item.href} href={item.href} className="inline-flex items-center gap-2 rounded-lg border border-[#1a1615]/10 bg-white px-3 py-2 text-xs font-medium text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
-              <Icon icon={item.icon} className="text-base" />
-              {item.label}
-            </Link>
-          ))}
+        <div className="relative grid gap-6 lg:grid-cols-[1fr_0.56fr]">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/18 bg-teal-500/8 px-3 py-1.5 text-xs font-medium text-teal-800">
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+              机构安全风险运行总览
+            </div>
+            <h1 className="mt-4 max-w-3xl text-balance text-3xl font-semibold tracking-tight text-[#172033] sm:text-4xl">
+              今日风险运行态势
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#5d6b82]">
+              系统汇总视觉识别、床垫传感器、门磁、毫米波雷达与护理处置记录，帮助值班人员优先处理高风险事件。
+            </p>
+            <div className="mt-5 flex flex-wrap gap-2">
+              {quickActions.map((item) => (
+                <Link key={item.href} href={item.href} className="inline-flex items-center gap-2 rounded-xl border border-[#172033]/10 bg-white px-3 py-2 text-xs font-medium text-[#5d6b82] shadow-sm transition-colors hover:border-teal-500/40 hover:text-teal-700">
+                  <Icon icon={item.icon} className="text-base" />
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+            {[
+              { label: '运行状态', value: '正常', icon: 'mdi:check-decagram-outline', tone: 'text-emerald-700' },
+              { label: '重点区域', value: 'A栋 / B栋', icon: 'mdi:map-marker-radius-outline', tone: 'text-teal-700' },
+              { label: '模型延迟', value: `${model.inferenceLatencyMs} ms`, icon: 'mdi:cpu-64-bit', tone: 'text-sky-700' },
+            ].map((item) => (
+              <div key={item.label} className="rounded-2xl border border-[#172033]/8 bg-[#f8fafc]/86 p-4 backdrop-blur">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-[#5d6b82]">{item.label}</span>
+                  <Icon icon={item.icon} className={`text-lg ${item.tone}`} />
+                </div>
+                <p className="mt-2 text-lg font-semibold text-[#172033]">{item.value}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {dutyStats.map((item) => (
@@ -74,44 +110,44 @@ export default function HomePage() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1.35fr_0.9fr]">
-        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+        <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-[#1a1615]">当前高风险事件</h2>
-              <p className="mt-1 text-xs text-[#5c524a]">按风险等级和等待时长自动排序</p>
+              <h2 className="text-base font-semibold text-[#172033]">当前高风险事件</h2>
+              <p className="mt-1 text-xs text-[#5d6b82]">按风险等级和等待时长自动排序</p>
             </div>
             <Link href="/dispatch" className="text-xs font-medium text-teal-700 hover:text-teal-600">进入调度</Link>
           </div>
-          <div className="mt-4 overflow-hidden rounded-xl border border-[#1a1615]/8">
-            <div className="grid grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] bg-[#f8f5f0] px-4 py-2 text-xs font-medium text-[#5c524a]">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-[#172033]/8">
+            <div className="grid min-w-[760px] grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] bg-[#f5f7fb] px-4 py-2 text-xs font-medium text-[#5d6b82]">
               <span>事件</span><span>位置</span><span>识别来源</span><span>状态</span><span>等待</span>
             </div>
             {activeEvents.map((item) => (
-              <Link key={item.id} href={`/events/${item.id}`} className="grid grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] items-center border-t border-[#1a1615]/8 px-4 py-3 text-sm transition-colors hover:bg-[#f8f5f0]">
+              <Link key={item.id} href={`/events/${item.id}`} className="grid min-w-[760px] grid-cols-[1.1fr_1fr_1fr_0.7fr_0.7fr] items-center border-t border-[#172033]/8 px-4 py-3 text-sm transition-colors hover:bg-[#f5f7fb]">
                 <span className="flex min-w-0 items-center gap-2">
                   <RiskBadge risk={item.riskLevel} />
-                  <span className="truncate font-medium text-[#1a1615]">{item.type}</span>
+                  <span className="truncate font-medium text-[#172033]">{item.type}</span>
                 </span>
-                <span className="truncate text-[#5c524a]">{item.zone}</span>
-                <span className="truncate text-[#5c524a]">{item.source}</span>
-                <span className="text-[#1a1615]">{item.status}</span>
+                <span className="truncate text-[#5d6b82]">{item.zone}</span>
+                <span className="truncate text-[#5d6b82]">{item.source}</span>
+                <span className="text-[#172033]">{item.status}</span>
                 <span className="font-mono text-xs text-red-600">{item.wait}</span>
               </Link>
             ))}
           </div>
         </section>
 
-        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+        <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-[#1a1615]">实时监测缩略图</h2>
-              <p className="mt-1 text-xs text-[#5c524a]">重点区域在线巡检</p>
+              <h2 className="text-base font-semibold text-[#172033]">实时监测缩略图</h2>
+              <p className="mt-1 text-xs text-[#5d6b82]">重点区域在线巡检</p>
             </div>
             <span className="flex items-center gap-1 text-xs text-emerald-600"><span className="h-2 w-2 rounded-full bg-emerald-500" />LIVE</span>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-3">
             {['/pictures/6.jpg', '/pictures/4.jpg', '/pictures/5.jpg', '/pictures/3.jpg'].map((src, index) => (
-              <Link key={src} href="/detect" className="group relative overflow-hidden rounded-xl border border-[#1a1615]/8">
+              <Link key={src} href="/detect" className="group relative overflow-hidden rounded-xl border border-[#172033]/8">
                 <Image src={src} alt="监测画面" width={320} height={180} className="aspect-video w-full object-cover transition-transform group-hover:scale-105" />
                 <div className="absolute inset-x-0 bottom-0 bg-black/55 px-2 py-1 text-[11px] text-white">
                   CAM-0{index + 1} · {index === 0 ? '紧急' : index === 2 ? '高风险' : '正常'}
@@ -123,33 +159,33 @@ export default function HomePage() {
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[1fr_1fr_0.9fr]">
-        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5 xl:col-span-1">
-          <h2 className="text-base font-semibold text-[#1a1615]">今日风险趋势</h2>
+        <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5 xl:col-span-1">
+          <h2 className="text-base font-semibold text-[#172033]">今日风险趋势</h2>
           <div className="mt-4 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={trend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(26,22,21,0.06)" />
-                <XAxis dataKey="time" stroke="rgba(92,82,74,0.55)" tickLine={false} axisLine={false} />
-                <YAxis stroke="rgba(92,82,74,0.55)" tickLine={false} axisLine={false} />
-                <Tooltip contentStyle={{ background: '#fff', borderRadius: 12, border: '1px solid rgba(26,22,21,0.08)' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
+                <XAxis dataKey="time" stroke="rgba(93,107,130,0.55)" tickLine={false} axisLine={false} />
+                <YAxis stroke="rgba(93,107,130,0.55)" tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={{ background: '#fff', borderRadius: 12, border: '1px solid rgba(23,32,51,0.08)' }} />
                 <Area type="monotone" dataKey="value" stroke="#0d9488" fill="#0d948822" strokeWidth={2} name="告警数" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
         </section>
 
-        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
-          <h2 className="text-base font-semibold text-[#1a1615]">设备在线状态</h2>
+        <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+          <h2 className="text-base font-semibold text-[#172033]">设备在线状态</h2>
           <div className="mt-4 space-y-3">
             {deviceGroups.map((item) => {
               const pct = Math.round((item.online / item.total) * 100);
               return (
                 <div key={item.label}>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-2 text-[#5c524a]"><Icon icon={item.icon} className="text-teal-600" />{item.label}</span>
-                    <span className="font-medium text-[#1a1615]">{item.online}/{item.total}</span>
+                    <span className="flex items-center gap-2 text-[#5d6b82]"><Icon icon={item.icon} className="text-teal-600" />{item.label}</span>
+                    <span className="font-medium text-[#172033]">{item.online}/{item.total}</span>
                   </div>
-                  <div className="mt-1 h-1.5 rounded-full bg-[#f0ece5]">
+                  <div className="mt-1 h-1.5 rounded-full bg-[#e8edf5]">
                     <div className="h-1.5 rounded-full bg-teal-500" style={{ width: `${pct}%` }} />
                   </div>
                 </div>
@@ -158,13 +194,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
-          <h2 className="text-base font-semibold text-[#1a1615]">模型运行状态</h2>
+        <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+          <h2 className="text-base font-semibold text-[#172033]">模型运行状态</h2>
           <div className="mt-4 space-y-3 text-sm">
-            <div className="flex justify-between"><span className="text-[#5c524a]">模型版本</span><span className="font-medium text-[#1a1615]">{model.modelVersion}</span></div>
-            <div className="flex justify-between"><span className="text-[#5c524a]">推理延迟</span><span className="font-medium text-[#1a1615]">{model.inferenceLatencyMs} ms</span></div>
-            <div className="flex justify-between"><span className="text-[#5c524a]">今日识别</span><span className="font-medium text-[#1a1615]">1,286 次</span></div>
-            <div className="flex justify-between"><span className="text-[#5c524a]">高置信告警</span><span className="font-medium text-[#1a1615]">91.4%</span></div>
+            <div className="flex justify-between"><span className="text-[#5d6b82]">模型版本</span><span className="font-medium text-[#172033]">{model.modelVersion}</span></div>
+            <div className="flex justify-between"><span className="text-[#5d6b82]">推理延迟</span><span className="font-medium text-[#172033]">{model.inferenceLatencyMs} ms</span></div>
+            <div className="flex justify-between"><span className="text-[#5d6b82]">今日识别</span><span className="font-medium text-[#172033]">1,286 次</span></div>
+            <div className="flex justify-between"><span className="text-[#5d6b82]">高置信告警</span><span className="font-medium text-[#172033]">91.4%</span></div>
           </div>
           <div className="mt-4 rounded-xl bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
             模型服务运行正常，最近一次更新 {model.lastRunAt}

@@ -30,7 +30,7 @@ function imageFor(eventId: string) {
 function statusTone(done: boolean, active?: boolean) {
   if (done) return 'border-emerald-200 bg-emerald-50 text-emerald-700';
   if (active) return 'border-teal-200 bg-teal-50 text-teal-700';
-  return 'border-[#1a1615]/10 bg-[#f8f5f0] text-[#5c524a]';
+  return 'border-[#172033]/10 bg-[#f5f7fb] text-[#5d6b82]';
 }
 
 export default function EventDetailPage() {
@@ -40,10 +40,10 @@ export default function EventDetailPage() {
 
   if (!event) {
     return (
-      <div className="mx-auto max-w-xl rounded-2xl border-2 border-dashed border-[#1a1615]/10 bg-white p-12 text-center">
-        <Icon icon="mdi:file-search-outline" className="mx-auto text-4xl text-[#5c524a]/30" />
-        <p className="mt-3 text-sm text-[#5c524a]/60">事件不存在或已被归档。</p>
-        <Link href="/events" className="mt-4 inline-flex items-center gap-2 rounded-lg border border-[#1a1615]/10 px-4 py-2 text-sm text-[#5c524a] hover:border-teal-500/40 hover:text-teal-700">
+      <div className="mx-auto max-w-xl rounded-2xl border-2 border-dashed border-[#172033]/10 bg-white p-12 text-center">
+        <Icon icon="mdi:file-search-outline" className="mx-auto text-4xl text-[#5d6b82]/30" />
+        <p className="mt-3 text-sm text-[#5d6b82]/60">事件不存在或已被归档。</p>
+        <Link href="/events" className="mt-4 inline-flex items-center gap-2 rounded-lg border border-[#172033]/10 px-4 py-2 text-sm text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
           <Icon icon="mdi:arrow-left" />
           返回事件列表
         </Link>
@@ -69,15 +69,15 @@ export default function EventDetailPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <Link href="/events" className="mb-3 inline-flex items-center gap-1 text-xs text-[#5c524a] hover:text-teal-700">
+          <Link href="/events" className="mb-3 inline-flex items-center gap-1 text-xs text-[#5d6b82] hover:text-teal-700">
             <Icon icon="mdi:arrow-left" />
             返回事件列表
           </Link>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-3xl font-semibold tracking-tight text-[#1a1615]">{event.type}</h1>
+            <h1 className="text-3xl font-semibold tracking-tight text-[#172033]">{event.type}</h1>
             <RiskBadge risk={event.riskLevel as RiskLevel} />
           </div>
-          <p className="mt-2 text-sm text-[#5c524a]">事件编号 {event.id} · {event.zone}</p>
+          <p className="mt-2 text-sm text-[#5d6b82]">事件编号 {event.id} · {event.zone}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Link href="/dispatch" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-500">
@@ -88,7 +88,7 @@ export default function EventDetailPage() {
             <Icon icon="mdi:arrow-up-bold-hexagon-outline" />
             升级
           </button>
-          <button className="inline-flex items-center gap-2 rounded-lg border border-[#1a1615]/10 bg-white px-4 py-2 text-sm text-[#5c524a] hover:border-teal-500/40 hover:text-teal-700">
+          <button className="inline-flex items-center gap-2 rounded-lg border border-[#172033]/10 bg-white px-4 py-2 text-sm text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
             <Icon icon="mdi:check-circle-outline" />
             完成归档
           </button>
@@ -97,7 +97,7 @@ export default function EventDetailPage() {
 
       <div className="grid gap-5 xl:grid-cols-[1.25fr_0.85fr]">
         <section className="space-y-5">
-          <div className="overflow-hidden rounded-2xl border border-[#1a1615]/8 bg-white">
+          <div className="overflow-hidden rounded-2xl border border-[#172033]/8 bg-white">
             <div className="relative aspect-video">
               <Image src={imageFor(event.id)} alt={event.type} fill className="object-cover" priority />
               <div className="absolute left-3 top-3 rounded-lg bg-black/65 px-3 py-1.5 text-xs font-medium text-white">
@@ -109,10 +109,10 @@ export default function EventDetailPage() {
             </div>
           </div>
 
-          <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex items-center gap-2">
               <Icon icon="mdi:timeline-check-outline" className="text-lg text-teal-600" />
-              <h2 className="text-base font-semibold text-[#1a1615]">处置闭环时间线</h2>
+              <h2 className="text-base font-semibold text-[#172033]">处置闭环时间线</h2>
             </div>
             <div className="mt-5 grid gap-3 lg:grid-cols-6">
               {timeline.map((step, index) => (
@@ -128,14 +128,14 @@ export default function EventDetailPage() {
             </div>
           </section>
 
-          <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
-            <h2 className="text-base font-semibold text-[#1a1615]">识别摘要</h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">{event.summary}</p>
+          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+            <h2 className="text-base font-semibold text-[#172033]">识别摘要</h2>
+            <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">{event.summary}</p>
             {event.detections?.length ? (
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 {event.detections.map((det) => (
-                  <div key={det.label} className="rounded-xl bg-[#f8f5f0] p-3">
-                    <p className="text-sm font-medium text-[#1a1615]">{det.label}</p>
+                  <div key={det.label} className="rounded-xl bg-[#f5f7fb] p-3">
+                    <p className="text-sm font-medium text-[#172033]">{det.label}</p>
                     <p className="mt-1 font-mono text-xs text-teal-700">{(det.confidence * 100).toFixed(0)}%</p>
                   </div>
                 ))}
@@ -145,37 +145,37 @@ export default function EventDetailPage() {
         </section>
 
         <aside className="space-y-5">
-          <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-semibold text-[#1a1615]">基本信息</h2>
+              <h2 className="text-base font-semibold text-[#172033]">基本信息</h2>
               <RiskBadge risk={event.riskLevel as RiskLevel} />
             </div>
             <div className="mt-4 space-y-3 text-sm">
-              <div className="flex justify-between gap-3"><span className="text-[#5c524a]">处理状态</span><span className="font-medium text-[#1a1615]">{event.status}</span></div>
-              <div className="flex justify-between gap-3"><span className="text-[#5c524a]">负责人</span><span className="font-medium text-[#1a1615]">{event.handler}</span></div>
-              <div className="flex justify-between gap-3"><span className="text-[#5c524a]">发生时间</span><span className="text-right font-medium text-[#1a1615]">{event.time}</span></div>
-              <div className="flex justify-between gap-3"><span className="text-[#5c524a]">摄像头</span><span className="font-medium text-[#1a1615]">{event.camera}</span></div>
+              <div className="flex justify-between gap-3"><span className="text-[#5d6b82]">处理状态</span><span className="font-medium text-[#172033]">{event.status}</span></div>
+              <div className="flex justify-between gap-3"><span className="text-[#5d6b82]">负责人</span><span className="font-medium text-[#172033]">{event.handler}</span></div>
+              <div className="flex justify-between gap-3"><span className="text-[#5d6b82]">发生时间</span><span className="text-right font-medium text-[#172033]">{event.time}</span></div>
+              <div className="flex justify-between gap-3"><span className="text-[#5d6b82]">摄像头</span><span className="font-medium text-[#172033]">{event.camera}</span></div>
             </div>
           </section>
 
           <LiveDecision decision={event.decision} />
 
           {healthData && (
-            <section className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:heart-pulse" className="text-lg text-teal-600" />
-                <h2 className="text-base font-semibold text-[#1a1615]">关联健康状态</h2>
+                <h2 className="text-base font-semibold text-[#172033]">关联健康状态</h2>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
-                <div className="rounded-xl bg-[#f8f5f0] p-3">
-                  <p className="text-xs text-[#5c524a]">身体健康</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#1a1615]">{healthData.bodyHealthScore}</p>
-                  <p className="mt-1 text-xs text-[#5c524a]">{healthData.bodyRiskLevel}</p>
+                <div className="rounded-xl bg-[#f5f7fb] p-3">
+                  <p className="text-xs text-[#5d6b82]">身体健康</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#172033]">{healthData.bodyHealthScore}</p>
+                  <p className="mt-1 text-xs text-[#5d6b82]">{healthData.bodyRiskLevel}</p>
                 </div>
-                <div className="rounded-xl bg-[#f8f5f0] p-3">
-                  <p className="text-xs text-[#5c524a]">心理健康</p>
-                  <p className="mt-1 text-2xl font-semibold text-[#1a1615]">{healthData.mentalHealthScore}</p>
-                  <p className="mt-1 text-xs text-[#5c524a]">{healthData.mentalRiskLevel}</p>
+                <div className="rounded-xl bg-[#f5f7fb] p-3">
+                  <p className="text-xs text-[#5d6b82]">心理健康</p>
+                  <p className="mt-1 text-2xl font-semibold text-[#172033]">{healthData.mentalHealthScore}</p>
+                  <p className="mt-1 text-xs text-[#5d6b82]">{healthData.mentalRiskLevel}</p>
                 </div>
               </div>
               <p className="mt-4 rounded-xl bg-teal-50 px-3 py-2 text-sm leading-relaxed text-teal-800">

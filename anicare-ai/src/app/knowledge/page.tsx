@@ -107,9 +107,9 @@ export default function AssistantPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm text-[#5c524a]">护理决策助手</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#1a1615]">RAG 知识库与工具调用</h1>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5c524a]">
+          <p className="text-sm text-[#5d6b82]">护理决策助手</p>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">RAG 知识库与工具调用</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5d6b82]">
             输入现场问题后，助手会结合应急知识库、风险分类器和调度工具，输出结构化处置步骤和引用依据。
           </p>
         </div>
@@ -121,22 +121,22 @@ export default function AssistantPage() {
 
       <div className="grid gap-5 xl:grid-cols-[420px_1fr]">
         <section className="space-y-5">
-          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <div className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex items-center gap-2">
               <Icon icon="mdi:message-question-outline" className="text-lg text-teal-600" />
-              <h2 className="text-base font-semibold text-[#1a1615]">值班场景输入</h2>
+              <h2 className="text-base font-semibold text-[#172033]">值班场景输入</h2>
             </div>
             <div className="mt-4 grid gap-2">
               {quickScenarios.map((item) => (
                 <button
                   key={item.title}
                   onClick={() => sendMessage(item.prompt)}
-                  className="flex items-center gap-3 rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] px-3 py-2.5 text-left transition-colors hover:border-teal-500/35 hover:bg-white"
+                  className="flex items-center gap-3 rounded-xl border border-[#172033]/8 bg-[#f8fafc] px-3 py-2.5 text-left transition-colors hover:border-teal-500/35 hover:bg-white"
                 >
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-500/10 text-teal-700">
                     <Icon icon={item.icon} className="text-base" />
                   </span>
-                  <span className="text-sm font-medium text-[#1a1615]">{item.title}</span>
+                  <span className="text-sm font-medium text-[#172033]">{item.title}</span>
                 </button>
               ))}
             </div>
@@ -145,7 +145,7 @@ export default function AssistantPage() {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               rows={5}
-              className="mt-4 w-full resize-none rounded-xl border border-[#1a1615]/10 bg-[#f8f5f0] px-4 py-3 text-sm leading-relaxed text-[#1a1615] outline-none transition-colors focus:border-teal-500"
+              className="mt-4 w-full resize-none rounded-xl border border-[#172033]/10 bg-[#f5f7fb] px-4 py-3 text-sm leading-relaxed text-[#172033] outline-none transition-colors focus:border-teal-500"
               placeholder="输入现场情况或护理问题..."
             />
             <button
@@ -158,15 +158,15 @@ export default function AssistantPage() {
             </button>
           </div>
 
-          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <div className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex items-center gap-2">
               <Icon icon="mdi:tools" className="text-lg text-teal-600" />
-              <h2 className="text-base font-semibold text-[#1a1615]">启用工具</h2>
+              <h2 className="text-base font-semibold text-[#172033]">启用工具</h2>
             </div>
             <div className="mt-4 space-y-2">
               {['rag.search', 'risk.classifier', 'dispatch.helper', 'care.plan'].map((tool) => (
-                <div key={tool} className="flex items-center justify-between rounded-xl bg-[#f8f5f0] px-3 py-2">
-                  <span className="font-mono text-xs text-[#1a1615]">{tool}</span>
+                <div key={tool} className="flex items-center justify-between rounded-xl bg-[#f5f7fb] px-3 py-2">
+                  <span className="font-mono text-xs text-[#172033]">{tool}</span>
                   <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">可用</span>
                 </div>
               ))}
@@ -175,18 +175,18 @@ export default function AssistantPage() {
         </section>
 
         <section className="space-y-5">
-          <motion.div key={`${decision.summary}-${decision.riskLevel}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <motion.div key={`${decision.summary}-${decision.riskLevel}`} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <div className="flex items-center gap-2">
                   <Icon icon="mdi:clipboard-pulse-outline" className="text-lg text-teal-600" />
-                  <h2 className="text-base font-semibold text-[#1a1615]">结构化护理建议</h2>
+                  <h2 className="text-base font-semibold text-[#172033]">结构化护理建议</h2>
                 </div>
-                <p className="mt-1 text-xs text-[#5c524a]">风险判断、处置步骤、注意事项和建议派单对象。</p>
+                <p className="mt-1 text-xs text-[#5d6b82]">风险判断、处置步骤、注意事项和建议派单对象。</p>
               </div>
               <div className="flex items-center gap-2">
                 <RiskBadge risk={decision.riskLevel} />
-                <span className="rounded-full border border-[#1a1615]/10 px-2.5 py-1 text-xs text-[#5c524a]">置信度 {(decision.confidence * 100).toFixed(0)}%</span>
+                <span className="rounded-full border border-[#172033]/10 px-2.5 py-1 text-xs text-[#5d6b82]">置信度 {(decision.confidence * 100).toFixed(0)}%</span>
               </div>
             </div>
 
@@ -195,33 +195,33 @@ export default function AssistantPage() {
             </div>
 
             <div className="mt-5 grid gap-4 lg:grid-cols-3">
-              <div className="rounded-xl bg-[#f8f5f0] p-4">
-                <p className="text-xs font-medium text-[#5c524a]">处置步骤</p>
+              <div className="rounded-xl bg-[#f5f7fb] p-4">
+                <p className="text-xs font-medium text-[#5d6b82]">处置步骤</p>
                 <ol className="mt-3 space-y-2">
                   {decision.steps.map((step, index) => (
-                    <li key={step} className="flex gap-2 text-sm leading-relaxed text-[#1a1615]">
+                    <li key={step} className="flex gap-2 text-sm leading-relaxed text-[#172033]">
                       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-teal-600 text-[10px] font-bold text-white">{index + 1}</span>
                       {step}
                     </li>
                   ))}
                 </ol>
               </div>
-              <div className="rounded-xl bg-[#f8f5f0] p-4">
-                <p className="text-xs font-medium text-[#5c524a]">注意事项</p>
+              <div className="rounded-xl bg-[#f5f7fb] p-4">
+                <p className="text-xs font-medium text-[#5d6b82]">注意事项</p>
                 <div className="mt-3 space-y-2">
                   {decision.cautions.map((caution) => (
-                    <div key={caution} className="flex gap-2 text-sm leading-relaxed text-[#1a1615]">
+                    <div key={caution} className="flex gap-2 text-sm leading-relaxed text-[#172033]">
                       <Icon icon="mdi:alert-circle-outline" className="mt-0.5 shrink-0 text-base text-amber-600" />
                       {caution}
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="rounded-xl bg-[#f8f5f0] p-4">
-                <p className="text-xs font-medium text-[#5c524a]">建议动作</p>
+              <div className="rounded-xl bg-[#f5f7fb] p-4">
+                <p className="text-xs font-medium text-[#5d6b82]">建议动作</p>
                 <div className="mt-3 space-y-2">
                   {decision.recommendedActions.map((action) => (
-                    <div key={action} className="rounded-lg bg-white px-3 py-2 text-sm text-[#1a1615]">{action}</div>
+                    <div key={action} className="rounded-lg bg-white px-3 py-2 text-sm text-[#172033]">{action}</div>
                   ))}
                 </div>
                 <div className="mt-3 rounded-lg bg-teal-50 px-3 py-2">
@@ -233,58 +233,58 @@ export default function AssistantPage() {
           </motion.div>
 
           <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
-            <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:console-line" className="text-lg text-teal-600" />
-                <h2 className="text-base font-semibold text-[#1a1615]">工具调用结果</h2>
+                <h2 className="text-base font-semibold text-[#172033]">工具调用结果</h2>
               </div>
               <div className="mt-4 space-y-3">
                 {decision.toolsUsed.map((tool) => (
-                  <div key={tool.name} className="rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] p-3">
+                  <div key={tool.name} className="rounded-xl border border-[#172033]/8 bg-[#f8fafc] p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-mono text-xs font-semibold text-[#1a1615]">{tool.name}</span>
+                      <span className="font-mono text-xs font-semibold text-[#172033]">{tool.name}</span>
                       <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${toolStatusClass(tool.status)}`}>{tool.status}</span>
                     </div>
-                    <p className="mt-2 text-xs leading-relaxed text-[#5c524a]">{tool.result}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-[#5d6b82]">{tool.result}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+            <div className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:book-open-variant" className="text-lg text-teal-600" />
-                <h2 className="text-base font-semibold text-[#1a1615]">知识引用</h2>
+                <h2 className="text-base font-semibold text-[#172033]">知识引用</h2>
               </div>
               <div className="mt-4 space-y-3">
                 {decision.references.map((ref) => (
-                  <div key={ref.title} className="rounded-xl border border-[#1a1615]/8 bg-[#faf8f5] p-3">
+                  <div key={ref.title} className="rounded-xl border border-[#172033]/8 bg-[#f8fafc] p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-sm font-semibold text-[#1a1615]">{ref.title}</p>
-                      <span className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5c524a]">{ref.source}</span>
+                      <p className="text-sm font-semibold text-[#172033]">{ref.title}</p>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5d6b82]">{ref.source}</span>
                     </div>
-                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#5c524a]">{ref.excerpt}</p>
+                    <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-[#5d6b82]">{ref.excerpt}</p>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="card-glow rounded-2xl border border-[#1a1615]/8 bg-white p-5">
+          <div className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <div className="flex items-center gap-2">
               <Icon icon="mdi:database-search-outline" className="text-lg text-teal-600" />
-              <h2 className="text-base font-semibold text-[#1a1615]">应急知识库索引</h2>
+              <h2 className="text-base font-semibold text-[#172033]">应急知识库索引</h2>
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {visibleKnowledge.map((item) => (
-                <div key={item.id} className="rounded-xl bg-[#f8f5f0] p-3">
-                  <p className="text-sm font-semibold text-[#1a1615]">{item.title}</p>
+                <div key={item.id} className="rounded-xl bg-[#f5f7fb] p-3">
+                  <p className="text-sm font-semibold text-[#172033]">{item.title}</p>
                   <div className="mt-2 flex flex-wrap gap-1">
                     {item.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5c524a]">{tag}</span>
+                      <span key={tag} className="rounded-full bg-white px-2 py-0.5 text-[10px] text-[#5d6b82]">{tag}</span>
                     ))}
                   </div>
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#5c524a]">{item.scenario}</p>
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-[#5d6b82]">{item.scenario}</p>
                 </div>
               ))}
             </div>

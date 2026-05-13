@@ -51,7 +51,7 @@ export default function EmergencyPage() {
       case 'done': return { icon: 'mdi:check', color: 'border-emerald-500 bg-emerald-50 text-emerald-600' };
       case 'doing': return { icon: 'mdi:play', color: 'border-teal-500 bg-teal-50 text-teal-600' };
       case 'skipped': return { icon: 'mdi:skip-next', color: 'border-gray-400 bg-gray-50 text-gray-500' };
-      default: return { icon: '', color: 'border-[#1a1615]/10 text-[#5c524a]/50' };
+      default: return { icon: '', color: 'border-[#172033]/10 text-[#5d6b82]/50' };
     }
   };
 
@@ -65,17 +65,17 @@ export default function EmergencyPage() {
             <div className="card-glow rounded-3xl border border-teal-500/20 bg-white p-5">
               <div className="flex items-center gap-2">
                 <Icon icon="mdi:playlist-check" className="text-xl text-teal-600" />
-                <p className="text-sm font-semibold text-[#1a1615]">预案匹配说明</p>
+                <p className="text-sm font-semibold text-[#172033]">预案匹配说明</p>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-[#5c524a]">
+              <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">
                 值班系统会根据事件类型、风险等级、老人画像和所在区域自动匹配处置流程。护理员只需要按步骤确认现场情况，系统会记录每一步的开始时间、完成时间和备注。
               </p>
             </div>
-            <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-              <p className="text-sm font-semibold text-[#1a1615]">当前推荐</p>
-              <div className="mt-3 space-y-2 text-sm text-[#5c524a]">
-                <div className="flex items-center justify-between"><span>待处理事件</span><span className="font-semibold text-[#1a1615]">3 起</span></div>
-                <div className="flex items-center justify-between"><span>可用预案</span><span className="font-semibold text-[#1a1615]">{plans.length} 套</span></div>
+            <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+              <p className="text-sm font-semibold text-[#172033]">当前推荐</p>
+              <div className="mt-3 space-y-2 text-sm text-[#5d6b82]">
+                <div className="flex items-center justify-between"><span>待处理事件</span><span className="font-semibold text-[#172033]">3 起</span></div>
+                <div className="flex items-center justify-between"><span>可用预案</span><span className="font-semibold text-[#172033]">{plans.length} 套</span></div>
                 <div className="flex items-center justify-between"><span>知识库状态</span><span className="font-semibold text-emerald-700">已更新</span></div>
               </div>
             </div>
@@ -88,17 +88,17 @@ export default function EmergencyPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.06 }}
                 onClick={() => handleSelectPlan(plan)}
-                className="card-glow cursor-pointer rounded-3xl border border-[#1a1615]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
+                className="card-glow cursor-pointer rounded-3xl border border-[#172033]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
               >
                 <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
                   <Icon icon={plan.icon} className="text-2xl" />
                 </div>
-                <p className="mt-4 text-base font-semibold text-[#1a1615]">{plan.eventType}</p>
+                <p className="mt-4 text-base font-semibold text-[#172033]">{plan.eventType}</p>
                 <div className="mt-2 flex items-center gap-3">
                   <RiskBadge risk={plan.riskLevel} />
-                  <span className="text-xs text-[#5c524a]/50">预计 {plan.estimatedMinutes} 分钟</span>
+                  <span className="text-xs text-[#5d6b82]/50">预计 {plan.estimatedMinutes} 分钟</span>
                 </div>
-                <p className="mt-2 text-xs text-[#5c524a]/50">{plan.steps.length} 个步骤</p>
+                <p className="mt-2 text-xs text-[#5d6b82]/50">{plan.steps.length} 个步骤</p>
                 <div className="mt-3 text-xs text-teal-600">
                   开始处理 →
                 </div>
@@ -110,13 +110,13 @@ export default function EmergencyPage() {
         <AnimatePresence mode="wait">
           <motion.div key={selectedPlan.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
             <div className="mb-6 flex items-center gap-3">
-              <button onClick={() => { setSelectedPlan(null); setSteps([]); }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-sm text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+              <button onClick={() => { setSelectedPlan(null); setSteps([]); }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#172033]/10 px-4 py-2 text-sm text-[#5d6b82] transition-colors hover:border-teal-500/40 hover:text-teal-700">
                 <Icon icon="mdi:arrow-left" className="text-base" />
                 返回选择
               </button>
               <div className="flex items-center gap-2">
                 <Icon icon={selectedPlan.icon} className="text-xl text-teal-600" />
-                <span className="text-lg font-semibold text-[#1a1615]">{selectedPlan.eventType}</span>
+                <span className="text-lg font-semibold text-[#172033]">{selectedPlan.eventType}</span>
                 <RiskBadge risk={selectedPlan.riskLevel} />
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function EmergencyPage() {
                         step.status === 'done' ? 'border-emerald-200' :
                         step.status === 'doing' ? 'border-teal-300' :
                         step.status === 'skipped' ? 'border-gray-200 opacity-60' :
-                        'border-[#1a1615]/8'
+                        'border-[#172033]/8'
                       }`}
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -148,15 +148,15 @@ export default function EmergencyPage() {
                               step.status === 'done' ? 'text-emerald-600' :
                               step.status === 'doing' ? 'text-teal-600' :
                               step.status === 'skipped' ? 'text-gray-400 line-through' :
-                              'text-[#1a1615]'
+                              'text-[#172033]'
                             }`}>{step.title}</p>
-                            <p className="mt-2 text-sm leading-relaxed text-[#5c524a]">{step.note}</p>
+                            <p className="mt-2 text-sm leading-relaxed text-[#5d6b82]">{step.note}</p>
                             <div className="mt-3 flex items-center gap-2">
                               <Icon icon="mdi:book-open-variant" className="text-sm text-teal-600" />
                               <span className="text-xs text-teal-600">依据：{step.knowledgeRef}</span>
                             </div>
                             {step.remark && (
-                              <div className="mt-2 rounded-2xl bg-[#f8f5f0] px-3 py-2 text-xs text-[#5c524a]">
+                              <div className="mt-2 rounded-2xl bg-[#f5f7fb] px-3 py-2 text-xs text-[#5d6b82]">
                                 <Icon icon="mdi:note-text-outline" className="mr-1 inline text-sm" />
                                 备注：{step.remark}
                               </div>
@@ -186,7 +186,7 @@ export default function EmergencyPage() {
                           </span>
                         )}
                         {step.status !== 'done' && step.status !== 'skipped' && (
-                          <button onClick={() => updateStep(step.id, 'skipped')} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-gray-400">
+                          <button onClick={() => updateStep(step.id, 'skipped')} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#172033]/10 px-4 py-2 text-xs text-[#5d6b82] transition-colors hover:border-gray-400">
                             <Icon icon="mdi:skip-next" className="text-sm" />
                             跳过
                           </button>
@@ -194,7 +194,7 @@ export default function EmergencyPage() {
                         <button onClick={() => {
                           const remark = prompt('请输入备注：');
                           if (remark) addRemark(step.id, remark);
-                        }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#1a1615]/10 px-4 py-2 text-xs text-[#5c524a] transition-colors hover:border-teal-500/40 hover:text-teal-700">
+                        }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#172033]/10 px-4 py-2 text-xs text-[#5d6b82] transition-colors hover:border-teal-500/40 hover:text-teal-700">
                           <Icon icon="mdi:pencil-outline" className="text-sm" />
                           添加备注
                         </button>
@@ -205,23 +205,23 @@ export default function EmergencyPage() {
               </div>
 
               <div className="space-y-5">
-                <div className="card-glow rounded-3xl border border-[#1a1615]/8 bg-white p-5">
-                  <p className="text-sm font-semibold text-[#1a1615]">处理进度</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">处理进度</p>
                   <div className="mt-4 space-y-3">
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-[#5c524a]">风险等级</span>
+                      <span className="text-[#5d6b82]">风险等级</span>
                       <RiskBadge risk={selectedPlan.riskLevel} />
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-[#5c524a]">已完成步骤</span>
-                      <span className="font-semibold text-[#1a1615]">{completedCount} / {steps.length}</span>
+                      <span className="text-[#5d6b82]">已完成步骤</span>
+                      <span className="font-semibold text-[#172033]">{completedCount} / {steps.length}</span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-[#5c524a]">预计处理时间</span>
-                      <span className="font-semibold text-[#1a1615]">{selectedPlan.estimatedMinutes} 分钟</span>
+                      <span className="text-[#5d6b82]">预计处理时间</span>
+                      <span className="font-semibold text-[#172033]">{selectedPlan.estimatedMinutes} 分钟</span>
                     </div>
                     <div>
-                      <div className="h-2 rounded-full bg-[#f0ece5]">
+                      <div className="h-2 rounded-full bg-[#e8edf5]">
                         <div className="h-2 rounded-full bg-teal-500 transition-all" style={{ width: `${steps.length > 0 ? (completedCount / steps.length) * 100 : 0}%` }} />
                       </div>
                     </div>
@@ -234,8 +234,8 @@ export default function EmergencyPage() {
                       <Icon icon="mdi:play-circle" className="text-xl" />
                       <p className="text-sm font-semibold">当前正在执行</p>
                     </div>
-                    <p className="mt-3 text-sm font-semibold text-[#1a1615]">第 {currentDoing.order} 步：{currentDoing.title}</p>
-                    <p className="mt-1 text-sm text-[#5c524a]">{currentDoing.note}</p>
+                    <p className="mt-3 text-sm font-semibold text-[#172033]">第 {currentDoing.order} 步：{currentDoing.title}</p>
+                    <p className="mt-1 text-sm text-[#5d6b82]">{currentDoing.note}</p>
                   </div>
                 )}
 
@@ -245,8 +245,8 @@ export default function EmergencyPage() {
                       <Icon icon="mdi:lightbulb-on-outline" className="text-xl" />
                       <p className="text-sm font-semibold">下一步建议</p>
                     </div>
-                    <p className="mt-3 text-sm font-semibold text-[#1a1615]">第 {nextStep.order} 步：{nextStep.title}</p>
-                    <p className="mt-1 text-sm text-[#5c524a]">{nextStep.note}</p>
+                    <p className="mt-3 text-sm font-semibold text-[#172033]">第 {nextStep.order} 步：{nextStep.title}</p>
+                    <p className="mt-1 text-sm text-[#5d6b82]">{nextStep.note}</p>
                   </div>
                 )}
 
@@ -256,7 +256,7 @@ export default function EmergencyPage() {
                       <Icon icon="mdi:check-circle" className="text-xl" />
                       <p className="text-sm font-semibold">所有步骤已完成</p>
                     </div>
-                    <p className="mt-2 text-sm text-[#5c524a]">处理流程已结束，您可以生成事件处理记录。</p>
+                    <p className="mt-2 text-sm text-[#5d6b82]">处理流程已结束，您可以生成事件处理记录。</p>
                     <div className="mt-4 flex gap-2">
                       <button onClick={() => setShowReport(true)} className="inline-flex items-center gap-1.5 rounded-2xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-500">
                         <Icon icon="mdi:file-document-outline" className="text-sm" />
@@ -272,19 +272,19 @@ export default function EmergencyPage() {
                       <Icon icon="mdi:file-document-check" className="text-xl" />
                       <p className="text-sm font-semibold">事件处理记录</p>
                     </div>
-                    <div className="mt-4 space-y-2.5 text-sm text-[#5c524a]">
-                      <div className="flex justify-between"><span className="text-[#5c524a]/50">事件类型</span><span className="font-medium text-[#1a1615]">{selectedPlan.eventType}</span></div>
-                      <div className="flex justify-between"><span className="text-[#5c524a]/50">风险等级</span><RiskBadge risk={selectedPlan.riskLevel} /></div>
-                      <div className="flex justify-between"><span className="text-[#5c524a]/50">完成步骤</span><span className="font-medium text-[#1a1615]">{completedCount} 步</span></div>
-                      <div className="flex justify-between"><span className="text-[#5c524a]/50">处理时间</span><span className="font-medium text-[#1a1615]">{new Date().toLocaleString('zh-CN')}</span></div>
+                    <div className="mt-4 space-y-2.5 text-sm text-[#5d6b82]">
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">事件类型</span><span className="font-medium text-[#172033]">{selectedPlan.eventType}</span></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">风险等级</span><RiskBadge risk={selectedPlan.riskLevel} /></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">完成步骤</span><span className="font-medium text-[#172033]">{completedCount} 步</span></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">处理时间</span><span className="font-medium text-[#172033]">{new Date().toLocaleString('zh-CN')}</span></div>
                     </div>
-                    <div className="mt-4 border-t border-[#1a1615]/8 pt-4">
-                      <p className="text-xs font-semibold text-[#1a1615]">步骤记录</p>
+                    <div className="mt-4 border-t border-[#172033]/8 pt-4">
+                      <p className="text-xs font-semibold text-[#172033]">步骤记录</p>
                       <div className="mt-2 space-y-2">
                         {steps.map((s) => (
                           <div key={s.id} className="flex items-start gap-2 text-xs">
                             <Icon icon={s.status === 'done' ? 'mdi:check-circle' : 'mdi:skip-next'} className={`mt-0.5 text-sm ${s.status === 'done' ? 'text-emerald-500' : 'text-gray-400'}`} />
-                            <span className="text-[#5c524a]">第 {s.order} 步：{s.title}{s.remark ? `（备注：${s.remark}）` : ''}</span>
+                            <span className="text-[#5d6b82]">第 {s.order} 步：{s.title}{s.remark ? `（备注：${s.remark}）` : ''}</span>
                           </div>
                         ))}
                       </div>
