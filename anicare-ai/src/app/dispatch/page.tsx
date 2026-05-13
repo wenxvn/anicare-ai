@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { RiskBadge } from '@/components/ui/risk-badge';
-import { StatCard } from '@/components/ui/stat-card';
 import { fetchJson } from '@/lib/api-client';
 import type { DispatchItem } from '@/types';
 
@@ -55,41 +54,47 @@ const nurses = [
   { name: '张晓梅', floor: 'A栋3-4层', distance: '空闲', status: '可接单' },
 ];
 
-type BoardColumn = '待指派' | '已派单' | '处理中' | '已完成';
-
-const columns: { key: BoardColumn; title: string; helper: string; icon: string }[] = [
-  { key: '待指派', title: '待派单', helper: '需要值班主管确认', icon: 'mdi:clock-alert-outline' },
-  { key: '已派单', title: '已派单', helper: '等待护理员接单', icon: 'mdi:account-arrow-right-outline' },
-  { key: '处理中', title: '处理中', helper: '护理员已到场或在路上', icon: 'mdi:progress-clock' },
-  { key: '已完成', title: '已完成', helper: '已记录并归档', icon: 'mdi:check-circle-outline' },
-];
-
-function displayStatus(item: DispatchItem): BoardColumn {
-  if (item.status === '待指派') return '待指派';
+function displayStatus(item: DispatchItem) {
   if (item.status === '处理中' && item.assignee === '系统指派') return '已派单';
-  return item.status as BoardColumn;
+  return item.status;
 }
 
 function etaFor(item: DispatchItem) {
-  if (displayStatus(item) === '已完成') return '已归档';
+  if (item.status === '已完成') return '已归档';
   if (item.waitMinutes <= 5) return '预计 2 分钟到场';
   if (item.waitMinutes <= 15) return '预计 4 分钟到场';
   return '需立即确认';
 }
 
+function statusStyle(status: string) {
+  if (status === '待指派') return 'bg-red-50 text-red-700 border-red-200';
+  if (status === '已派单') return 'bg-blue-50 text-blue-700 border-blue-200';
+  if (status === '处理中') return 'bg-orange-50 text-orange-700 border-orange-200';
+  return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+}
+
 export default function DispatchPage() {
   const [queue, setQueue] = useState<DispatchItem[]>(initialQueue);
   const [assigning, setAssigning] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState(initialQueue[0].id);
 
   useEffect(() => {
     fetchJson<DispatchItem[]>('/api/dispatch').then((items) => {
-      if (items.length) setQueue(items.slice(0, 8));
+      if (items.length) {
+        setQueue(items.slice(0, 8));
+        setSelectedId(items[0].id);
+      }
     }).catch(() => {});
   }, []);
 
+  const sortedQueue = useMemo(() => (
+    [...queue].sort((a, b) => b.priorityScore - a.priorityScore || b.waitMinutes - a.waitMinutes)
+  ), [queue]);
+
+  const selected = sortedQueue.find((item) => item.id === selectedId) ?? sortedQueue[0];
   const stats = useMemo(() => {
-    const pending = queue.filter((item) => displayStatus(item) === '待指派').length;
-    const active = queue.filter((item) => ['已派单', '处理中'].includes(displayStatus(item))).length;
+    const pending = queue.filter((item) => item.status === '待指派').length;
+    const active = queue.filter((item) => item.status === '处理中').length;
     const urgent = queue.filter((item) => item.riskLevel === 'critical').length;
     const avgWait = queue.length ? (queue.reduce((sum, item) => sum + item.waitMinutes, 0) / queue.length).toFixed(1) : '0';
     return { pending, active, urgent, avgWait };
@@ -107,119 +112,160 @@ export default function DispatchPage() {
     setQueue((prev) => prev.map((item) => item.id === id ? { ...item, status: '已完成' } : item));
   };
 
-  const topItem = queue.find((item) => displayStatus(item) === '待指派');
-
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-end justify-between gap-3">
+    <div className="space-y-5">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm text-[#5d6b82]">风险调度中心</p>
-          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">护理响应闭环</h1>
+          <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">护理响应工作台</h1>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5d6b82]">
+            按事件优先级组织派单、到场和归档，值班人员只需要聚焦当前最需要处理的工单。
+          </p>
         </div>
-        <Link href="/emergency" className="inline-flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
+        <Link href="/emergency" className="inline-flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-teal-500">
           <Icon icon="mdi:ambulance" />
           应急流程
         </Link>
-      </div>
+      </header>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="待派单事件" value={stats.pending} icon={<Icon icon="mdi:clock-alert-outline" className="text-xl" />} helper="等待主管确认和派发" />
-        <StatCard label="正在响应" value={stats.active} icon={<Icon icon="mdi:run-fast" className="text-xl" />} helper="已派单或处理中事件" />
-        <StatCard label="紧急事件" value={stats.urgent} icon={<Icon icon="mdi:alert-circle-outline" className="text-xl" />} helper="需要立即到场确认" />
-        <StatCard label="平均等待" value={`${stats.avgWait} 分钟`} icon={<Icon icon="mdi:timer-sand" className="text-xl" />} helper="从识别到当前状态" />
-      </div>
-
-      {topItem && (
-        <section className="card-glow rounded-2xl border border-red-200 bg-red-50/70 p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
+      <section className="grid gap-2 rounded-2xl border border-[#172033]/8 bg-white/88 p-3 shadow-sm sm:grid-cols-4">
+        {[
+          { label: '待派单', value: stats.pending, icon: 'mdi:clock-alert-outline', tone: 'text-red-600' },
+          { label: '响应中', value: stats.active, icon: 'mdi:run-fast', tone: 'text-orange-600' },
+          { label: '紧急事件', value: stats.urgent, icon: 'mdi:alert-circle-outline', tone: 'text-red-600' },
+          { label: '平均等待', value: `${stats.avgWait} 分钟`, icon: 'mdi:timer-sand', tone: 'text-teal-700' },
+        ].map(({ label, value, icon, tone }) => (
+          <div key={label} className="flex items-center justify-between rounded-xl bg-[#f8fafc] px-3 py-2.5">
             <div>
-              <div className="flex items-center gap-2 text-red-700">
-                <Icon icon="mdi:alert-decagram-outline" className="text-xl" />
-                <p className="text-sm font-semibold">当前优先处理</p>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-[#172033]">
-                {topItem.zone} 的 {topItem.type} 已等待 {topItem.waitMinutes} 分钟，建议立即指派 A栋当班护理员并同步应急流程。
-              </p>
+              <p className="text-xs text-[#5d6b82]">{label}</p>
+              <p className="mt-1 text-lg font-semibold text-[#172033]">{value}</p>
             </div>
-            <button onClick={() => handleAssign(topItem.id)} className="inline-flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-500">
-              <Icon icon="mdi:account-plus-outline" />
-              立即派单
-            </button>
+            <Icon icon={icon} className={`text-xl ${tone}`} />
           </div>
-        </section>
-      )}
+        ))}
+      </section>
 
-      <div className="grid gap-5 xl:grid-cols-[1fr_320px]">
-        <section className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
-          {columns.map((column) => {
-            const items = queue.filter((item) => displayStatus(item) === column.key);
-            return (
-              <div key={column.key} className="rounded-2xl border border-[#172033]/8 bg-white p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Icon icon={column.icon} className="text-lg text-teal-600" />
-                      <h2 className="text-sm font-semibold text-[#172033]">{column.title}</h2>
-                    </div>
-                    <p className="mt-1 text-xs text-[#5d6b82]">{column.helper}</p>
-                  </div>
-                  <span className="rounded-full bg-[#f5f7fb] px-2 py-1 text-xs font-semibold text-[#172033]">{items.length}</span>
-                </div>
-                <div className="mt-4 space-y-3">
-                  {items.map((item, index) => (
-                    <motion.div key={item.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }} className="rounded-xl border border-[#172033]/8 bg-[#f8fafc] p-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-[#172033]">{item.type}</p>
-                          <p className="mt-1 truncate text-xs text-[#5d6b82]">{item.zone}</p>
-                        </div>
-                        <RiskBadge risk={item.riskLevel} />
-                      </div>
-                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-                        <div className="rounded-lg bg-white px-2 py-1.5">
-                          <p className="text-[#5d6b82]/60">护理员</p>
-                          <p className="mt-0.5 font-medium text-[#172033]">{item.assignee ?? '未指派'}</p>
-                        </div>
-                        <div className="rounded-lg bg-white px-2 py-1.5">
-                          <p className="text-[#5d6b82]/60">预计到场</p>
-                          <p className="mt-0.5 font-medium text-[#172033]">{etaFor(item)}</p>
-                        </div>
-                      </div>
-                      <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-[#5d6b82]">{item.reason}</p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {displayStatus(item) === '待指派' && (
-                          <button onClick={() => handleAssign(item.id)} disabled={assigning === item.id} className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
-                            {assigning === item.id ? '派单中' : '派单'}
-                          </button>
-                        )}
-                        {displayStatus(item) !== '已完成' && (
-                          <button onClick={() => handleComplete(item.id)} className="rounded-lg border border-[#172033]/10 px-3 py-1.5 text-xs text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
-                            完成归档
-                          </button>
-                        )}
-                        <Link href={`/events/${item.eventId}`} className="rounded-lg border border-[#172033]/10 px-3 py-1.5 text-xs text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
-                          详情
-                        </Link>
-                      </div>
-                    </motion.div>
-                  ))}
-                  {items.length === 0 && (
-                    <div className="rounded-xl border border-dashed border-[#172033]/10 px-3 py-8 text-center text-xs text-[#5d6b82]/60">
-                      当前无事件
-                    </div>
-                  )}
-                </div>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <section className="card-glow overflow-hidden rounded-2xl border border-[#172033]/8 bg-white">
+          <div className="border-b border-[#172033]/8 px-5 py-4">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-base font-semibold text-[#172033]">事件队列</h2>
+                <p className="mt-1 text-xs text-[#5d6b82]">按优先级与等待时长排序，点击行查看调度详情。</p>
               </div>
-            );
-          })}
+              <span className="rounded-full bg-[#f5f7fb] px-3 py-1 text-xs font-medium text-[#5d6b82]">{queue.length} 起事件</span>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <div className="grid min-w-[820px] grid-cols-[80px_1.2fr_1fr_100px_120px_120px] bg-[#f8fafc] px-5 py-2 text-xs font-medium text-[#5d6b82]">
+              <span>优先级</span>
+              <span>事件</span>
+              <span>位置 / 对象</span>
+              <span>等待</span>
+              <span>状态</span>
+              <span>操作</span>
+            </div>
+            {sortedQueue.map((item, index) => {
+              const active = selected?.id === item.id;
+              const status = displayStatus(item);
+              return (
+                <motion.button
+                  key={item.id}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.03 }}
+                  onClick={() => setSelectedId(item.id)}
+                  className={`grid min-w-[820px] grid-cols-[80px_1.2fr_1fr_100px_120px_120px] items-center border-t border-[#172033]/8 px-5 py-3 text-left text-sm transition-colors ${active ? 'bg-teal-50/70' : 'bg-white hover:bg-[#f8fafc]'}`}
+                >
+                  <span className="font-mono text-xs font-semibold text-[#172033]">#{item.priority}</span>
+                  <span className="min-w-0">
+                    <span className="flex items-center gap-2">
+                      <RiskBadge risk={item.riskLevel} />
+                      <span className="truncate font-semibold text-[#172033]">{item.type}</span>
+                    </span>
+                    <span className="mt-1 block truncate text-xs text-[#5d6b82]">{item.reason}</span>
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block truncate text-[#172033]">{item.zone}</span>
+                    <span className="mt-1 block text-xs text-[#5d6b82]">{item.residentName}</span>
+                  </span>
+                  <span className={item.waitMinutes > 10 ? 'font-semibold text-red-600' : 'text-[#172033]'}>{item.waitMinutes} 分钟</span>
+                  <span>
+                    <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${statusStyle(status)}`}>{status}</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    {item.status === '待指派' ? (
+                      <span className="rounded-lg bg-teal-600 px-3 py-1.5 text-xs font-semibold text-white">
+                        {assigning === item.id ? '派单中' : '派单'}
+                      </span>
+                    ) : (
+                      <span className="rounded-lg border border-[#172033]/10 px-3 py-1.5 text-xs text-[#5d6b82]">查看</span>
+                    )}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
         </section>
 
         <aside className="space-y-4">
-          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-4">
+          {selected && (
+            <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs text-[#5d6b82]">当前工单</p>
+                  <h2 className="mt-1 text-lg font-semibold text-[#172033]">{selected.type}</h2>
+                </div>
+                <RiskBadge risk={selected.riskLevel} />
+              </div>
+
+              <dl className="mt-5 space-y-3 text-sm">
+                {[
+                  ['位置', selected.zone],
+                  ['对象', selected.residentName],
+                  ['等待', `${selected.waitMinutes} 分钟`],
+                  ['预计到场', etaFor(selected)],
+                  ['当前处理人', selected.assignee ?? '未指派'],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex justify-between gap-3 border-b border-[#172033]/6 pb-2 last:border-0">
+                    <dt className="text-[#5d6b82]">{label}</dt>
+                    <dd className="text-right font-medium text-[#172033]">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+
+              <div className="mt-4 rounded-xl bg-[#f8fafc] p-3">
+                <p className="text-xs font-medium text-[#5d6b82]">研判原因</p>
+                <p className="mt-2 text-sm leading-relaxed text-[#172033]">{selected.reason}</p>
+              </div>
+
+              <div className="mt-4 grid gap-2">
+                {selected.status === '待指派' && (
+                  <button onClick={() => handleAssign(selected.id)} disabled={assigning === selected.id} className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-teal-500 disabled:opacity-50">
+                    <Icon icon="mdi:account-plus-outline" />
+                    {assigning === selected.id ? '正在派单' : '指派护理员'}
+                  </button>
+                )}
+                {selected.status !== '已完成' && (
+                  <button onClick={() => handleComplete(selected.id)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#172033]/10 bg-white px-4 py-2.5 text-sm font-medium text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
+                    <Icon icon="mdi:check-circle-outline" />
+                    完成并归档
+                  </button>
+                )}
+                <Link href={`/events/${selected.eventId}`} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#172033]/10 bg-white px-4 py-2.5 text-sm font-medium text-[#5d6b82] hover:border-teal-500/40 hover:text-teal-700">
+                  <Icon icon="mdi:file-document-outline" />
+                  查看事件详情
+                </Link>
+              </div>
+            </section>
+          )}
+
+          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <h2 className="text-sm font-semibold text-[#172033]">当班护理员</h2>
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 space-y-2">
               {nurses.map((nurse) => (
-                <div key={nurse.name} className="flex items-center justify-between rounded-xl bg-[#f5f7fb] px-3 py-2">
+                <div key={nurse.name} className="flex items-center justify-between rounded-xl bg-[#f8fafc] px-3 py-2.5">
                   <div>
                     <p className="text-sm font-medium text-[#172033]">{nurse.name}</p>
                     <p className="mt-0.5 text-xs text-[#5d6b82]">{nurse.floor}</p>
@@ -233,12 +279,12 @@ export default function DispatchPage() {
             </div>
           </section>
 
-          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-4">
+          <section className="rounded-2xl border border-[#172033]/8 bg-[#f8fafc] p-4">
             <h2 className="text-sm font-semibold text-[#172033]">响应规则</h2>
-            <div className="mt-4 space-y-3 text-xs text-[#5d6b82]">
-              <p className="rounded-xl bg-red-50 px-3 py-2 text-red-700">紧急事件：2 分钟内完成派单，5 分钟内到场。</p>
-              <p className="rounded-xl bg-orange-50 px-3 py-2 text-orange-700">高风险事件：5 分钟内派单，10 分钟内反馈处置状态。</p>
-              <p className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-700">所有事件完成后自动进入归档，保留处置记录。</p>
+            <div className="mt-3 space-y-2 text-xs leading-relaxed text-[#5d6b82]">
+              <p>紧急事件 2 分钟内完成派单，5 分钟内到场确认。</p>
+              <p>高风险事件 5 分钟内派单，10 分钟内反馈处置状态。</p>
+              <p>所有事件完成后自动进入归档，保留处置记录。</p>
             </div>
           </section>
         </aside>
