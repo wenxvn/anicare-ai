@@ -1,110 +1,226 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icon } from '@iconify/react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { fetchJson } from '@/lib/api-client';
+import { mockResidentProfiles } from '@/lib/mock-data';
 import { AreaChart, BarChart, Area, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import type { ResidentProfile } from '@/types';
 
-const fallbackProfiles: ResidentProfile[] = [
+const extraProfiles: ResidentProfile[] = [
   {
-    id: 'res-001', name: '张建国', room: 'A栋-301', age: 78, riskTags: ['摔倒高危', '高血压'],
-    todayStatus: '夜间走廊跌倒，待处理', avgWakeTime: '06:30', avgActiveHours: 6.5,
-    frequentZones: ['走廊', '活动室', '花园'], nightLeaveCount: 2.1, weeklyAnomalies: 3, todayDeviation: 78,
-    deviationSummary: '张大爷通常在 22:00 后不再离开房间，但今天凌晨 03:12 出现在 3 楼走廊，且持续静止超过 12 秒，系统判定为高风险异常活动。',
-    weeklyActivityTrend: [{ day: '周一', hours: 7.2 }, { day: '周二', hours: 5.8 }, { day: '周三', hours: 6.4 }, { day: '周四', hours: 6.1 }, { day: '周五', hours: 4.5 }, { day: '周六', hours: 5.0 }, { day: '周日', hours: 3.2 }],
-    nightLeaveTrend: [{ day: '周一', count: 1 }, { day: '周二', count: 2 }, { day: '周三', count: 1 }, { day: '周四', count: 3 }, { day: '周五', count: 2 }, { day: '周六', count: 1 }, { day: '周日', count: 4 }],
-    riskEventTrend: [{ day: '周一', count: 0 }, { day: '周二', count: 1 }, { day: '周三', count: 0 }, { day: '周四', count: 1 }, { day: '周五', count: 0 }, { day: '周六', count: 0 }, { day: '周日', count: 2 }],
+    id: 'res-006',
+    name: '赵文秀',
+    room: 'C栋206',
+    age: 85,
+    riskTags: ['食欲下降', '睡眠不足'],
+    todayStatus: '连续低活跃，护理员已复核',
+    avgWakeTime: '07:20',
+    avgActiveHours: 3.8,
+    frequentZones: ['房间', '护理站', '花园'],
+    nightLeaveCount: 2.8,
+    weeklyAnomalies: 6,
+    todayDeviation: 74,
+    deviationSummary: '赵奶奶近 7 天活动半径明显缩小，夜间醒来次数增加，今天午后未参加常规活动，系统判定需要重点关注。',
+    weeklyActivityTrend: [
+      { day: '周一', hours: 5.1 }, { day: '周二', hours: 4.8 }, { day: '周三', hours: 4.4 },
+      { day: '周四', hours: 4.0 }, { day: '周五', hours: 3.6 }, { day: '周六', hours: 3.9 }, { day: '周日', hours: 3.2 },
+    ],
+    nightLeaveTrend: [
+      { day: '周一', count: 2 }, { day: '周二', count: 3 }, { day: '周三', count: 2 },
+      { day: '周四', count: 4 }, { day: '周五', count: 3 }, { day: '周六', count: 2 }, { day: '周日', count: 4 },
+    ],
+    riskEventTrend: [
+      { day: '周一', count: 1 }, { day: '周二', count: 1 }, { day: '周三', count: 0 },
+      { day: '周四', count: 2 }, { day: '周五', count: 1 }, { day: '周六', count: 1 }, { day: '周日', count: 2 },
+    ],
   },
   {
-    id: 'res-002', name: '王秀兰', room: 'B栋-302', age: 82, riskTags: ['压疮风险', '骨质疏松'],
-    todayStatus: '久卧未动，已通知', avgWakeTime: '07:00', avgActiveHours: 4.2,
-    frequentZones: ['床铺', '洗手间'], nightLeaveCount: 1.3, weeklyAnomalies: 2, todayDeviation: 65,
-    deviationSummary: '王奶奶今天早上起床后没有像往常一样在 8 点前到走廊散步，且 50 分钟内未检测到翻身动作，系统判定为中风险异常。',
-    weeklyActivityTrend: [{ day: '周一', hours: 4.8 }, { day: '周二', hours: 4.1 }, { day: '周三', hours: 3.5 }, { day: '周四', hours: 4.3 }, { day: '周五', hours: 4.0 }, { day: '周六', hours: 3.8 }, { day: '周日', hours: 2.1 }],
-    nightLeaveTrend: [{ day: '周一', count: 1 }, { day: '周二', count: 1 }, { day: '周三', count: 2 }, { day: '周四', count: 1 }, { day: '周五', count: 1 }, { day: '周六', count: 0 }, { day: '周日', count: 2 }],
-    riskEventTrend: [{ day: '周一', count: 0 }, { day: '周二', count: 0 }, { day: '周三', count: 1 }, { day: '周四', count: 0 }, { day: '周五', count: 0 }, { day: '周六', count: 1 }, { day: '周日', count: 1 }],
+    id: 'res-007',
+    name: '孙丽芳',
+    room: 'A栋405',
+    age: 76,
+    riskTags: ['情绪波动', '社交减少'],
+    todayStatus: '情绪低落标记，观察中',
+    avgWakeTime: '06:45',
+    avgActiveHours: 6.1,
+    frequentZones: ['活动室', '花园', '餐厅'],
+    nightLeaveCount: 1.1,
+    weeklyAnomalies: 3,
+    todayDeviation: 58,
+    deviationSummary: '孙阿姨今日活动量尚可，但主动交流次数低于平时，且晚餐后独自在房间停留时间变长，需要护理员主动沟通。',
+    weeklyActivityTrend: [
+      { day: '周一', hours: 6.8 }, { day: '周二', hours: 6.4 }, { day: '周三', hours: 6.9 },
+      { day: '周四', hours: 5.9 }, { day: '周五', hours: 5.6 }, { day: '周六', hours: 6.0 }, { day: '周日', hours: 4.7 },
+    ],
+    nightLeaveTrend: [
+      { day: '周一', count: 1 }, { day: '周二', count: 1 }, { day: '周三', count: 2 },
+      { day: '周四', count: 1 }, { day: '周五', count: 1 }, { day: '周六', count: 1 }, { day: '周日', count: 2 },
+    ],
+    riskEventTrend: [
+      { day: '周一', count: 0 }, { day: '周二', count: 0 }, { day: '周三', count: 1 },
+      { day: '周四', count: 0 }, { day: '周五', count: 1 }, { day: '周六', count: 0 }, { day: '周日', count: 1 },
+    ],
   },
   {
-    id: 'res-003', name: '陈国华', room: 'B栋-508', age: 75, riskTags: ['夜间离床', '行动不便'],
-    todayStatus: '夜间离床未归，待确认', avgWakeTime: '06:00', avgActiveHours: 7.0,
-    frequentZones: ['花园', '走廊', '餐厅'], nightLeaveCount: 3.5, weeklyAnomalies: 4, todayDeviation: 82,
-    deviationSummary: '陈大爷平时夜间最多起身 1 次且 5 分钟内返回，但今天凌晨 02:16 离床后超过 15 分钟仍未归，且行动轨迹在卫生间方向中断，系统判定为高风险。',
-    weeklyActivityTrend: [{ day: '周一', hours: 7.5 }, { day: '周二', hours: 6.8 }, { day: '周三', hours: 7.1 }, { day: '周四', hours: 5.2 }, { day: '周五', hours: 6.9 }, { day: '周六', hours: 7.3 }, { day: '周日', hours: 4.8 }],
-    nightLeaveTrend: [{ day: '周一', count: 3 }, { day: '周二', count: 2 }, { day: '周三', count: 4 }, { day: '周四', count: 5 }, { day: '周五', count: 3 }, { day: '周六', count: 3 }, { day: '周日', count: 4 }],
-    riskEventTrend: [{ day: '周一', count: 1 }, { day: '周二', count: 0 }, { day: '周三', count: 1 }, { day: '周四', count: 2 }, { day: '周五', count: 0 }, { day: '周六', count: 1 }, { day: '周日', count: 2 }],
-  },
-  {
-    id: 'res-004', name: '李明辉', room: 'A栋-102', age: 80, riskTags: ['认知障碍', '迷路风险'],
-    todayStatus: '电梯口滞留，观察中', avgWakeTime: '05:45', avgActiveHours: 8.0,
-    frequentZones: ['电梯口', '花园入口', '餐厅'], nightLeaveCount: 1.8, weeklyAnomalies: 5, todayDeviation: 45,
-    deviationSummary: '李爷爷下午在电梯口停留超过 10 分钟，结合近期迷路记录，可能是找不到回房间的路，系统判定为中风险。',
-    weeklyActivityTrend: [{ day: '周一', hours: 8.2 }, { day: '周二', hours: 7.5 }, { day: '周三', hours: 6.8 }, { day: '周四', hours: 8.1 }, { day: '周五', hours: 7.9 }, { day: '周六', hours: 5.3 }, { day: '周日', hours: 6.0 }],
-    nightLeaveTrend: [{ day: '周一', count: 2 }, { day: '周二', count: 1 }, { day: '周三', count: 2 }, { day: '周四', count: 1 }, { day: '周五', count: 2 }, { day: '周六', count: 1 }, { day: '周日', count: 3 }],
-    riskEventTrend: [{ day: '周一', count: 1 }, { day: '周二', count: 2 }, { day: '周三', count: 1 }, { day: '周四', count: 0 }, { day: '周五', count: 1 }, { day: '周六', count: 1 }, { day: '周日', count: 1 }],
-  },
-  {
-    id: 'res-005', name: '刘德华', room: 'B栋-205', age: 71, riskTags: ['步态不稳', '膝关节退化'],
-    todayStatus: '楼梯口摔倒，护理员已到场', avgWakeTime: '06:15', avgActiveHours: 5.5,
-    frequentZones: ['楼梯口', '餐厅', '康复区'], nightLeaveCount: 0.8, weeklyAnomalies: 1, todayDeviation: 92,
-    deviationSummary: '刘叔叔平时活动范围集中在 2 层，今天早上 9:15 突然出现在 1 层楼梯口且发生跌倒，结合膝关节退化病史，系统判定为紧急异常。',
-    weeklyActivityTrend: [{ day: '周一', hours: 5.8 }, { day: '周二', hours: 5.2 }, { day: '周三', hours: 6.0 }, { day: '周四', hours: 5.5 }, { day: '周五', hours: 4.8 }, { day: '周六', hours: 5.1 }, { day: '周日', hours: 3.5 }],
-    nightLeaveTrend: [{ day: '周一', count: 1 }, { day: '周二', count: 0 }, { day: '周三', count: 1 }, { day: '周四', count: 1 }, { day: '周五', count: 0 }, { day: '周六', count: 1 }, { day: '周日', count: 2 }],
-    riskEventTrend: [{ day: '周一', count: 0 }, { day: '周二', count: 0 }, { day: '周三', count: 0 }, { day: '周四', count: 0 }, { day: '周五', count: 0 }, { day: '周六', count: 0 }, { day: '周日', count: 1 }],
+    id: 'res-008',
+    name: '周志明',
+    room: 'C栋108',
+    age: 73,
+    riskTags: ['常规观察', '康复训练'],
+    todayStatus: '状态稳定，常规巡查',
+    avgWakeTime: '06:10',
+    avgActiveHours: 7.6,
+    frequentZones: ['康复区', '活动室', '餐厅'],
+    nightLeaveCount: 0.7,
+    weeklyAnomalies: 1,
+    todayDeviation: 22,
+    deviationSummary: '周叔整体活动节律稳定，今日康复训练完成度较好，系统判定为低风险，仅需保持常规巡查。',
+    weeklyActivityTrend: [
+      { day: '周一', hours: 7.2 }, { day: '周二', hours: 7.8 }, { day: '周三', hours: 7.4 },
+      { day: '周四', hours: 7.9 }, { day: '周五', hours: 7.1 }, { day: '周六', hours: 7.5 }, { day: '周日', hours: 7.0 },
+    ],
+    nightLeaveTrend: [
+      { day: '周一', count: 1 }, { day: '周二', count: 0 }, { day: '周三', count: 1 },
+      { day: '周四', count: 1 }, { day: '周五', count: 0 }, { day: '周六', count: 1 }, { day: '周日', count: 1 },
+    ],
+    riskEventTrend: [
+      { day: '周一', count: 0 }, { day: '周二', count: 0 }, { day: '周三', count: 0 },
+      { day: '周四', count: 0 }, { day: '周五', count: 0 }, { day: '周六', count: 0 }, { day: '周日', count: 1 },
+    ],
   },
 ];
 
+const avatarMap: Record<string, string> = {
+  'res-001': '/avatars/elder-1.jpg',
+  'res-002': '/avatars/elder-2.jpg',
+  'res-003': '/avatars/elder-3.jpg',
+  'res-004': '/avatars/elder-4.jpg',
+  'res-005': '/avatars/elder-5.jpg',
+  'res-006': '/avatars/elder-6.jpg',
+  'res-007': '/avatars/elder-7.jpg',
+  'res-008': '/avatars/elder-8.jpg',
+};
+
+const initialProfiles = [...mockResidentProfiles, ...extraProfiles];
+
+function statusDot(status: string) {
+  if (status.includes('待处理') || status.includes('摔倒') || status.includes('复核')) return 'bg-red-500 animate-pulse';
+  if (status.includes('已通知') || status.includes('待确认') || status.includes('观察')) return 'bg-orange-500';
+  if (status.includes('滞留') || status.includes('低落')) return 'bg-amber-500';
+  return 'bg-emerald-500';
+}
+
+function deviationTone(value: number) {
+  if (value >= 70) return 'bg-red-500';
+  if (value >= 40) return 'bg-amber-500';
+  return 'bg-emerald-500';
+}
+
+function ProfileAvatar({ profile, size = 'md' }: { profile: ResidentProfile; size?: 'md' | 'lg' }) {
+  const dimension = size === 'lg' ? 'h-20 w-20' : 'h-14 w-14';
+  return (
+    <div className={`relative shrink-0 overflow-hidden rounded-2xl border border-[#172033]/8 bg-teal-50 ${dimension}`}>
+      <Image
+        src={avatarMap[profile.id] ?? '/avatars/elder-1.jpg'}
+        alt={`${profile.name}头像`}
+        fill
+        sizes={size === 'lg' ? '80px' : '56px'}
+        className="object-cover"
+      />
+    </div>
+  );
+}
+
 export default function ProfilesPage() {
-  const [profiles, setProfiles] = useState<ResidentProfile[]>(fallbackProfiles);
+  const [profiles, setProfiles] = useState<ResidentProfile[]>(initialProfiles);
   const [selected, setSelected] = useState<ResidentProfile | null>(null);
 
   useEffect(() => {
-    fetchJson<ResidentProfile[]>('/api/profiles').then(setProfiles).catch(() => {});
-  }, []);
+    fetchJson<ResidentProfile[]>('/api/profiles').then((items) => {
+      if (items.length > profiles.length) {
+        setProfiles(items);
+      }
+    }).catch(() => {});
+  }, [profiles.length]);
+
+  const stats = useMemo(() => {
+    const high = profiles.filter((profile) => profile.todayDeviation >= 70).length;
+    const watch = profiles.filter((profile) => profile.todayDeviation >= 40 && profile.todayDeviation < 70).length;
+    const avg = profiles.length ? Math.round(profiles.reduce((sum, profile) => sum + profile.todayDeviation, 0) / profiles.length) : 0;
+    return { high, watch, avg };
+  }, [profiles]);
 
   return (
     <div className="space-y-8">
       <SectionHeader title="老人行为画像" description="" />
 
       {!selected ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {profiles.map((p, index) => (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.06 }}
-              onClick={() => setSelected(p)}
-              className="card-glow cursor-pointer rounded-3xl border border-[#172033]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
-            >
-              <div className="flex items-start justify-between">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
-                  <Icon icon="mdi:account-circle" className="text-2xl" />
+        <>
+          <section className="grid gap-3 rounded-2xl border border-[#172033]/8 bg-white/88 p-3 shadow-sm sm:grid-cols-3">
+            {[
+              { label: '画像档案', value: profiles.length, icon: 'mdi:account-group-outline', tone: 'text-teal-700' },
+              { label: '高偏离老人', value: stats.high, icon: 'mdi:alert-circle-outline', tone: 'text-red-600' },
+              { label: '平均偏离度', value: `${stats.avg}%`, icon: 'mdi:chart-bell-curve-cumulative', tone: 'text-amber-600' },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center justify-between rounded-xl bg-[#f8fafc] px-4 py-3">
+                <div>
+                  <p className="text-xs text-[#5d6b82]">{item.label}</p>
+                  <p className="mt-1 text-xl font-semibold text-[#172033]">{item.value}</p>
                 </div>
-                <div className="flex flex-wrap justify-end gap-1">
-                  {p.riskTags.map((tag) => (
-                    <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-600">{tag}</span>
-                  ))}
+                <Icon icon={item.icon} className={`text-2xl ${item.tone}`} />
+              </div>
+            ))}
+          </section>
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {profiles.map((p, index) => (
+              <motion.div
+                key={p.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                onClick={() => setSelected(p)}
+                className="card-glow cursor-pointer rounded-3xl border border-[#172033]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <ProfileAvatar profile={p} />
+                  <div className="flex min-w-0 flex-1 flex-wrap justify-end gap-1">
+                    {p.riskTags.slice(0, 2).map((tag) => (
+                      <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-600">{tag}</span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <p className="mt-4 text-base font-semibold text-[#172033]">{p.name}</p>
-              <p className="text-xs text-[#5d6b82]/50">{p.room} · {p.age} 岁</p>
-              <div className="mt-3 flex items-center gap-2">
-                <span className={`inline-block h-2 w-2 rounded-full ${
-                  p.todayStatus.includes('待处理') || p.todayStatus.includes('摔倒') ? 'bg-red-500 animate-pulse' :
-                  p.todayStatus.includes('已通知') || p.todayStatus.includes('待确认') ? 'bg-orange-500' :
-                  p.todayStatus.includes('观察中') ? 'bg-amber-500' : 'bg-emerald-500'
-                }`} />
-                <span className="text-sm text-[#5d6b82]">{p.todayStatus}</span>
-              </div>
-              <div className="mt-3 text-xs text-teal-600">
-                点击查看行为画像 →
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <p className="mt-4 text-base font-semibold text-[#172033]">{p.name}</p>
+                <p className="text-xs text-[#5d6b82]/65">{p.room} · {p.age} 岁</p>
+                <div className="mt-3 flex items-center gap-2">
+                  <span className={`inline-block h-2 w-2 rounded-full ${statusDot(p.todayStatus)}`} />
+                  <span className="min-w-0 truncate text-sm text-[#5d6b82]">{p.todayStatus}</span>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="rounded-xl bg-[#f8fafc] px-2 py-2 text-center">
+                    <p className="text-[10px] text-[#5d6b82]/60">偏离</p>
+                    <p className="text-sm font-semibold text-[#172033]">{p.todayDeviation}%</p>
+                  </div>
+                  <div className="rounded-xl bg-[#f8fafc] px-2 py-2 text-center">
+                    <p className="text-[10px] text-[#5d6b82]/60">活动</p>
+                    <p className="text-sm font-semibold text-[#172033]">{p.avgActiveHours}h</p>
+                  </div>
+                  <div className="rounded-xl bg-[#f8fafc] px-2 py-2 text-center">
+                    <p className="text-[10px] text-[#5d6b82]/60">异常</p>
+                    <p className="text-sm font-semibold text-[#172033]">{p.weeklyAnomalies}</p>
+                  </div>
+                </div>
+                <div className="mt-4 text-xs font-medium text-teal-600">
+                  点击查看行为画像 →
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </>
       ) : (
         <AnimatePresence mode="wait">
           <motion.div key={selected.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
@@ -113,20 +229,29 @@ export default function ProfilesPage() {
               返回老人列表
             </button>
 
-            <div className="grid gap-5 lg:grid-cols-[1.3fr_1fr]">
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1.45fr)_420px]">
               <div className="space-y-5">
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-500/10 text-teal-600">
-                      <Icon icon="mdi:account-circle" className="text-3xl" />
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      <ProfileAvatar profile={selected} size="lg" />
+                      <div>
+                        <p className="text-2xl font-semibold text-[#172033]">{selected.name}</p>
+                        <p className="mt-1 text-sm text-[#5d6b82]">{selected.room} · {selected.age} 岁</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {selected.riskTags.map((tag) => (
+                            <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-2.5 py-1 text-xs text-red-600">{tag}</span>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xl font-semibold text-[#172033]">{selected.name}</p>
-                      <p className="text-sm text-[#5d6b82]">{selected.room} · {selected.age} 岁</p>
-                      <div className="mt-1 flex gap-2">
-                        {selected.riskTags.map((tag) => (
-                          <span key={tag} className="rounded-full border border-red-200 bg-red-50 px-2 py-0.5 text-xs text-red-600">{tag}</span>
-                        ))}
+                    <div className="min-w-[220px] rounded-2xl bg-[#f8fafc] p-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-[#5d6b82]">今日偏离度</p>
+                        <span className="text-2xl font-semibold text-[#172033]">{selected.todayDeviation}%</span>
+                      </div>
+                      <div className="mt-3 h-2 rounded-full bg-[#e8edf5]">
+                        <div className={`h-2 rounded-full ${deviationTone(selected.todayDeviation)}`} style={{ width: `${selected.todayDeviation}%` }} />
                       </div>
                     </div>
                   </div>
@@ -134,19 +259,19 @@ export default function ProfilesPage() {
 
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#172033]">日常习惯数据</p>
-                  <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                     {[
                       { label: '平均起床时间', value: selected.avgWakeTime, icon: 'mdi:weather-sunset-up' },
                       { label: '日均活动时长', value: `${selected.avgActiveHours} 小时`, icon: 'mdi:walk' },
                       { label: '常去区域', value: selected.frequentZones.join('、'), icon: 'mdi:map-marker-path' },
                       { label: '周均夜间离床', value: `${selected.nightLeaveCount} 次`, icon: 'mdi:bed' },
                       { label: '近 7 天异常', value: `${selected.weeklyAnomalies} 次`, icon: 'mdi:alert-circle-outline' },
-                      { label: '今日偏离度', value: `${selected.todayDeviation}%`, icon: 'mdi:trending-up' },
+                      { label: '当前状态', value: selected.todayStatus, icon: 'mdi:pulse' },
                     ].map((item) => (
                       <div key={item.label} className="rounded-2xl border border-[#172033]/8 bg-[#f5f7fb] p-3">
                         <div className="flex items-center gap-2">
                           <Icon icon={item.icon} className="text-sm text-teal-600" />
-                          <span className="text-xs text-[#5d6b82]/50">{item.label}</span>
+                          <span className="text-xs text-[#5d6b82]/65">{item.label}</span>
                         </div>
                         <p className="mt-1.5 text-sm font-semibold text-[#172033]">{item.value}</p>
                       </div>
@@ -162,18 +287,15 @@ export default function ProfilesPage() {
                     </div>
                     <span className="rounded-full bg-teal-50 px-2.5 py-1 text-xs font-medium text-teal-700">自动生成</span>
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">
-                    {selected.name} 本周主要关注点为 {selected.riskTags.join('、')}。系统结合活动趋势、夜间离床记录和历史事件，建议当班护理员在
-                    {selected.frequentZones.slice(0, 2).join('、')} 增加巡查频次，并在交接班时复核今日状态。
-                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">{selected.deviationSummary}</p>
                   <div className="mt-4 grid gap-3 sm:grid-cols-3">
                     {[
                       { label: '重点巡查', value: selected.frequentZones[0] ?? selected.room },
                       { label: '关注原因', value: selected.riskTags[0] ?? '行为波动' },
-                      { label: '建议频次', value: selected.todayDeviation >= 70 ? '每 30 分钟' : '每 2 小时' },
+                      { label: '建议频次', value: selected.todayDeviation >= 70 ? '每 30 分钟' : selected.todayDeviation >= 40 ? '每 1 小时' : '每 2 小时' },
                     ].map((item) => (
                       <div key={item.label} className="rounded-2xl bg-[#f5f7fb] p-3">
-                        <p className="text-xs text-[#5d6b82]/50">{item.label}</p>
+                        <p className="text-xs text-[#5d6b82]/65">{item.label}</p>
                         <p className="mt-1 text-sm font-semibold text-[#172033]">{item.value}</p>
                       </div>
                     ))}
@@ -183,7 +305,7 @@ export default function ProfilesPage() {
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#172033]">7 天活动趋势</p>
                   <p className="mt-1 text-xs text-[#5d6b82]">每天的活动时长（小时）</p>
-                  <div className="mt-4 h-52">
+                  <div className="mt-4 h-56">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={selected.weeklyActivityTrend}>
                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(23,32,51,0.06)" />
@@ -230,7 +352,7 @@ export default function ProfilesPage() {
                 </div>
               </div>
 
-              <div className="space-y-5">
+              <aside className="space-y-5">
                 <div className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
                   <div className="flex items-center gap-2 text-teal-700">
                     <Icon icon="mdi:brain" className="text-xl" />
@@ -241,9 +363,9 @@ export default function ProfilesPage() {
                       <span className="text-3xl font-bold text-[#172033]">{selected.todayDeviation}<span className="text-base text-[#5d6b82]/50">%</span></span>
                       <div className="flex-1">
                         <div className="h-2 rounded-full bg-[#e8edf5]">
-                          <div className={`h-2 rounded-full ${selected.todayDeviation >= 70 ? 'bg-red-500' : selected.todayDeviation >= 40 ? 'bg-amber-500' : 'bg-emerald-500'}`} style={{ width: `${selected.todayDeviation}%` }} />
+                          <div className={`h-2 rounded-full ${deviationTone(selected.todayDeviation)}`} style={{ width: `${selected.todayDeviation}%` }} />
                         </div>
-                        <p className="mt-1 text-xs text-[#5d6b82]/50">今日行为偏离度</p>
+                        <p className="mt-1 text-xs text-[#5d6b82]/65">今日行为偏离度</p>
                       </div>
                     </div>
                     <p className="text-sm leading-relaxed text-[#5d6b82]">{selected.deviationSummary}</p>
@@ -253,11 +375,7 @@ export default function ProfilesPage() {
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#172033]">今日状态</p>
                   <div className="mt-3 flex items-center gap-2">
-                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${
-                      selected.todayStatus.includes('待处理') || selected.todayStatus.includes('摔倒') ? 'bg-red-500 animate-pulse' :
-                      selected.todayStatus.includes('已通知') || selected.todayStatus.includes('待确认') ? 'bg-orange-500' :
-                      selected.todayStatus.includes('观察中') ? 'bg-amber-500' : 'bg-emerald-500'
-                    }`} />
+                    <span className={`inline-block h-2.5 w-2.5 rounded-full ${statusDot(selected.todayStatus)}`} />
                     <span className="text-sm text-[#172033]">{selected.todayStatus}</span>
                   </div>
                 </div>
@@ -275,6 +393,23 @@ export default function ProfilesPage() {
                 </div>
 
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">今日轨迹摘要</p>
+                  <div className="mt-4 space-y-3">
+                    {[
+                      ['06:30', '起床后前往餐厅'],
+                      ['09:20', `停留于${selected.frequentZones[0] ?? '活动区'}`],
+                      ['14:40', selected.todayStatus],
+                      ['17:20', '进入晚间护理观察'],
+                    ].map(([time, text]) => (
+                      <div key={`${time}-${text}`} className="flex gap-3">
+                        <span className="w-12 shrink-0 font-mono text-xs text-[#5d6b82]">{time}</span>
+                        <p className="text-sm leading-relaxed text-[#172033]">{text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#172033]">风险标签</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {selected.riskTags.map((tag) => (
@@ -282,7 +417,14 @@ export default function ProfilesPage() {
                     ))}
                   </div>
                 </div>
-              </div>
+
+                <div className="rounded-3xl border border-indigo-200 bg-indigo-50/70 p-5">
+                  <p className="text-sm font-semibold text-indigo-900">护理提醒</p>
+                  <p className="mt-2 text-sm leading-relaxed text-indigo-900/80">
+                    建议交接班时复核 {selected.name} 的夜间离床记录、常去区域和今日偏离度。若偏离度持续高于 70%，应同步风险调度中心生成巡查工单。
+                  </p>
+                </div>
+              </aside>
             </div>
           </motion.div>
         </AnimatePresence>

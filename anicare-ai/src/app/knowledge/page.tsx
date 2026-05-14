@@ -62,12 +62,6 @@ type ChatResponse = {
   error?: string;
 };
 
-function toolStatusClass(status: string) {
-  if (status === 'completed') return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-  if (status === 'running') return 'bg-teal-50 text-teal-700 border-teal-200';
-  return 'bg-red-50 text-red-700 border-red-200';
-}
-
 export default function AssistantPage() {
   const [input, setInput] = useState(quickScenarios[0].prompt);
   const [loading, setLoading] = useState(false);
@@ -96,7 +90,7 @@ export default function AssistantPage() {
       setReplyText(data.reply ?? '');
       setDecision(data.decision ?? fallbackDecision);
     } catch {
-      setReplyText('当前使用本地护理知识库给出建议。');
+      setReplyText('当前使用本地护理知识库给出处置建议。');
       setDecision(fallbackDecision);
     } finally {
       setLoading(false);
@@ -110,7 +104,7 @@ export default function AssistantPage() {
           <p className="text-sm text-[#5d6b82]">护理决策助手</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">知识库工作台</h1>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5d6b82]">
-            把“AI 工具调用”收进审计栏，主区域只呈现值班人员真正需要的处置建议和引用依据。
+            输入现场情况后生成风险判断、处置步骤、注意事项和引用依据，方便值班人员快速形成闭环。
           </p>
         </div>
         <div className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700">
@@ -119,7 +113,7 @@ export default function AssistantPage() {
         </div>
       </header>
 
-      <div className="grid gap-5 xl:grid-cols-[300px_minmax(0,1fr)_340px]">
+      <div className="grid gap-5 xl:grid-cols-[340px_minmax(0,1fr)]">
         <aside className="space-y-4">
           <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-4">
             <h2 className="text-sm font-semibold text-[#172033]">常用场景</h2>
@@ -245,7 +239,7 @@ export default function AssistantPage() {
 
           <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
             <h2 className="text-base font-semibold text-[#172033]">引用依据</h2>
-            <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {decision.references.map((ref) => (
                 <div key={ref.title} className="rounded-xl border border-[#172033]/8 bg-[#f8fafc] p-4">
                   <div className="flex items-center justify-between gap-2">
@@ -258,33 +252,6 @@ export default function AssistantPage() {
             </div>
           </section>
         </main>
-
-        <aside className="space-y-4">
-          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
-            <div className="flex items-center gap-2">
-              <Icon icon="mdi:shield-search" className="text-lg text-teal-700" />
-              <h2 className="text-base font-semibold text-[#172033]">研判来源</h2>
-            </div>
-            <div className="mt-4 space-y-3">
-              {decision.toolsUsed.map((tool) => (
-                <div key={tool.name} className="rounded-xl border border-[#172033]/8 bg-[#f8fafc] p-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-semibold text-[#172033]">{tool.name}</span>
-                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${toolStatusClass(tool.status)}`}>{tool.status}</span>
-                  </div>
-                  <p className="mt-2 text-xs leading-relaxed text-[#5d6b82]">{tool.result}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-2xl border border-[#172033]/8 bg-[#f8fafc] p-4">
-            <h2 className="text-sm font-semibold text-[#172033]">审核提示</h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">
-              助手输出用于辅助值班判断。涉及摔倒、意识异常、呼吸异常、烟火风险等事件时，仍需护理员现场确认并记录处置结果。
-            </p>
-          </section>
-        </aside>
       </div>
     </div>
   );

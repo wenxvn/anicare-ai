@@ -6,6 +6,8 @@ import { Icon } from '@iconify/react';
 import {
   Area,
   AreaChart,
+  Bar,
+  BarChart,
   CartesianGrid,
   Line,
   LineChart,
@@ -114,8 +116,16 @@ export default function HealthPage() {
     body: selected.trends.bodyHealthScores[index],
     mental: selected.trends.mentalHealthScores[index],
     sleep: selected.trends.sleepHours[index],
+    wake: selected.trends.wakeUpTimes[index],
     steps: Math.round(selected.trends.steps[index] / 100),
+    emotion: selected.trends.emotionScores[index],
   }));
+
+  const careFocus = [
+    { label: '巡查频次', value: selected.carePriority === '立即处理' ? '15 分钟' : selected.carePriority === '重点关注' ? '30 分钟' : '2 小时' },
+    { label: '重点区域', value: selected.room },
+    { label: '交接提醒', value: selected.recentEvents[0]?.type ?? '常规观察' },
+  ];
 
   return (
     <div className="space-y-5">
@@ -123,7 +133,7 @@ export default function HealthPage() {
         <p className="text-sm text-[#5d6b82]">老人健康档案</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-tight text-[#172033]">健康监护</h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#5d6b82]">
-          以老人档案为中心查看体征、情绪、近期事件和护理建议，避免把所有图表平铺成仪表盘。
+          以老人档案为中心查看体征、情绪、近期事件和护理建议，便于值班人员快速判断优先级。
         </p>
       </header>
 
@@ -138,7 +148,7 @@ export default function HealthPage() {
         ))}
       </section>
 
-      <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)_340px]">
+      <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)_360px]">
         <aside className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-4">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold text-[#172033]">监护列表</h2>
@@ -187,7 +197,7 @@ export default function HealthPage() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-base font-semibold text-[#172033]">核心体征</h2>
-                <p className="mt-1 text-xs text-[#5d6b82]">只保留护理判断最常用的指标，异常项由风险标签提示。</p>
+                <p className="mt-1 text-xs text-[#5d6b82]">保留护理判断最常用的指标，异常项由风险标签提示。</p>
               </div>
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
@@ -228,6 +238,38 @@ export default function HealthPage() {
               </div>
             </div>
           </section>
+
+          <div className="grid gap-5 lg:grid-cols-2">
+            <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+              <h2 className="text-base font-semibold text-[#172033]">夜间醒来与离床</h2>
+              <div className="mt-4 h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={trendData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                    <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e8edf5', fontSize: 12 }} />
+                    <Bar dataKey="wake" name="醒来次数" fill="#0d9488" radius={[8, 8, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+
+            <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+              <h2 className="text-base font-semibold text-[#172033]">情绪评分趋势</h2>
+              <div className="mt-4 h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={trendData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e8edf5" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#5d6b82' }} />
+                    <YAxis tick={{ fontSize: 11, fill: '#5d6b82' }} domain={[0, 100]} />
+                    <Tooltip contentStyle={{ borderRadius: 12, border: '1px solid #e8edf5', fontSize: 12 }} />
+                    <Area type="monotone" dataKey="emotion" name="情绪评分" stroke="#6366f1" fill="#6366f122" strokeWidth={2} />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </section>
+          </div>
         </main>
 
         <aside className="space-y-4">
@@ -241,6 +283,21 @@ export default function HealthPage() {
               <AdviceBlock title="心理健康" icon="mdi:brain">{selected.suggestions.mental}</AdviceBlock>
               <AdviceBlock title="护理员处置" icon="mdi:account-nurse">{selected.suggestions.caregiver}</AdviceBlock>
               <AdviceBlock title="家属沟通" icon="mdi:account-heart-outline">{selected.suggestions.family}</AdviceBlock>
+            </div>
+          </section>
+
+          <section className="card-glow rounded-2xl border border-[#172033]/8 bg-white p-5">
+            <div className="flex items-center gap-2">
+              <Icon icon="mdi:calendar-clock" className="text-lg text-teal-700" />
+              <h2 className="text-base font-semibold text-[#172033]">今日护理安排</h2>
+            </div>
+            <div className="mt-4 grid gap-3">
+              {careFocus.map((item) => (
+                <div key={item.label} className="rounded-xl bg-[#f8fafc] p-3">
+                  <p className="text-xs text-[#5d6b82]">{item.label}</p>
+                  <p className="mt-1 text-sm font-semibold text-[#172033]">{item.value}</p>
+                </div>
+              ))}
             </div>
           </section>
 

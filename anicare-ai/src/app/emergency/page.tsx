@@ -6,17 +6,41 @@ import { Icon } from '@iconify/react';
 import { SectionHeader } from '@/components/ui/section-header';
 import { RiskBadge } from '@/components/ui/risk-badge';
 import { fetchJson } from '@/lib/api-client';
+import { mockEmergencyPlans } from '@/lib/mock-data';
 import type { EmergencyPlan, EmergencyStep, EmergencyStepStatus } from '@/types';
-import { RISK_LEVEL_LABEL } from '@/types';
+
+const fieldInfo = [
+  { label: '事件位置', value: 'A栋3层走廊' },
+  { label: '最近护理员', value: '张晓梅 · 2 分钟' },
+  { label: '值班医护', value: '李医生 · 已待命' },
+  { label: '对讲频道', value: 'A-3 夜间巡护' },
+];
+
+const supplies = [
+  '一次性手套',
+  '血压计与血氧仪',
+  '便携式急救包',
+  '轮椅或转运床',
+  '事件记录终端',
+];
+
+const communicationLog = [
+  { time: '03:12', text: '系统生成紧急事件' },
+  { time: '03:13', text: '通知 A栋3层护理员' },
+  { time: '03:14', text: '值班医护收到同步提醒' },
+  { time: '03:15', text: '等待现场状态回传' },
+];
 
 export default function EmergencyPage() {
-  const [plans, setPlans] = useState<EmergencyPlan[]>([]);
+  const [plans, setPlans] = useState<EmergencyPlan[]>(mockEmergencyPlans);
   const [selectedPlan, setSelectedPlan] = useState<EmergencyPlan | null>(null);
   const [steps, setSteps] = useState<EmergencyStep[]>([]);
   const [showReport, setShowReport] = useState(false);
 
   useEffect(() => {
-    fetchJson<EmergencyPlan[]>('/api/emergency/plans').then(setPlans).catch(() => {});
+    fetchJson<EmergencyPlan[]>('/api/emergency/plans').then((items) => {
+      if (items.length) setPlans(items);
+    }).catch(() => {});
   }, []);
 
   const handleSelectPlan = (plan: EmergencyPlan) => {
@@ -38,7 +62,7 @@ export default function EmergencyPage() {
   };
 
   const addRemark = (stepId: string, remark: string) => {
-    setSteps((prev) => prev.map((s) => s.id === stepId ? { ...s, remark } : s));
+    setSteps((prev) => prev.map((s) => (s.id === stepId ? { ...s, remark } : s)));
   };
 
   const completedCount = steps.filter((s) => s.status === 'done' || s.status === 'skipped').length;
@@ -68,7 +92,7 @@ export default function EmergencyPage() {
                 <p className="text-sm font-semibold text-[#172033]">预案匹配说明</p>
               </div>
               <p className="mt-3 text-sm leading-relaxed text-[#5d6b82]">
-                值班系统会根据事件类型、风险等级、老人画像和所在区域自动匹配处置流程。护理员只需要按步骤确认现场情况，系统会记录每一步的开始时间、完成时间和备注。
+                值班系统会根据事件类型、风险等级、老人画像和所在区域匹配处置流程，护理员按步骤确认现场情况，系统记录每一步的开始时间、完成时间和备注。
               </p>
             </div>
             <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
@@ -80,13 +104,13 @@ export default function EmergencyPage() {
               </div>
             </div>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.06 }}
+                transition={{ delay: index * 0.05 }}
                 onClick={() => handleSelectPlan(plan)}
                 className="card-glow cursor-pointer rounded-3xl border border-[#172033]/8 bg-white p-5 transition-colors hover:border-teal-500/25"
               >
@@ -96,9 +120,9 @@ export default function EmergencyPage() {
                 <p className="mt-4 text-base font-semibold text-[#172033]">{plan.eventType}</p>
                 <div className="mt-2 flex items-center gap-3">
                   <RiskBadge risk={plan.riskLevel} />
-                  <span className="text-xs text-[#5d6b82]/50">预计 {plan.estimatedMinutes} 分钟</span>
+                  <span className="text-xs text-[#5d6b82]/60">预计 {plan.estimatedMinutes} 分钟</span>
                 </div>
-                <p className="mt-2 text-xs text-[#5d6b82]/50">{plan.steps.length} 个步骤</p>
+                <p className="mt-2 text-xs text-[#5d6b82]/60">{plan.steps.length} 个步骤</p>
                 <div className="mt-3 text-xs text-teal-600">
                   开始处理 →
                 </div>
@@ -109,7 +133,7 @@ export default function EmergencyPage() {
       ) : (
         <AnimatePresence mode="wait">
           <motion.div key={selectedPlan.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>
-            <div className="mb-6 flex items-center gap-3">
+            <div className="mb-6 flex flex-wrap items-center gap-3">
               <button onClick={() => { setSelectedPlan(null); setSteps([]); }} className="inline-flex items-center gap-1.5 rounded-2xl border border-[#172033]/10 px-4 py-2 text-sm text-[#5d6b82] transition-colors hover:border-teal-500/40 hover:text-teal-700">
                 <Icon icon="mdi:arrow-left" className="text-base" />
                 返回选择
@@ -121,7 +145,7 @@ export default function EmergencyPage() {
               </div>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+            <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_420px]">
               <div className="space-y-4">
                 {steps.map((step, index) => {
                   const statusInfo = getStepStatusIcon(step.status);
@@ -130,7 +154,7 @@ export default function EmergencyPage() {
                       key={step.id}
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.08 }}
+                      transition={{ delay: index * 0.05 }}
                       className={`card-glow rounded-3xl border bg-white p-5 transition-colors ${
                         step.status === 'done' ? 'border-emerald-200' :
                         step.status === 'doing' ? 'border-teal-300' :
@@ -164,7 +188,7 @@ export default function EmergencyPage() {
                           </div>
                         </div>
                       </div>
-                      <div className="mt-4 flex items-center gap-2">
+                      <div className="mt-4 flex flex-wrap items-center gap-2">
                         {step.status === 'pending' && (
                           <button onClick={() => updateStep(step.id, 'doing')} className="inline-flex items-center gap-1.5 rounded-2xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-500">
                             <Icon icon="mdi:play" className="text-sm" />
@@ -204,7 +228,7 @@ export default function EmergencyPage() {
                 })}
               </div>
 
-              <div className="space-y-5">
+              <aside className="space-y-5">
                 <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
                   <p className="text-sm font-semibold text-[#172033]">处理进度</p>
                   <div className="mt-4 space-y-3">
@@ -220,35 +244,60 @@ export default function EmergencyPage() {
                       <span className="text-[#5d6b82]">预计处理时间</span>
                       <span className="font-semibold text-[#172033]">{selectedPlan.estimatedMinutes} 分钟</span>
                     </div>
-                    <div>
-                      <div className="h-2 rounded-full bg-[#e8edf5]">
-                        <div className="h-2 rounded-full bg-teal-500 transition-all" style={{ width: `${steps.length > 0 ? (completedCount / steps.length) * 100 : 0}%` }} />
-                      </div>
+                    <div className="h-2 rounded-full bg-[#e8edf5]">
+                      <div className="h-2 rounded-full bg-teal-500 transition-all" style={{ width: `${steps.length > 0 ? (completedCount / steps.length) * 100 : 0}%` }} />
                     </div>
                   </div>
                 </div>
 
-                {currentDoing && (
-                  <div className="card-glow rounded-3xl border border-teal-300 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
+                {(currentDoing || nextStep) && (
+                  <div className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
                     <div className="flex items-center gap-2 text-teal-700">
-                      <Icon icon="mdi:play-circle" className="text-xl" />
-                      <p className="text-sm font-semibold">当前正在执行</p>
+                      <Icon icon={currentDoing ? 'mdi:play-circle' : 'mdi:lightbulb-on-outline'} className="text-xl" />
+                      <p className="text-sm font-semibold">{currentDoing ? '当前正在执行' : '下一步建议'}</p>
                     </div>
-                    <p className="mt-3 text-sm font-semibold text-[#172033]">第 {currentDoing.order} 步：{currentDoing.title}</p>
-                    <p className="mt-1 text-sm text-[#5d6b82]">{currentDoing.note}</p>
+                    <p className="mt-3 text-sm font-semibold text-[#172033]">
+                      第 {(currentDoing ?? nextStep)?.order} 步：{(currentDoing ?? nextStep)?.title}
+                    </p>
+                    <p className="mt-1 text-sm text-[#5d6b82]">{(currentDoing ?? nextStep)?.note}</p>
                   </div>
                 )}
 
-                {!currentDoing && nextStep && (
-                  <div className="card-glow rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 via-white to-white p-5">
-                    <div className="flex items-center gap-2 text-teal-700">
-                      <Icon icon="mdi:lightbulb-on-outline" className="text-xl" />
-                      <p className="text-sm font-semibold">下一步建议</p>
-                    </div>
-                    <p className="mt-3 text-sm font-semibold text-[#172033]">第 {nextStep.order} 步：{nextStep.title}</p>
-                    <p className="mt-1 text-sm text-[#5d6b82]">{nextStep.note}</p>
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">现场信息</p>
+                  <div className="mt-4 grid gap-3">
+                    {fieldInfo.map((item) => (
+                      <div key={item.label} className="flex justify-between gap-3 rounded-xl bg-[#f8fafc] px-3 py-2.5 text-sm">
+                        <span className="text-[#5d6b82]">{item.label}</span>
+                        <span className="font-medium text-[#172033]">{item.value}</span>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
+
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">携带物资</p>
+                  <div className="mt-4 grid gap-2">
+                    {supplies.map((item) => (
+                      <div key={item} className="flex items-center gap-2 rounded-xl bg-[#f8fafc] px-3 py-2 text-sm text-[#172033]">
+                        <Icon icon="mdi:check-circle-outline" className="text-base text-teal-600" />
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="card-glow rounded-3xl border border-[#172033]/8 bg-white p-5">
+                  <p className="text-sm font-semibold text-[#172033]">通讯记录</p>
+                  <div className="mt-4 space-y-3">
+                    {communicationLog.map((item) => (
+                      <div key={`${item.time}-${item.text}`} className="flex gap-3 text-sm">
+                        <span className="w-12 shrink-0 font-mono text-xs text-[#5d6b82]">{item.time}</span>
+                        <span className="text-[#172033]">{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
                 {allDone && !showReport && (
                   <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-3xl border border-emerald-200 bg-emerald-50 p-5">
@@ -256,11 +305,11 @@ export default function EmergencyPage() {
                       <Icon icon="mdi:check-circle" className="text-xl" />
                       <p className="text-sm font-semibold">所有步骤已完成</p>
                     </div>
-                    <p className="mt-2 text-sm text-[#5d6b82]">处理流程已结束，您可以生成事件处理记录。</p>
+                    <p className="mt-2 text-sm text-[#5d6b82]">处置流程已结束，可生成事件处置记录。</p>
                     <div className="mt-4 flex gap-2">
                       <button onClick={() => setShowReport(true)} className="inline-flex items-center gap-1.5 rounded-2xl bg-teal-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-teal-500">
                         <Icon icon="mdi:file-document-outline" className="text-sm" />
-                        生成处理记录
+                        生成处置记录
                       </button>
                     </div>
                   </motion.div>
@@ -270,28 +319,17 @@ export default function EmergencyPage() {
                   <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="card-glow rounded-3xl border border-emerald-200 bg-white p-5">
                     <div className="flex items-center gap-2 text-emerald-700">
                       <Icon icon="mdi:file-document-check" className="text-xl" />
-                      <p className="text-sm font-semibold">事件处理记录</p>
+                      <p className="text-sm font-semibold">事件处置记录</p>
                     </div>
                     <div className="mt-4 space-y-2.5 text-sm text-[#5d6b82]">
-                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">事件类型</span><span className="font-medium text-[#172033]">{selectedPlan.eventType}</span></div>
-                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">风险等级</span><RiskBadge risk={selectedPlan.riskLevel} /></div>
-                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">完成步骤</span><span className="font-medium text-[#172033]">{completedCount} 步</span></div>
-                      <div className="flex justify-between"><span className="text-[#5d6b82]/50">处理时间</span><span className="font-medium text-[#172033]">{new Date().toLocaleString('zh-CN')}</span></div>
-                    </div>
-                    <div className="mt-4 border-t border-[#172033]/8 pt-4">
-                      <p className="text-xs font-semibold text-[#172033]">步骤记录</p>
-                      <div className="mt-2 space-y-2">
-                        {steps.map((s) => (
-                          <div key={s.id} className="flex items-start gap-2 text-xs">
-                            <Icon icon={s.status === 'done' ? 'mdi:check-circle' : 'mdi:skip-next'} className={`mt-0.5 text-sm ${s.status === 'done' ? 'text-emerald-500' : 'text-gray-400'}`} />
-                            <span className="text-[#5d6b82]">第 {s.order} 步：{s.title}{s.remark ? `（备注：${s.remark}）` : ''}</span>
-                          </div>
-                        ))}
-                      </div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/60">事件类型</span><span className="font-medium text-[#172033]">{selectedPlan.eventType}</span></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/60">风险等级</span><RiskBadge risk={selectedPlan.riskLevel} /></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/60">完成步骤</span><span className="font-medium text-[#172033]">{completedCount} 步</span></div>
+                      <div className="flex justify-between"><span className="text-[#5d6b82]/60">处理时间</span><span className="font-medium text-[#172033]">{new Date().toLocaleString('zh-CN')}</span></div>
                     </div>
                   </motion.div>
                 )}
-              </div>
+              </aside>
             </div>
           </motion.div>
         </AnimatePresence>
