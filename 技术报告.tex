@@ -8,9 +8,10 @@
 \usepackage{amsmath}
 \usepackage{tikz}
 \usepackage{caption}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{enumitem}
 \usepackage{float}
+\usepackage{fancyhdr}
 
 \usetikzlibrary{arrows.meta,positioning,fit}
 
@@ -61,9 +62,25 @@
 \captionsetup[figure]{font=songcap,justification=centering,labelsep=quad}
 \captionsetup[table]{font=songcap,justification=centering,labelsep=quad}
 
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\songti\zihao{-4}\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyfoot[C]{\songti\zihao{-4}\thepage}
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}
+}
+
 \renewcommand{\contentsname}{\heiti\zihao{4} 目录}
 \renewcommand{\refname}{\heiti\zihao{4} 参考文献}
 \renewcommand{\arraystretch}{1.05}
+\hypersetup{
+  colorlinks=false,
+  pdfborder={0 0 0}
+}
 
 \newcommand{\placeholderfigure}[3]{
 \begin{figure}[htbp]
@@ -85,7 +102,9 @@
 \end{figure}
 }
 
-\title{\xbs\zihao{3}《安养智巡》项目研究报告}
+\title{\xbs\zihao{3}《安养智巡》\\[0.45em]
+{\heiti\zihao{4} 康养机构AI安全风险预警系统}\\[0.25em]
+{\songti\zihao{-4} 项目研究报告}}
 \author{}
 \date{}
 
@@ -95,6 +114,8 @@
 
 \maketitle
 
+\phantomsection
+\addcontentsline{toc}{section}{摘要}
 \begin{center}
 {\heiti\zihao{4} 摘要}
 \end{center}
@@ -109,10 +130,6 @@
 \tableofcontents
 \newpage
 
-\section{项目题目}
-
-项目题目为《安养智巡》。本项目定位于老年人疗养中心后台管理系统，服务对象为护理员、值班主管、机构管理者和医生，核心目标是通过多模态 AI 融合预警，帮助机构及时发现老年人的健康风险、心理风险和安全风险，并将风险识别、智能研判、派单处置、应急流程、事件归档和统计分析纳入统一业务闭环。
-
 \section{项目的背景和国内外研究现状}
 
 \subsection{项目背景}
@@ -125,25 +142,25 @@
 
 \subsubsection{智慧养老与机构数字化管理研究}
 
-Zhang 等对中国智慧居家养老的发展阶段和挑战进行了综述，指出中国智慧养老在政策推动、平台建设和服务整合方面发展较快，但仍面临技术适配、需求匹配和持续运营等问题\cite{zhang2020smart}。Hung 进一步从政策与服务体系角度讨论了中国智慧养老服务的进展，强调智能感知、平台化服务和健康管理对养老服务升级的重要意义\cite{hung2023smart}。Stavropoulos 等系统梳理了 IoT 可穿戴设备在老年照护中的应用，指出可穿戴、智能家居、环境传感器和健康监测设备已经成为老年照护技术的重要组成部分，但互操作性、隐私保护和长期使用接受度仍是关键挑战\cite{stavropoulos2020iot}。
+关于中国智慧居家养老的发展研究指出，政策推动、平台建设和服务整合促进了智慧养老快速发展，但技术适配、需求匹配和持续运营仍是落地过程中的关键问题\cite{zhang2020smart}。从智慧养老服务体系角度看，智能感知、平台化服务和健康管理已经成为养老服务升级的重要方向\cite{hung2023smart}。关于 IoT 可穿戴设备在老年照护中的综述研究进一步表明，可穿戴设备、智能家居、环境传感器和健康监测设备已经成为老年照护技术的重要组成部分，但互操作性、隐私保护和长期使用接受度仍是关键挑战\cite{stavropoulos2020iot}。
 
 现有研究为本项目提供了重要基础：养老机构需要的不只是单点设备，而是能够把传感、记录、研判和处置组织起来的后台管理系统。安养智巡因此采用机构级后台架构，将多模态感知、护理业务流程和管理看板统一设计。
 
 \subsubsection{跌倒检测、人体姿态估计与行为识别研究}
 
-跌倒检测是老年照护场景中最受关注的安全风险之一。Mubashir 等对跌倒检测的基本原理和方法进行了综述，将跌倒检测系统归纳为基于可穿戴传感器、环境传感器和视觉感知等多种路线\cite{mubashir2013survey}。Igual 等指出，跌倒检测系统的难点在于真实跌倒样本稀缺、日常动作与跌倒动作相似、不同环境下模型泛化不足等\cite{igual2013challenges}。这说明单一视觉或单一传感器判断很难覆盖疗养中心的复杂场景。
+跌倒检测是老年照护场景中最受关注的安全风险之一。跌倒检测综述研究将相关系统归纳为基于可穿戴传感器、环境传感器和视觉感知等多种路线\cite{mubashir2013survey}。另有研究指出，跌倒检测系统的难点在于真实跌倒样本稀缺、日常动作与跌倒动作相似、不同环境下模型泛化不足等\cite{igual2013challenges}。这说明单一视觉或单一传感器判断很难覆盖疗养中心的复杂场景。
 
-在视觉识别方面，Redmon 等提出的 YOLO 将目标检测转化为端到端回归问题，显著提升了实时检测效率\cite{redmon2016yolo}。Cao 等提出的 OpenPose 通过 Part Affinity Fields 实现多人二维姿态估计，为人体姿态理解、跌倒识别和异常行为分析提供了重要技术基础\cite{cao2017realtime}。Ultralytics YOLO11 文档显示，YOLO11 支持检测、分割、分类、姿态估计等任务，并包含轻量化模型配置\cite{ultralytics2024yolo11}。本项目在系统设计中接入 YOLO11n 和 YOLO11n-pose，用于人员、床位、异常姿态、疑似跌倒、长时间静止等场景识别。
+在视觉识别方面，YOLO 将目标检测转化为端到端回归问题，显著提升了实时检测效率\cite{redmon2016yolo}。OpenPose 通过 Part Affinity Fields 实现多人二维姿态估计，为人体姿态理解、跌倒识别和异常行为分析提供了重要技术基础\cite{cao2017realtime}。Ultralytics YOLO11 文档显示，YOLO11 支持检测、分割、分类、姿态估计等任务，并包含轻量化模型配置\cite{ultralytics2024yolo11}。本项目在系统设计中接入 YOLO11n 和 YOLO11n-pose，用于人员、床位、异常姿态、疑似跌倒、长时间静止等场景识别。
 
 \subsubsection{多模态融合、健康监测与心理风险评估研究}
 
-多模态机器学习关注不同数据模态之间的表示、对齐、融合和协同学习。Baltrušaitis 等提出的多模态机器学习分类框架指出，融合不仅是简单拼接，而涉及表示学习、模态对齐、跨模态补全和融合决策等核心问题\cite{baltrusaitis2019multimodal}。Liang 等进一步总结了多模态机器学习的基础问题与开放挑战，强调异构数据、时序对齐、缺失模态和可靠性评估是多模态系统落地的重要难点\cite{liang2022foundations}。
+多模态机器学习关注不同数据模态之间的表示、对齐、融合和协同学习。多模态机器学习分类框架指出，融合不仅是简单拼接，而涉及表示学习、模态对齐、跨模态补全和融合决策等核心问题\cite{baltrusaitis2019multimodal}。关于多模态机器学习基础问题的研究进一步强调，异构数据、时序对齐、缺失模态和可靠性评估是多模态系统落地的重要难点\cite{liang2022foundations}。
 
-在健康和心理风险方面，Holt-Lunstad 等通过元分析指出，孤独和社会隔离与死亡风险升高相关，提示养老服务不能只关注生理安全，也需要关注社会连接和心理状态\cite{holtlunstad2015loneliness}。Sequeira 等对抑郁被动监测的数字健康工具进行了系统综述，说明基于手机、可穿戴设备和行为数据的被动监测可为心理健康风险评估提供新路径\cite{sequeira2021digital}。这些研究启发本项目将夜间离床频次、活动量下降、久卧未动、互动减少、睡眠异常和护理记录纳入行为画像，用于识别健康和心理风险趋势。
+在健康和心理风险方面，孤独与社会隔离相关研究表明，孤独和社会隔离与死亡风险升高相关，提示养老服务不能只关注生理安全，也需要关注社会连接和心理状态\cite{holtlunstad2015loneliness}。数字健康工具用于抑郁被动监测的系统综述说明，基于手机、可穿戴设备和行为数据的被动监测可为心理健康风险评估提供新路径\cite{sequeira2021digital}。这些研究启发本项目将夜间离床频次、活动量下降、久卧未动、互动减少、睡眠异常和护理记录纳入行为画像，用于识别健康和心理风险趋势。
 
 \subsubsection{护理决策支持与可解释人工智能研究}
 
-护理场景中的智能系统不能只输出告警，还需要给出可理解、可追溯、可执行的处置建议。Kawamoto 等对临床决策支持系统的研究表明，面向个体的建议、与工作流集成和自动触发是提升系统有效性的关键因素\cite{kawamoto2005cdss}。Bright 等的系统综述也指出，临床决策支持系统通常能改善医疗服务过程，但效果取决于系统设计、嵌入时机和实际使用方式\cite{bright2012cdss}。Gunning 和 Aha 对可解释人工智能的讨论指出，复杂模型需要向用户提供可理解的理由、证据和不确定性信息，才能支持人机协同决策\cite{gunning2019xai}。Lundberg 和 Lee 提出的 SHAP 方法则为特征贡献度解释提供了统一思路\cite{lundberg2017shap}。
+护理场景中的智能系统不能只输出告警，还需要给出可理解、可追溯、可执行的处置建议。临床决策支持系统相关研究表明，面向个体的建议、与工作流集成和自动触发是提升系统有效性的关键因素\cite{kawamoto2005cdss}。相关系统综述也指出，临床决策支持系统通常能改善医疗服务过程，但效果取决于系统设计、嵌入时机和实际使用方式\cite{bright2012cdss}。可解释人工智能研究强调，复杂模型需要向用户提供可理解的理由、证据和不确定性信息，才能支持人机协同决策\cite{gunning2019xai}。SHAP 方法则为特征贡献度解释提供了统一思路\cite{lundberg2017shap}。
 
 综上，国内外研究已经在智慧养老、传感器监测、跌倒检测、姿态估计、心理健康监测、护理决策支持和可解释 AI 等方面形成了基础，但仍存在以下不足：第一，单一模态系统容易误报或漏报；第二，许多系统过度关注跌倒等显性事件，对健康和心理风险关注不足；第三，预警与护理处置、事件归档、统计复盘之间存在脱节；第四，风险研判可解释性不足；第五，缺少适合疗养中心后台管理的机构级闭环系统。安养智巡正是在这些不足基础上，提出面向疗养中心的多模态融合预警与护理业务闭环方案。
 
@@ -152,6 +169,56 @@ Zhang 等对中国智慧居家养老的发展阶段和挑战进行了综述，�
 \subsection{总体研究内容}
 
 安养智巡围绕“感知、研判、处置、复盘”四个环节展开研究和实现。系统通过摄像头视频/图像数据、床垫传感器、门磁、毫米波雷达、可穿戴设备、护理记录、老人健康档案、行为画像、历史事件记录和应急知识库构建多源数据底座；通过 YOLO 目标检测、YOLO 姿态估计、区域目标识别和异常行为识别形成实时感知结果；通过行为偏离度分析、多模态风险评分和规则引擎生成风险等级、触发原因、置信度和建议动作；最后通过派单调度、应急流程、事件管理和数据看板形成护理管理闭环。
+
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[
+    node distance=0.8cm and 0.7cm,
+    box/.style={draw, rounded corners=2pt, minimum width=3.4cm, minimum height=0.72cm, align=center, font=\songti\zihao{5}},
+    core/.style={draw, rounded corners=2pt, minimum width=4.0cm, minimum height=0.86cm, align=center, font=\songti\zihao{5}},
+    arrow/.style={-{Stealth[length=2.0mm]}, line width=0.5pt}
+  ]
+    \node[box] (device) {多源感知设备};
+    \node[box, right=of device] (service) {后端服务接口};
+    \node[core, right=of service] (fusion) {多模态融合预警};
+    \node[box, below=of service] (knowledge) {规则引擎与护理知识库};
+    \node[box, right=of fusion] (business) {派单处置与事件归档};
+    \node[box, below=of business] (dashboard) {数据看板与管理复盘};
+    \draw[arrow] (device) -- (service);
+    \draw[arrow] (service) -- (fusion);
+    \draw[arrow] (knowledge) -- (fusion);
+    \draw[arrow] (fusion) -- (business);
+    \draw[arrow] (business) -- (dashboard);
+    \draw[arrow] (dashboard) -- (knowledge);
+  \end{tikzpicture}
+  \caption{系统总体架构图}
+  \label{fig:system-architecture}
+\end{figure}
+
+如图 \ref{fig:system-architecture} 所示，系统以多源感知设备和后端接口为基础，将视觉识别、传感器状态、健康档案和护理记录统一汇入融合预警模块，再由规则引擎和护理知识库生成可解释处置建议，最终进入派单处置、事件归档和数据看板。
+
+系统的数据来源和业务用途如表 \ref{tab:data-sources} 所示。表中将设备侧数据、护理业务数据和历史画像数据放在同一结构下说明，便于体现多模态融合并不是单一视觉识别，而是围绕健康、心理和安全风险共同建模。
+
+\begin{table}[htbp]
+  \centering
+  \caption{多模态数据来源与业务用途}
+  \label{tab:data-sources}
+  \zihao{5}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}p{4.2cm}>{\centering\arraybackslash}X}
+    \toprule
+    数据来源 & 典型数据 & 主要用途 \\
+    \midrule
+    摄像头视频/图像 & 人员位置、姿态、区域目标、异常场景 & 跌倒识别、长时间静止识别、无人看护和冲突场景识别 \\
+    床垫传感器 & 在床状态、离床时间、卧床时长、睡眠片段 & 夜间离床、久卧未动、睡眠异常和回床确认 \\
+    门磁与毫米波雷达 & 出入记录、房间活动、静止状态、区域存在 & 离房未归、区域滞留、弱光或遮挡场景补充判断 \\
+    可穿戴设备 & 心率、活动量、步数、部分健康指标 & 健康风险趋势、活动量下降和异常体征辅助判断 \\
+    护理记录与健康档案 & 慢病情况、护理等级、既往事件、医嘱摘要 & 个体化风险阈值、处置建议和医生复核依据 \\
+    行为画像与历史事件 & 作息规律、异常频次、响应记录、处置结果 & 行为偏离度计算、风险趋势预测和管理复盘 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+在数据接入和风险研判基础上，系统主要功能模块如表 \ref{tab:functions} 所示。各模块与后台页面一一对应，并共同服务于风险识别、处置调度、事件归档和管理复盘。
 
 \begin{table}[htbp]
   \centering
@@ -218,14 +285,28 @@ P_i=\alpha R_i+\beta T_i+\gamma U_i+\delta L_i
 \end{equation}
 其中，$T_i$ 表示等待时长，$U_i$ 表示护理员负载与可用状态，$L_i$ 表示区域距离或到达成本，$\alpha,\beta,\gamma,\delta$ 为可配置权重。该模型使紧急事件、长时间未响应事件和近距离可处置事件能够被优先派发。
 
-比赛评分公式可写为：
-\begin{equation}
-Score=\frac{0.8A+0.2B}{100}(0.3C+0.25D+0.4E+0.05F)
-\label{eq:competition-score}
-\end{equation}
-其中，$A$ 表示项目可行性与实用性，$B$ 表示项目技术难度，$C$ 表示项目创新度，$D$ 表示项目完成度，$E$ 表示队员对作品的贡献程度，$F$ 表示其他可加分项。本项目在方案设计中重点强化可落地部署、多模态融合技术难度、创新闭环和团队实质贡献。
+风险等级划分与处置策略如表 \ref{tab:risk-levels} 所示。系统将评分结果转化为护理人员能够理解和执行的等级规则，避免算法输出停留在抽象分值层面。
+
+\begin{table}[htbp]
+  \centering
+  \caption{风险等级划分与处置策略}
+  \label{tab:risk-levels}
+  \zihao{5}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.4cm}>{\centering\arraybackslash}p{3.2cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}p{3.2cm}}
+    \toprule
+    风险等级 & 典型触发条件 & 系统动作 & 处置要求 \\
+    \midrule
+    低风险 & 单项指标轻微偏离、短时活动减少 & 记录观察，进入健康趋势统计 & 由护理员在日常巡查中确认 \\
+    中风险 & 多项信号持续异常、夜间离床频次升高 & 生成提醒，进入待办队列 & 护理员复核并补充护理记录 \\
+    高风险 & 久卧未动、离床未归、健康指标异常叠加 & 提升优先级，触发派单与主管提醒 & 值班人员限时响应并记录结果 \\
+    紧急风险 & 疑似跌倒未响应、烟火异常、严重冲突或无人看护 & 立即告警，启动应急流程 & 现场处置、上报主管并完成归档 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \subsection{系统运行数据与测试场景}
+
+系统测试与模拟运行指标如表 \ref{tab:runtime-data} 所示。该组数据用于说明系统已能够围绕告警数量、高风险事件、响应效率和设备在线状态形成运行监测能力。
 
 \begin{table}[htbp]
   \centering
@@ -249,6 +330,26 @@ Score=\frac{0.8A+0.2B}{100}(0.3C+0.25D+0.4E+0.05F)
 \end{table}
 
 系统覆盖的示例风险事件包括跌倒未响应、夜间离床未归、久卧未动、烟火异常、长时间滞留、无人看护、老人冲突、健康风险和心理风险。系统在设计上特别强调健康与心理风险，因为这类风险往往不是瞬时事件，而是通过多天行为变化、护理记录和身体指标逐渐显现。
+
+典型风险事件与闭环处理方式如表 \ref{tab:event-closed-loop} 所示。表中列出的识别依据、处置建议和归档数据对应系统从预警到复盘的主要业务字段。
+
+\begin{table}[htbp]
+  \centering
+  \caption{典型风险事件与闭环处理方式}
+  \label{tab:event-closed-loop}
+  \zihao{5}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{3.0cm}>{\centering\arraybackslash}p{3.5cm}>{\centering\arraybackslash}X>{\centering\arraybackslash}p{3.1cm}}
+    \toprule
+    事件类型 & 主要识别依据 & 处置建议 & 归档数据 \\
+    \midrule
+    跌倒未响应 & 姿态异常、地面区域停留、长时间无动作 & 立即派单，现场确认意识状态与外伤情况 & 图像证据、响应时长、处置结果 \\
+    夜间离床未归 & 床垫空床、门磁出入、超过回床阈值 & 联系就近护理员巡查房间与走廊 & 离床时间、回床时间、巡查记录 \\
+    久卧未动 & 长时间在床、活动量下降、护理记录异常 & 提醒翻身、压疮风险观察和健康复核 & 卧床时长、护理措施、后续观察 \\
+    心理风险 & 互动减少、睡眠异常、活动量下降、历史记录叠加 & 提醒护理员访谈，必要时转医生复核 & 风险原因、访谈记录、医生建议 \\
+    烟火异常 & 视觉烟火识别、区域告警、环境传感器异常 & 启动应急流程，通知主管并疏散相关区域 & 告警时间、处置人员、复盘结论 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \subsection{页面模块与实现效果}
 
@@ -334,27 +435,17 @@ Score=\frac{0.8A+0.2B}{100}(0.3C+0.25D+0.4E+0.05F)
 
 第四，系统能够推动养老机构数字化管理。事件管理、数据看板和知识库工作台将分散的护理记录转化为可统计、可追踪、可复盘的数据资产，有助于改进护理流程、设备配置和人员排班。
 
-\section{队员对作品的贡献程度}
+\section{团队分工与协同实现}
 
-团队共有 3 名成员，三名队员均参与了项目创新设计、关键模块实现和系统联调验证。团队分工并非简单页面或文档拆分，而是围绕系统架构、算法服务、业务闭环和实际部署能力进行协同开发。
+本项目由 3 名成员协同完成。团队在系统方案、算法服务、后台页面、接口联调、测试数据和部署验证等环节保持共同讨论与交叉验证，分工围绕真实康养机构后台业务展开，重点保证系统能够形成从风险发现到事件归档的完整链路。
 
-\begin{table}[htbp]
-  \centering
-  \caption{队员对作品的贡献程度}
-  \label{tab:contribution}
-  \zihao{5}
-  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{2.5cm}X}
-    \toprule
-    队员 & 主要贡献 \\
-    \midrule
-    队员 A & 负责系统总体架构设计、多模态融合预警流程设计、核心业务闭环设计、报告和系统功能整合；同时参与风险评分逻辑、页面业务含义梳理和系统部署方案设计。 \\
-    队员 B & 负责前端后台管理系统开发，包括首页、实时监测、健康监护、风险调度、行为画像、应急流程、事件管理、数据看板和知识库页面；同时参与多角色交互流程、页面状态设计和业务数据联调。 \\
-    队员 C & 负责视觉识别服务、YOLO 模型接入、风险规则设计、后端接口联调、测试数据构建和系统部署验证；同时参与视觉识别结果与传感器状态融合、事件队列生成和系统运行测试。 \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
+队员 A 主要负责系统总体架构设计、多模态融合预警流程设计、核心业务闭环设计、报告撰写和系统功能整合。在项目推进过程中，队员 A 同时参与风险评分逻辑、页面业务含义梳理和系统部署方案设计，使系统从技术模块组合进一步形成可解释、可追踪的业务闭环。
 
-从贡献程度看，队员 A 对系统架构、融合预警方案和业务闭环完整性贡献突出；队员 B 对后台管理系统的人机交互、功能页面和业务流程落地贡献突出；队员 C 对视觉识别、规则研判、后端接口和部署验证贡献突出。三名成员均承担了项目关键技术模块，均对作品的创新性、完成度和可落地性形成实质贡献。
+队员 B 主要负责后台管理系统开发，包括首页、实时监测、健康监护、风险调度、行为画像、应急流程、事件管理、数据看板和知识库工作台等页面。队员 B 在实现过程中重点处理多角色入口、页面状态、业务数据联动和事件流转体验，使系统能够符合护理员、值班主管、机构管理者和医生的使用习惯。
+
+队员 C 主要负责视觉识别服务、YOLO 模型接入、风险规则设计、后端接口联调、测试数据构建和系统部署验证。队员 C 同时参与视觉识别结果与传感器状态融合、事件队列生成和运行测试，保证算法输出能够稳定进入后端服务和业务处置流程。
+
+总体来看，三名成员均参与了创新设计和核心实现。队员 A 对系统架构、融合预警方案和业务闭环完整性贡献突出；队员 B 对后台管理系统的人机交互、功能页面和业务流程落地贡献突出；队员 C 对视觉识别、规则研判、后端接口和部署验证贡献突出。团队协同方式保证了项目不仅具备页面呈现能力，也具备服务接口、算法接入、规则研判、事件闭环和部署验证能力。
 
 \section{项目存在的问题以及今后的改进方向}
 
@@ -374,109 +465,61 @@ Score=\frac{0.8A+0.2B}{100}(0.3C+0.25D+0.4E+0.05F)
 
 后续将从七个方向持续优化：第一，接入更多真实摄像头视频流和传感器数据，扩大跌倒、久卧、夜间离床和心理风险样本；第二，优化视觉识别、姿态估计和行为偏离度模型，提高复杂遮挡、弱光和多人场景下的稳定性；第三，引入边缘计算设备，在机构本地完成关键视觉推理，降低延迟并减少敏感数据外传；第四，完善数据库、权限系统、日志审计和机构级多角色管理；第五，引入大模型护理助手，提高知识库问答、处置建议生成和事件复盘摘要质量；第六，建立长期健康画像和心理风险趋势预测模型；第七，加强数据脱敏、访问控制和隐私合规设计，使系统更适合真实养老机构长期运行。
 
+\phantomsection
+\addcontentsline{toc}{section}{参考文献}
 \begin{thebibliography}{99}
 \songti\zihao{-4}
 
 \bibitem{zhang2020smart}
-Zhang Q, Li M, Wu Y.
-Smart home for elderly care: development and challenges in China.
-\textit{BMC Geriatrics}, 2020, 20:318.
-\url{https://doi.org/10.1186/s12877-020-01737-y}
+Zhang Q, Li M, Wu Y. Smart home for elderly care: development and challenges in China[J]. \textit{BMC Geriatrics}, 2020, 20:318.
 
 \bibitem{hung2023smart}
-Hung J.
-Smart Elderly Care Services in China: Challenges, Progress, and Policy Development.
-\textit{Sustainability}, 2023, 15(1):178.
-\url{https://doi.org/10.3390/su15010178}
+Hung J. Smart Elderly Care Services in China: Challenges, Progress, and Policy Development[J]. \textit{Sustainability}, 2023, 15(1):178.
 
 \bibitem{stavropoulos2020iot}
-Stavropoulos T G, Papastergiou A, Mpaltadoros L, Nikolopoulos S, Kompatsiaris I.
-IoT Wearable Sensors and Devices in Elderly Care: A Literature Review.
-\textit{Sensors}, 2020, 20(10):2826.
-\url{https://doi.org/10.3390/s20102826}
+Stavropoulos T G, Papastergiou A, Mpaltadoros L, Nikolopoulos S, Kompatsiaris I. IoT Wearable Sensors and Devices in Elderly Care: A Literature Review[J]. \textit{Sensors}, 2020, 20(10):2826.
 
 \bibitem{dong2017wearable}
-Dong L, et al.
-A Review of Wearable Technologies for Elderly Care that Can Accurately Track Indoor Position, Recognize Physical Activities and Monitor Vital Signs in Real Time.
-\textit{Sensors}, 2017, 17(2):341.
-\url{https://doi.org/10.3390/s17020341}
+Dong L, et al. A Review of Wearable Technologies for Elderly Care that Can Accurately Track Indoor Position, Recognize Physical Activities and Monitor Vital Signs in Real Time[J]. \textit{Sensors}, 2017, 17(2):341.
 
 \bibitem{mubashir2013survey}
-Mubashir M, Shao L, Seed L.
-A survey on fall detection: Principles and approaches.
-\textit{Neurocomputing}, 2013, 100:144--152.
-\url{https://doi.org/10.1016/j.neucom.2011.09.037}
+Mubashir M, Shao L, Seed L. A survey on fall detection: Principles and approaches[J]. \textit{Neurocomputing}, 2013, 100:144--152.
 
 \bibitem{igual2013challenges}
-Igual R, Medrano C, Plaza I.
-Challenges, issues and trends in fall detection systems.
-\textit{BioMedical Engineering OnLine}, 2013, 12:66.
-\url{https://doi.org/10.1186/1475-925X-12-66}
+Igual R, Medrano C, Plaza I. Challenges, issues and trends in fall detection systems[J]. \textit{BioMedical Engineering OnLine}, 2013, 12:66.
 
 \bibitem{redmon2016yolo}
-Redmon J, Divvala S, Girshick R, Farhadi A.
-You Only Look Once: Unified, Real-Time Object Detection.
-\textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, 2016:779--788.
-\url{https://doi.org/10.1109/CVPR.2016.91}
+Redmon J, Divvala S, Girshick R, Farhadi A. You Only Look Once: Unified, Real-Time Object Detection[C]//\textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}. 2016:779--788.
 
 \bibitem{cao2017realtime}
-Cao Z, Simon T, Wei S E, Sheikh Y.
-Realtime Multi-Person 2D Pose Estimation Using Part Affinity Fields.
-\textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}, 2017:7291--7299.
-\url{https://openaccess.thecvf.com/content_cvpr_2017/html/Cao_Realtime_Multi-Person_2D_CVPR_2017_paper.html}
+Cao Z, Simon T, Wei S E, Sheikh Y. Realtime Multi-Person 2D Pose Estimation Using Part Affinity Fields[C]//\textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition}. 2017:7291--7299.
 
 \bibitem{ultralytics2024yolo11}
-Ultralytics.
-Ultralytics YOLO11 Documentation.
-\url{https://docs.ultralytics.com/models/yolo11/}
+Ultralytics. Ultralytics YOLO11 Documentation[EB/OL]. 2024.
 
 \bibitem{baltrusaitis2019multimodal}
-Baltrušaitis T, Ahuja C, Morency L P.
-Multimodal Machine Learning: A Survey and Taxonomy.
-\textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2019, 41(2):423--443.
-\url{https://doi.org/10.1109/TPAMI.2018.2798607}
+Baltrušaitis T, Ahuja C, Morency L P. Multimodal Machine Learning: A Survey and Taxonomy[J]. \textit{IEEE Transactions on Pattern Analysis and Machine Intelligence}, 2019, 41(2):423--443.
 
 \bibitem{liang2022foundations}
-Liang P P, Zadeh A, Morency L P.
-Foundations and Trends in Multimodal Machine Learning: Principles, Challenges, and Open Questions.
-arXiv:2209.03430, 2022.
-\url{https://arxiv.org/abs/2209.03430}
+Liang P P, Zadeh A, Morency L P. Foundations and Trends in Multimodal Machine Learning: Principles, Challenges, and Open Questions[Z]. arXiv:2209.03430, 2022.
 
 \bibitem{holtlunstad2015loneliness}
-Holt-Lunstad J, Smith T B, Baker M, Harris T, Stephenson D.
-Loneliness and Social Isolation as Risk Factors for Mortality: A Meta-Analytic Review.
-\textit{Perspectives on Psychological Science}, 2015, 10(2):227--237.
-\url{https://doi.org/10.1177/1745691614568352}
+Holt-Lunstad J, Smith T B, Baker M, Harris T, Stephenson D. Loneliness and Social Isolation as Risk Factors for Mortality: A Meta-Analytic Review[J]. \textit{Perspectives on Psychological Science}, 2015, 10(2):227--237.
 
 \bibitem{sequeira2021digital}
-Sequeira L, Perrotta S, LaGrassa J, et al.
-Digital health tools for the passive monitoring of depression: a systematic review of methods.
-\textit{npj Digital Medicine}, 2021, 4:143.
-\url{https://doi.org/10.1038/s41746-021-00548-8}
+Sequeira L, Perrotta S, LaGrassa J, et al. Digital health tools for the passive monitoring of depression: a systematic review of methods[J]. \textit{npj Digital Medicine}, 2021, 4:143.
 
 \bibitem{kawamoto2005cdss}
-Kawamoto K, Houlihan C A, Balas E A, Lobach D F.
-Improving clinical practice using clinical decision support systems: a systematic review of trials to identify features critical to success.
-\textit{BMJ}, 2005, 330:765.
-\url{https://doi.org/10.1136/bmj.38398.500764.8F}
+Kawamoto K, Houlihan C A, Balas E A, Lobach D F. Improving clinical practice using clinical decision support systems: a systematic review of trials to identify features critical to success[J]. \textit{BMJ}, 2005, 330:765.
 
 \bibitem{bright2012cdss}
-Bright T J, Wong A, Dhurjati R, et al.
-Effect of Clinical Decision-Support Systems: A Systematic Review.
-\textit{Annals of Internal Medicine}, 2012, 157(1):29--43.
-\url{https://doi.org/10.7326/0003-4819-157-1-201207030-00450}
+Bright T J, Wong A, Dhurjati R, et al. Effect of Clinical Decision-Support Systems: A Systematic Review[J]. \textit{Annals of Internal Medicine}, 2012, 157(1):29--43.
 
 \bibitem{gunning2019xai}
-Gunning D, Aha D.
-DARPA's Explainable Artificial Intelligence Program.
-\textit{AI Magazine}, 2019, 40(2):44--58.
-\url{https://doi.org/10.1609/aimag.v40i2.2850}
+Gunning D, Aha D. DARPA's Explainable Artificial Intelligence Program[J]. \textit{AI Magazine}, 2019, 40(2):44--58.
 
 \bibitem{lundberg2017shap}
-Lundberg S M, Lee S I.
-A Unified Approach to Interpreting Model Predictions.
-\textit{Advances in Neural Information Processing Systems}, 2017, 30.
-\url{https://papers.neurips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions}
+Lundberg S M, Lee S I. A Unified Approach to Interpreting Model Predictions[C]//\textit{Advances in Neural Information Processing Systems}. 2017, 30.
 
 \end{thebibliography}
 

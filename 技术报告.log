@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.15)  15 MAY 2026 19:04
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.5.15)  15 MAY 2026 22:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1054,6 +1054,25 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks40
 \@floatcapt=\box74
 )
+(D:\wenxvn\Latex\tex/latex/fancyhdr\fancyhdr.sty
+Package: fancyhdr 2025/02/07 v5.2 Extensive control of page headers and footers
+
+\f@nch@headwidth=\skip67
+\f@nch@offset@elh=\skip68
+\f@nch@offset@erh=\skip69
+\f@nch@offset@olh=\skip70
+\f@nch@offset@orh=\skip71
+\f@nch@offset@elf=\skip72
+\f@nch@offset@erf=\skip73
+\f@nch@offset@olf=\skip74
+\f@nch@offset@orf=\skip75
+\f@nch@height=\skip76
+\f@nch@footalignment=\skip77
+\f@nch@widthL=\skip78
+\f@nch@widthC=\skip79
+\f@nch@widthR=\skip80
+\@temptokenb=\toks41
+)
 (D:\wenxvn\Latex\tex/generic/pgf/libraries\pgflibraryarrows.meta.code.tex
 File: pgflibraryarrows.meta.code.tex 2025-08-29 v3.1.11a (3.1.11a)
 \pgfarrowinset=\dimen340
@@ -1136,29 +1155,30 @@ ext;"
 (fontspec)             Roman/BI/OT:script=latn;language=dflt;+smcp;mapping=tex-
 text;"
 
+Package hyperref Info: Option `colorlinks' set `false' on input line 83.
 (技术报告.aux)
 \openout1 = `技术报告.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 92.
-LaTeX Font Info:    ... okay on input line 92.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 111.
+LaTeX Font Info:    ... okay on input line 111.
 
 Package fontspec Info: 
 (fontspec)             Adjusting the maths setup (use [no-math] to avoid
@@ -1166,63 +1186,64 @@ Package fontspec Info:
 
 \symlegacymaths=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 92.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 92.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 92.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 92.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 92.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 92.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 92.
-LaTeX Font Info:    Redeclaring math accent \check on input line 92.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 92.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 92.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 92.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 92.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 92.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 111.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 111.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 111.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 111.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 111.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 111.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 111.
+LaTeX Font Info:    Redeclaring math accent \check on input line 111.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 111.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 111.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 111.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 111.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 111.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 92.
+(Font)              `operators' in the math version `normal' on input line 111.
+
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 9
-2.
+(Font)                  OT1/cmr/m/n --> TU/TimesNewRoman(0)/m/n on input line 1
+11.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 92.
+(Font)              `operators' in the math version `bold' on input line 111.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/m/n on input line 
-92.
+111.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/m/n on 
-input line 92.
+input line 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
 (Font)                  OT1/cmr/m/it --> TU/TimesNewRoman(0)/m/it on input line
- 92.
+ 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
 (Font)                  OT1/cmr/bx/n --> TU/TimesNewRoman(0)/b/n on input line 
-92.
+111.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 92.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 92.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 111.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  TU/TimesNewRoman(0)/m/n --> TU/TimesNewRoman(0)/b/n on 
-input line 92.
+input line 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
 (Font)                  OT1/cmr/bx/it --> TU/TimesNewRoman(0)/b/it on input lin
-e 92.
+e 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 92.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 111.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 92.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 111.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
@@ -1262,14 +1283,10 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring OFF on input line 92.
+Package hyperref Info: Link coloring OFF on input line 111.
 (技术报告.out) (技术报告.out)
 \@outlinefile=\write4
 \openout4 = `技术报告.out'.
-
-
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
 
 
 Package fontspec Info: 
@@ -1300,10 +1317,6 @@ Package fontspec Info:
 
 
 
-LaTeX Font Warning: Font shape `OMX/cmex/m/n' in size <15.05624> not available
-(Font)              size <14.4> substituted on input line 97.
-
-
 Package fontspec Info: 
 (fontspec)             Script 'CJK' not explicitly supported within font
 (fontspec)             'FandolHei-Regular'. Check the typeset output, and if
@@ -1325,53 +1338,6 @@ Package fontspec Info:
 ;"
 (fontspec)             - 'bold' (b/n) with NFSS spec.:
 (fontspec)             <->"[FandolHei-Bold.otf]/OT:script=hani;language=dflt;"
-
-[1
-
-]
-No file 技术报告.toc.
-\tf@toc=\write5
-\openout5 = `技术报告.toc'.
-
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/sl' in size <12.045> not 
-available
-(Font)              Font shape `TU/TimesNewRoman(0)/m/it' tried instead on inpu
-t line 110.
-LaTeX Font Info:    Font shape `TU/TimesNewRoman(0)/m/sl' in size <14.05249> no
-t available
-(Font)              Font shape `TU/TimesNewRoman(0)/m/it' tried instead on inpu
-t line 110.
-
-LaTeX Font Warning: Font shape `TU/FandolHei-Regular(0)/m/sl' undefined
-(Font)              using `TU/FandolHei-Regular(0)/m/n' instead on input line 1
-10.
-
-[2]
-
-Package fontspec Info: 
-(fontspec)             Script 'CJK' not explicitly supported within font
-(fontspec)             'FandolKai-Regular'. Check the typeset output, and if
-(fontspec)             it is okay then ignore this warning. Otherwise a
-(fontspec)             different font should be chosen.
-
-
-Package fontspec Info: 
-(fontspec)             Font family 'FandolKai-Regular(0)' created for font
-(fontspec)             'FandolKai-Regular' with options
-(fontspec)             [Script={CJK},Extension={.otf}].
-(fontspec)              
-(fontspec)              This font family consists of the following NFSS
-(fontspec)             series/shapes:
-(fontspec)              
-(fontspec)             - 'normal' (m/n) with NFSS spec.:
-(fontspec)             <->"[FandolKai-Regular.otf]/OT:script=hani;language=dflt
-;"
-
-
-
-LaTeX Font Warning: Font shape `TU/FandolKai-Regular(0)/b/n' undefined
-(Font)              using `TU/FandolKai-Regular(0)/m/n' instead on input line 1
-18.
 
 
 Package fontspec Info: 
@@ -1398,199 +1364,88 @@ t;"
 
 
 
-LaTeX Warning: Citation `zhang2020smart' on page 3 undefined on input line 128.
 
+LaTeX Font Warning: Font shape `OMX/cmex/m/n' in size <15.05624> not available
+(Font)              size <14.4> substituted on input line 116.
 
+[1
 
-LaTeX Warning: Citation `hung2023smart' on page 3 undefined on input line 128.
+] (技术报告.toc
 
+LaTeX Font Warning: Font shape `TU/SimSun(0)/b/n' undefined
+(Font)              using `TU/SimSun(0)/m/n' instead on input line 1.
 
-LaTeX Warning: Citation `stavropoulos2020iot' on page 3 undefined on input line
- 128.
+[2])
+\tf@toc=\write5
+\openout5 = `技术报告.toc'.
 
-
-LaTeX Font Warning: Font shape `TU/SimSun(0)/m/sl' undefined
-(Font)              using `TU/SimSun(0)/m/n' instead on input line 131.
-
-[3]
-
-LaTeX Warning: Citation `mubashir2013survey' on page 4 undefined on input line 
-134.
-
-
-LaTeX Warning: Citation `igual2013challenges' on page 4 undefined on input line
- 134.
-
-
-LaTeX Warning: Citation `redmon2016yolo' on page 4 undefined on input line 136.
-
-
-
-LaTeX Warning: Citation `cao2017realtime' on page 4 undefined on input line 136
-.
-
-
-LaTeX Warning: Citation `ultralytics2024yolo11' on page 4 undefined on input li
-ne 136.
-
-
-LaTeX Warning: Citation `baltrusaitis2019multimodal' on page 4 undefined on inp
-ut line 140.
-
-
-LaTeX Warning: Citation `liang2022foundations' on page 4 undefined on input lin
-e 140.
-
-
-LaTeX Warning: Citation `holtlunstad2015loneliness' on page 4 undefined on inpu
-t line 142.
-
-
-LaTeX Warning: Citation `sequeira2021digital' on page 4 undefined on input line
- 142.
-
-
-LaTeX Warning: Citation `kawamoto2005cdss' on page 4 undefined on input line 14
-6.
-
-
-LaTeX Warning: Citation `bright2012cdss' on page 4 undefined on input line 146.
-
-
-
-LaTeX Warning: Citation `gunning2019xai' on page 4 undefined on input line 146.
-
-
-
-LaTeX Warning: Citation `lundberg2017shap' on page 4 undefined on input line 14
-6.
-
-[4]
-
-LaTeX Warning: Reference `fig:tech-route' on page 5 undefined on input line 180
-.
-
-
-Overfull \hbox (13.48666pt too wide) in paragraph at lines 200--201
- [][] 
- []
-
-[5] [6]
+ [3]
 
 Package fontspec Info: 
 (fontspec)             Script 'CJK' not explicitly supported within font
-(fontspec)             'FandolFang-Regular'. Check the typeset output, and if
+(fontspec)             'FandolKai-Regular'. Check the typeset output, and if
 (fontspec)             it is okay then ignore this warning. Otherwise a
 (fontspec)             different font should be chosen.
 
 
 Package fontspec Info: 
-(fontspec)             Font family 'FandolFang-Regular(0)' created for font
-(fontspec)             'FandolFang-Regular' with options
+(fontspec)             Font family 'FandolKai-Regular(0)' created for font
+(fontspec)             'FandolKai-Regular' with options
 (fontspec)             [Script={CJK},Extension={.otf}].
 (fontspec)              
 (fontspec)              This font family consists of the following NFSS
 (fontspec)             series/shapes:
 (fontspec)              
 (fontspec)             - 'normal' (m/n) with NFSS spec.:
-(fontspec)             <->"[FandolFang-Regular.otf]/OT:script=hani;language=dfl
-t;"
+(fontspec)             <->"[FandolKai-Regular.otf]/OT:script=hani;language=dflt
+;"
 
 
 
-LaTeX Warning: Reference `fig:login' on page 7 undefined on input line 257.
+LaTeX Font Warning: Font shape `TU/FandolKai-Regular(0)/b/n' undefined
+(Font)              using `TU/FandolKai-Regular(0)/m/n' instead on input line 1
+35.
 
-[7]
-
-LaTeX Warning: Reference `fig:home-overview' on page 8 undefined on input line 
-261.
-
-
-LaTeX Warning: Reference `fig:realtime-monitor' on page 8 undefined on input li
-ne 265.
-
-[8]
-
-LaTeX Warning: Reference `fig:health-monitor' on page 9 undefined on input line
- 269.
-
-
-LaTeX Warning: Reference `fig:dispatch' on page 9 undefined on input line 273.
-
-
-LaTeX Warning: Reference `fig:behavior-profile' on page 9 undefined on input li
-ne 277.
-
-[9] [10]
-
-LaTeX Warning: Reference `fig:emergency-flow' on page 11 undefined on input lin
-e 281.
-
-
-LaTeX Warning: Reference `fig:event-management' on page 11 undefined on input l
-ine 285.
-
-[11]
-
-LaTeX Warning: Reference `fig:dashboard' on page 12 undefined on input line 289
-.
-
-
-LaTeX Warning: Reference `fig:knowledge-workbench' on page 12 undefined on inpu
-t line 293.
-
-[12] [13] [14] [15]
-Underfull \hbox (badness 1168) in paragraph at lines 381--385
-[]\TU/TimesNewRoman(0)/m/n/12.045 Zhang Q, Li M, Wu Y. Smart home for elderly c
-are: development and chal-
+[4] [5]
+Overfull \hbox (33.35098pt too wide) in paragraph at lines 193--194
+ [][] 
  []
 
 
-Underfull \hbox (badness 1642) in paragraph at lines 381--385
-\TU/TimesNewRoman(0)/m/n/12.045 lenges in China. \TU/TimesNewRoman(0)/m/it/12.0
-45 BMC Geriatrics\TU/TimesNewRoman(0)/m/n/12.045 , 2020, 20:318. []$[][][][][] 
-[] [] [] [][][] [] [][][] [] [][] [] [][][][] []
+Overfull \hbox (13.48666pt too wide) in paragraph at lines 267--268
+ [][] 
  []
 
-
-Underfull \hbox (badness 1067) in paragraph at lines 405--409
-[]\TU/TimesNewRoman(0)/m/n/12.045 Mubashir M, Shao L, Seed L. A survey on fall 
-detection: Principles and ap-
- []
-
-
-Underfull \hbox (badness 1253) in paragraph at lines 405--409
-\TU/TimesNewRoman(0)/m/n/12.045 proaches. \TU/TimesNewRoman(0)/m/it/12.045 Neur
-ocomputing\TU/TimesNewRoman(0)/m/n/12.045 , 2013, 100:144–152. []$[][][][][] []
- [] [] [][][] [] [][][] [] [][] [] [][][][] [] [] []
- []
-
-
-Underfull \hbox (badness 2644) in paragraph at lines 429--432
-[]\TU/TimesNewRoman(0)/m/n/12.045 Ultralytics. Ultralytics YOLO11 Documentation
-. []$[][][][][] [] [] [] [][][][] [] [][][][][][][][][][][] []
- []
-
-[16]
-Underfull \hbox (badness 10000) in paragraph at lines 476--480
+[6] [7] [8]
+File: figures/login.png Graphic file (type bmp)
+<figures/login.png>
+ [9] [10]
+File: figures/home-overview.png Graphic file (type bmp)
+<figures/home-overview.png>
+File: figures/realtime-monitor.png Graphic file (type bmp)
+<figures/realtime-monitor.png>
+File: figures/health-monitor.png Graphic file (type bmp)
+<figures/health-monitor.png>
+File: figures/dispatch.png Graphic file (type bmp)
+<figures/dispatch.png>
+File: figures/behavior-profile.png Graphic file (type bmp)
+<figures/behavior-profile.png>
+ [11] [12] [13]
+File: figures/emergency-flow.png Graphic file (type bmp)
+<figures/emergency-flow.png>
+File: figures/event-management.png Graphic file (type bmp)
+<figures/event-management.png>
+File: figures/dashboard.png Graphic file (type bmp)
+<figures/dashboard.png>
+File: figures/knowledge-workbench.png Graphic file (type bmp)
+<figures/knowledge-workbench.png>
+ [14] [15] [16] [17] [18] [19]
+Underfull \hbox (badness 2343) in paragraph at lines 522--523
 []\TU/TimesNewRoman(0)/m/n/12.045 Lundberg S M, Lee S I. A Unified Approach to 
-Interpret-
+Interpreting Model Predic-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 476--480
-\TU/TimesNewRoman(0)/m/n/12.045 ing Model Predictions. \TU/TimesNewRoman(0)/m/i
-t/12.045 Advances in Neural Information Process-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 476--480
-\TU/TimesNewRoman(0)/m/it/12.045 ing Systems\TU/TimesNewRoman(0)/m/n/12.045 , 2
-017, 30. []$[][][][][] [] [] [] [][][][][][] [] [][][][][][][] [] [][] [] [][][
-][][] []
- []
-
-[17] (技术报告.aux)
+[20] [21] (技术报告.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2022/07/14>
@@ -1603,28 +1458,16 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: There were undefined references.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `技术报告.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `技术报告.out':
-(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
-(rerunfilecheck)             After:  DD80D4536FB938C7B580502BE906A762;3757.
+Package rerunfilecheck Info: File `技术报告.out' has not changed.
+(rerunfilecheck)             Checksum: 3730AF7687694ADAC5622476F5BAC28D;3812.
  ) 
 Here is how much of TeX's memory you used:
- 28443 strings out of 402987
- 619456 string characters out of 5454527
- 1032669 words of memory out of 5000000
- 56687 multiletter control sequences out of 15000+600000
- 637577 words of font info for 141 fonts, out of 8000000 for 9000
+ 28817 strings out of 402987
+ 622520 string characters out of 5454527
+ 1050593 words of memory out of 5000000
+ 57048 multiletter control sequences out of 15000+600000
+ 637569 words of font info for 140 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,10n,112p,435b,820s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,12n,112p,1171b,819s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on 技术报告.pdf (17 pages).
+Output written on 技术报告.pdf (21 pages).
