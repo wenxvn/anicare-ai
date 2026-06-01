@@ -9,17 +9,17 @@ import { StatCard } from '@/components/ui/stat-card';
 import { mockEvents } from '@/lib/mock-data';
 
 const dutyStats = [
-  { label: '今日告警', value: 26, helper: '已自动研判并生成处置建议', icon: 'mdi:alert-octagon-outline' },
-  { label: '待处理高风险', value: 7, helper: '包含 2 起紧急事件', icon: 'mdi:clock-alert-outline' },
-  { label: '平均响应', value: '4.2 分钟', helper: '从识别到护理员接单', icon: 'mdi:timer-check-outline' },
+  { label: '今日告警', value: 26, helper: '已自动研判并完成派单', icon: 'mdi:alert-octagon-outline' },
+  { label: '处理中高风险', value: 7, helper: '包含 2 起紧急事件', icon: 'mdi:clock-alert-outline' },
+  { label: '平均响应', value: '5.9 秒', helper: '从识别到自动派单', icon: 'mdi:timer-check-outline' },
   { label: '设备在线率', value: '97.6%', helper: '摄像头与传感器综合在线', icon: 'mdi:access-point-check' },
 ];
 
 const activeEvents = [
-  { id: 'evt-20250501-001', type: '摔倒未响应', riskLevel: 'critical' as const, zone: 'A栋3层走廊', source: '视觉识别 + 无人响应', status: '待派单', wait: '8 分钟' },
-  { id: 'evt-20250501-005', type: '久卧未动', riskLevel: 'high' as const, zone: 'B栋302房间', source: '床垫传感器 + 体征', status: '已派单', wait: '22 分钟' },
-  { id: 'evt-20250501-003', type: '烟火疑似异常', riskLevel: 'high' as const, zone: 'C栋1层茶水间', source: '烟雾浓度 + 视觉', status: '处理中', wait: '5 分钟' },
-  { id: 'evt-20250501-004', type: '长时间滞留', riskLevel: 'medium' as const, zone: 'A栋1层电梯口', source: '视觉轨迹', status: '观察中', wait: '25 分钟' },
+  { id: 'evt-20250501-001', type: '摔倒未响应', riskLevel: 'critical' as const, zone: 'A栋3层走廊', source: '视觉识别 + 无人响应', status: '处理中', wait: '8 秒' },
+  { id: 'evt-20250501-005', type: '久卧未动', riskLevel: 'high' as const, zone: 'B栋302房间', source: '床垫传感器 + 体征', status: '处理中', wait: '6 秒' },
+  { id: 'evt-20250501-003', type: '烟火疑似异常', riskLevel: 'high' as const, zone: 'C栋1层茶水间', source: '烟雾浓度 + 视觉', status: '处理中', wait: '4 秒' },
+  { id: 'evt-20250501-004', type: '长时间滞留', riskLevel: 'medium' as const, zone: 'A栋1层电梯口', source: '视觉轨迹', status: '已完成', wait: '9 秒' },
 ];
 
 const deviceGroups = [
@@ -71,7 +71,7 @@ export default function HomePage() {
               今日风险运行态势
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#5d6b82]">
-              系统汇总视觉识别、床垫传感器、门磁、毫米波雷达与护理记录，帮助值班人员优先处理高风险事件。
+              系统汇总视觉识别、床垫传感器、门磁、毫米波雷达与护理记录，自动识别高风险事件并快速派单。
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {quickActions.map((item) => (
@@ -122,7 +122,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-base font-semibold text-[#172033]">当前高风险事件</h2>
-              <p className="mt-1 text-xs text-[#5d6b82]">按风险等级和等待时长自动排序</p>
+              <p className="mt-1 text-xs text-[#5d6b82]">按风险等级和秒级响应时长自动排序</p>
             </div>
             <Link href="/dispatch" className="text-xs font-medium text-teal-700 hover:text-teal-600">
               进入调度

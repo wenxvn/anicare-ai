@@ -124,12 +124,12 @@ export interface DispatchItem {
   risk: string;
   riskLevel: RiskLevel;
   zone: string;
-  waitMinutes: number;
+  waitSeconds: number;
   residentName: string;
   priority: number;
   priorityScore: number;
   reason: string;
-  status: '待指派' | '处理中' | '已完成';
+  status: '处理中' | '已完成';
   assignee?: string;
   time: string;
 }

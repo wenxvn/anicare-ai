@@ -18,14 +18,14 @@ function riskLabelToLevel(label: string): RiskLevel {
 export function computePriorityScore(item: {
   risk: string;
   riskLevel?: RiskLevel;
-  waitMinutes: number;
+  waitSeconds: number;
   confidence: number;
   residentName: string;
 }): number {
   const level = item.riskLevel || riskLabelToLevel(item.risk);
   const riskWeight = RISK_WEIGHT[level];
 
-  const waitFactor = Math.min(item.waitMinutes * 1.5, 40);
+  const waitFactor = Math.min(item.waitSeconds * 2, 20);
 
   const peopleFactor = item.residentName === '多名老人' ? 15 : 0;
 
@@ -38,8 +38,6 @@ export function sortByPriority(items: DispatchItem[]): DispatchItem[] {
   return [...items].sort((a, b) => {
     if (a.status === '已完成' && b.status !== '已完成') return 1;
     if (a.status !== '已完成' && b.status === '已完成') return -1;
-    if (a.status === '处理中' && b.status === '待指派') return 1;
-    if (a.status === '待指派' && b.status === '处理中') return -1;
     return b.priorityScore - a.priorityScore;
   });
 }
@@ -50,7 +48,7 @@ const _queue: DispatchItem[] = mockDispatchQueue.map((item) => ({
   priorityScore: computePriorityScore({
     risk: item.risk,
     riskLevel: riskLabelToLevel(item.risk),
-    waitMinutes: item.waitMinutes,
+    waitSeconds: item.waitSeconds,
     confidence: 0.9,
     residentName: item.residentName,
   }),
@@ -83,7 +81,7 @@ export const DispatchService = {
       item.priorityScore = computePriorityScore({
         risk: item.risk,
         riskLevel: item.riskLevel,
-        waitMinutes: item.waitMinutes,
+        waitSeconds: item.waitSeconds,
         confidence: 0.9,
         residentName: item.residentName,
       });
